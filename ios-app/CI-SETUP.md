@@ -1,4 +1,4 @@
-# KanjiQuest iPad - CI/CD Setup Guide
+# KanjiJourney iPad - CI/CD Setup Guide
 
 ## Overview
 The iOS app is built and deployed via GitHub Actions on macOS runners.
@@ -6,7 +6,7 @@ You develop on Ubuntu (VS Code), push to GitHub, and CI handles compilation + Te
 
 ## Prerequisites
 1. **Apple Developer Account** ($99/year) - developer.apple.com
-2. **App Store Connect** - Create the app record for `com.jworks.kanjiquest.ipad`
+2. **App Store Connect** - Create the app record for `com.jworks.kanjijourney.ipad`
 3. **GitHub repository** - Jay-Network repo with Actions enabled
 
 ## GitHub Repository Secrets
@@ -41,7 +41,7 @@ Go to: Repository Settings > Secrets and variables > Actions
 
 ### 1. Create App ID
 - Go to developer.apple.com > Certificates, Identifiers & Profiles
-- Create App ID: `com.jworks.kanjiquest.ipad`
+- Create App ID: `com.jworks.kanjijourney.ipad`
 - Enable capabilities: (none special needed for MVP)
 
 ### 2. Create Distribution Certificate
@@ -60,7 +60,7 @@ base64 -i certificate.p12 | pbcopy
 ```bash
 # 1. developer.apple.com > Profiles > New
 # 2. Type: App Store Distribution
-# 3. Select App ID: com.jworks.kanjiquest.ipad
+# 3. Select App ID: com.jworks.kanjijourney.ipad
 # 4. Select distribution certificate
 # 5. Download .mobileprovision
 # 6. Base64 encode:
@@ -77,18 +77,18 @@ base64 -i profile.mobileprovision | pbcopy
 ### 5. Create App Record
 - App Store Connect > My Apps > New App
 - Platform: iOS
-- Name: KanjiQuest
-- Bundle ID: com.jworks.kanjiquest.ipad
-- SKU: kanjiquest-ipad
+- Name: KanjiJourney
+- Bundle ID: com.jworks.kanjijourney.ipad
+- SKU: kanjijourney-ipad
 
 ## Triggering a Build
 
 Builds trigger automatically when you push changes to:
-- `apps/KanjiQuest/shared-core/`
-- `apps/KanjiQuest/shared-japanese/`
-- `apps/KanjiQuest/ios-app/`
+- `apps/KanjiJourney/shared-core/`
+- `apps/KanjiJourney/shared-japanese/`
+- `apps/KanjiJourney/ios-app/`
 
-Or manually via: Actions tab > KanjiQuest iPad > Run workflow
+Or manually via: Actions tab > KanjiJourney iPad > Run workflow
 
 ## Development Workflow
 

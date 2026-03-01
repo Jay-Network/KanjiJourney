@@ -1,4 +1,4 @@
-# KanjiQuest Deployment - Final Status (90% Complete)
+# KanjiJourney Deployment - Final Status (90% Complete)
 
 **Date:** 2026-02-07
 **Status:** Ready for Beta Launch (Week of Feb 14)
@@ -25,7 +25,7 @@
 **Cross-Business Integration (jworks:25)**
 - BJL portal J Coin integration ✅
 - Transaction history with business filters ✅
-- Marketing data (KanjiQuest: 10 coins/session, 50/day cap) ✅
+- Marketing data (KanjiJourney: 10 coins/session, 50/day cap) ✅
 - Dashboard widgets ✅
 
 **Portal Cross-Promo (tutoringjay:0)**
@@ -58,7 +58,7 @@
 - **Webhook Endpoint**: `https://portal.tutoringjay.com/api/stripe/webhook`
 
 ### Authentication Flow
-1. User visits portal.tutoringjay.com/apps/kanjiquest
+1. User visits portal.tutoringjay.com/apps/kanjijourney
 2. Clicks "Download Free" (requires login)
 3. Portal calls app-download-token Edge Function
 4. Generates signed download URL from Supabase Storage
@@ -99,7 +99,7 @@
 
 ### Week 1: Feb 7-13 (Current)
 - **Day 1-2** (Feb 7-8): APK build + Supabase Storage upload
-- **Day 3-4** (Feb 9-10): Portal /apps/kanjiquest page + checkout
+- **Day 3-4** (Feb 9-10): Portal /apps/kanjijourney page + checkout
 - **Day 5-7** (Feb 11-13): E2E testing, bug fixes
 
 ### Week 2: Feb 14-20 (Beta Launch)
@@ -143,7 +143,7 @@
 - [ ] Test offline mode (7-day grace period)
 
 ### Portal Testing (tutoringjay:0)
-- [ ] /apps/kanjiquest page renders correctly
+- [ ] /apps/kanjijourney page renders correctly
 - [ ] Free vs Premium tier comparison table
 - [ ] "Download Free" button (login required)
 - [ ] Stripe checkout session creates correctly
@@ -190,7 +190,7 @@
 
 ### In Progress
 - 🔄 **jayhub:31** (APK Build) - Delegated by jworks:44
-- 🔄 **tutoringjay:0** (Portal Pages) - Building /apps/kanjiquest
+- 🔄 **tutoringjay:0** (Portal Pages) - Building /apps/kanjijourney
 
 ### Next Actions by Agent
 
@@ -201,7 +201,7 @@
 4. Report back to jworks:44
 
 **tutoringjay:0:**
-1. Create /apps/kanjiquest page
+1. Create /apps/kanjijourney page
 2. Add pricing comparison table (Free vs $4.99/mo Premium)
 3. Stripe checkout integration (Price ID: price_1SyFUkRwQ384lWsI2n9MpGOm)
 4. Download page with app-download-token integration
@@ -217,8 +217,8 @@
 1. **Dual Supabase Architecture** - Seamless integration of J Coin backend + TutoringJay auth
 2. **Smart Freemium Model** - Daily preview trials create upgrade incentive without hard paywall
 3. **Admin Level Switcher** - Jay can test all tiers without subscription changes
-4. **Cross-Business Integration** - BJL portal shows KanjiQuest transactions and marketing
-5. **Zero Conflicts** - Clean separation between KanjiQuest ($4.99/mo portal auth) and KanjiLens ($29.99/mo Google Sign-In)
+4. **Cross-Business Integration** - BJL portal shows KanjiJourney transactions and marketing
+5. **Zero Conflicts** - Clean separation between KanjiJourney ($4.99/mo portal auth) and KanjiLens ($29.99/mo Google Sign-In)
 
 ## ❓ Open Questions
 

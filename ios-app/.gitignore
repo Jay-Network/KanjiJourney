@@ -1,5 +1,5 @@
 # Xcode secrets
-KanjiQuest.xcconfig
+KanjiJourney.xcconfig
 *.xcuserdata/
 *.xcworkspace/xcuserdata/
 DerivedData/
@@ -15,7 +15,7 @@ Pods/
 Frameworks/
 
 # Database (copied from android-app/src/main/assets/ at build time)
-kanjiquest.db
+kanjijourney.db
 
 # OS
 .DS_Store

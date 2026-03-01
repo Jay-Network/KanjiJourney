@@ -1,4 +1,4 @@
-# KanjiQuest iPad Calligraphy Guide
+# KanjiJourney iPad Calligraphy Guide
 
 Master the art of Japanese calligraphy with Apple Pencil.
 
@@ -10,11 +10,11 @@ Master the art of Japanese calligraphy with Apple Pencil.
 
 - iPad with Apple Pencil support
 - Apple Pencil (1st or 2nd generation)
-- KanjiQuest app installed
+- KanjiJourney app installed
 
 ### Launching Calligraphy Mode
 
-1. Open KanjiQuest
+1. Open KanjiJourney
 2. Tap **Calligraphy Practice** (書道モード)
 3. The app selects a kanji based on your SRS schedule
 

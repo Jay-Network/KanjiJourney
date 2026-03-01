@@ -53,7 +53,7 @@ android {
 
 ### Step 4: Initialize in Application
 
-The `KanjiQuestApplication` class will initialize Supabase on startup using these credentials.
+The `KanjiJourneyApplication` class will initialize Supabase on startup using these credentials.
 
 ## Testing Without Backend
 

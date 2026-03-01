@@ -1,7 +1,7 @@
 # Camera Challenge Mode Implementation Summary
 
 ## Overview
-Implemented a real-world kanji scanning mode for KanjiQuest using ML Kit OCR and CameraX. Students use their device camera to find and scan target kanji in real-world contexts (signs, books, magazines, etc.).
+Implemented a real-world kanji scanning mode for KanjiJourney using ML Kit OCR and CameraX. Students use their device camera to find and scan target kanji in real-world contexts (signs, books, magazines, etc.).
 
 ## Implementation Date
 2026-02-07
@@ -51,7 +51,7 @@ Implemented a real-world kanji scanning mode for KanjiQuest using ML Kit OCR and
 2. **NavRoutes.kt**
    - Added `Camera : NavRoute("game/camera")`
 
-3. **KanjiQuestNavHost.kt**
+3. **KanjiJourneyNavHost.kt**
    - Added Camera import
    - Updated GameMode navigation (added CAMERA_CHALLENGE case)
    - Added Camera composable route
@@ -243,6 +243,6 @@ sealed class CameraChallengeState {
 
 ## Conclusion
 
-The Camera Challenge mode is fully implemented and ready for testing. It provides a unique "learn in the real world" experience that differentiates KanjiQuest from competitors. The integration with ML Kit OCR enables accurate Japanese text recognition, and the simple 5-challenge session format makes it quick and engaging.
+The Camera Challenge mode is fully implemented and ready for testing. It provides a unique "learn in the real world" experience that differentiates KanjiJourney from competitors. The integration with ML Kit OCR enables accurate Japanese text recognition, and the simple 5-challenge session format makes it quick and engaging.
 
 **Status**: ✅ Complete - Ready for device testing on Z Flip 7

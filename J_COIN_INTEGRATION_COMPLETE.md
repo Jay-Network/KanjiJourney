@@ -10,7 +10,7 @@
 
 ## Overview
 
-Successfully integrated J Coin shared currency system into KanjiQuest Android app, creating a cross-business acquisition funnel from free app users to paid TutoringJay customers.
+Successfully integrated J Coin shared currency system into KanjiJourney Android app, creating a cross-business acquisition funnel from free app users to paid TutoringJay customers.
 
 ## Implementation Phases
 
@@ -25,15 +25,15 @@ Successfully integrated J Coin shared currency system into KanjiQuest Android ap
 **Implemented:** 2026-02-06
 
 **Files Created:**
-- `shared-core/src/commonMain/kotlin/com/jworks/kanjiquest/core/data/remote/SupabaseClient.kt`
-- `android-app/src/main/kotlin/com/jworks/kanjiquest/android/workers/CoinSyncWorker.kt`
+- `shared-core/src/commonMain/kotlin/com/jworks/kanjijourney/core/data/remote/SupabaseClient.kt`
+- `android-app/src/main/kotlin/com/jworks/kanjijourney/android/workers/CoinSyncWorker.kt`
 - `SUPABASE_SETUP.md`
 
 **Files Modified:**
 - `gradle/libs.versions.toml` - Added Supabase and WorkManager dependencies
 - `shared-core/build.gradle.kts` - Added Supabase client libraries
 - `android-app/build.gradle.kts` - Added WorkManager, BuildConfig for credentials
-- `KanjiQuestApplication.kt` - Initialize Supabase on startup, schedule sync worker
+- `KanjiJourneyApplication.kt` - Initialize Supabase on startup, schedule sync worker
 - `JCoinRepositoryImpl.kt` - Added `syncPendingEvents()` method
 
 **Features:**
@@ -49,7 +49,7 @@ Successfully integrated J Coin shared currency system into KanjiQuest Android ap
 **Backend (jworks:42):**
 
 Files Created:
-- `shared-core/src/commonMain/kotlin/com/jworks/kanjiquest/core/domain/model/ShopItem.kt`
+- `shared-core/src/commonMain/kotlin/com/jworks/kanjijourney/core/domain/model/ShopItem.kt`
   - `ShopItem` data class (id, name, description, cost, category, contentId, iconUrl)
   - `ShopCategory` enum (THEME, BOOSTER, UTILITY, CONTENT, CROSS_BUSINESS)
   - `PurchaseResult` sealed class (Success, InsufficientFunds, AlreadyOwned, Error)
@@ -75,8 +75,8 @@ Files Modified:
 **UI (jworks:44):**
 
 Files Created:
-- `android-app/src/main/kotlin/com/jworks/kanjiquest/android/ui/shop/ShopScreen.kt`
-- `android-app/src/main/kotlin/com/jworks/kanjiquest/android/ui/shop/ShopViewModel.kt`
+- `android-app/src/main/kotlin/com/jworks/kanjijourney/android/ui/shop/ShopScreen.kt`
+- `android-app/src/main/kotlin/com/jworks/kanjijourney/android/ui/shop/ShopViewModel.kt`
 
 Features:
 - Category filter chips (All, Themes, Boosters, Utilities, Content, Special Offers)
@@ -131,9 +131,9 @@ Features:
 - ✅ `coin-hold-expiry` - Manual hold cleanup trigger (DEPLOYED 2026-02-06)
 
 **Database Setup:**
-- 29 KanjiQuest earn rules seeded
-- 14 KanjiQuest redemptions configured
-- `source_business='kanjiquests'` constraint added
+- 29 KanjiJourney earn rules seeded
+- 14 KanjiJourney redemptions configured
+- `source_business='kanjijourney'` constraint added
 - ✅ Hold system with pg_cron automatic expiry (every minute)
 - ✅ Webhook on hold expiry → https://n8n.tutoringjay.com/webhook/jcoin-hold-expiry
 
@@ -151,8 +151,8 @@ Features:
 
 ### User Acquisition Funnel
 
-**KanjiQuest → TutoringJay Pipeline:**
-1. User downloads KanjiQuest (free app)
+**KanjiJourney → TutoringJay Pipeline:**
+1. User downloads KanjiJourney (free app)
 2. Studies kanji for 2-3 months
 3. Earns 2,000+ coins ($20 value)
 4. Opens in-app shop
@@ -186,7 +186,7 @@ From `CompleteSessionUseCase.kt`:
 
 ```
 ┌─────────────────────────────────────┐
-│  KanjiQuest App (Android)           │
+│  KanjiJourney App (Android)           │
 │  - Earn coins studying kanji        │
 │  - Queue events in Room database    │
 │  - Display balance in HomeScreen    │
@@ -272,7 +272,7 @@ See `SUPABASE_SETUP.md` for detailed setup instructions.
 - **More shop items:** Additional themes, game modes, content packs
 
 ### Analytics Tracking
-- KanjiQuest downloads
+- KanjiJourney downloads
 - Coin earning velocity
 - Shop purchase rates
 - TutoringJay trial redemptions
@@ -289,7 +289,7 @@ See `SUPABASE_SETUP.md` for detailed setup instructions.
 - Created domain models
 - Coordinated with jworks:44 and jworks:35
 
-**jworks:44 (KanjiQuest dev):**
+**jworks:44 (KanjiJourney dev):**
 - Built Phase 1 foundation (pre-existing)
 - Implemented Phase 3 UI (ShopScreen, ShopViewModel)
 - Fixed bugs (Properties import, SQLDelight params)
@@ -320,7 +320,7 @@ See `SUPABASE_SETUP.md` for detailed setup instructions.
 ## Documentation
 
 - **Setup Guide:** `SUPABASE_SETUP.md`
-- **Business Plan:** `~/1_jworks/A_ai/2_Dev/J_Coin/docs/kanjiquests-jcoin-integration.md`
+- **Business Plan:** `~/1_jworks/A_ai/2_Dev/J_Coin/docs/kanjijourney-jcoin-integration.md`
 - **This Summary:** `J_COIN_INTEGRATION_COMPLETE.md`
 
 ---

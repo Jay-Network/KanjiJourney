@@ -1,6 +1,6 @@
-name: KanjiQuest
+name: KanjiJourney
 options:
-  bundleIdPrefix: com.jworks.kanjiquest
+  bundleIdPrefix: com.jworks.kanjijourney
   deploymentTarget:
     iOS: "16.0"
   xcodeVersion: "15.0"
@@ -20,30 +20,30 @@ configs:
   Release: release
 
 targets:
-  KanjiQuest:
+  KanjiJourney:
     type: application
     platform: iOS
     configFiles:
-      Debug: KanjiQuest.xcconfig
-      Release: KanjiQuest.xcconfig
+      Debug: KanjiJourney.xcconfig
+      Release: KanjiJourney.xcconfig
 
     sources:
-      - path: KanjiQuest
+      - path: KanjiJourney
         excludes:
           - "**/.DS_Store"
-      - path: kanjiquest.db
+      - path: kanjijourney.db
         buildPhase: resources
 
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.jworks.kanjiquest.ipad
-        INFOPLIST_FILE: KanjiQuest/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.jworks.kanjijourney.ipad
+        INFOPLIST_FILE: KanjiJourney/Info.plist
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         TARGETED_DEVICE_FAMILY: "2"  # iPad only
         CODE_SIGN_STYLE: Automatic
         SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: false
         FRAMEWORK_SEARCH_PATHS: $(PROJECT_DIR)/Frameworks
-        SWIFT_OBJC_BRIDGING_HEADER: KanjiQuest/KanjiQuest-Bridging-Header.h
+        SWIFT_OBJC_BRIDGING_HEADER: KanjiJourney/KanjiJourney-Bridging-Header.h
         SUPABASE_URL: $(SUPABASE_URL)
         SUPABASE_ANON_KEY: $(SUPABASE_ANON_KEY)
         SUPABASE_SERVICE_ROLE_KEY: $(SUPABASE_SERVICE_ROLE_KEY)
@@ -68,8 +68,8 @@ targets:
       - name: "Stage Database"
         script: |
           # Copy pre-built kanji database to project dir for resource bundling
-          DB_DEST="${PROJECT_DIR}/kanjiquest.db"
-          DB_SRC="${PROJECT_DIR}/../android-app/src/main/assets/kanjiquest.db"
+          DB_DEST="${PROJECT_DIR}/kanjijourney.db"
+          DB_SRC="${PROJECT_DIR}/../android-app/src/main/assets/kanjijourney.db"
           if [ ! -f "$DB_DEST" ] && [ -f "$DB_SRC" ]; then
             cp "$DB_SRC" "$DB_DEST"
           fi
@@ -91,51 +91,51 @@ targets:
           fi
         basedOnDependencyAnalysis: false
 
-  KanjiQuestTests:
+  KanjiJourneyTests:
     type: bundle.unit-test
     platform: iOS
 
     sources:
-      - path: KanjiQuestTests
+      - path: KanjiJourneyTests
 
     dependencies:
-      - target: KanjiQuest
+      - target: KanjiJourney
 
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.jworks.kanjiquest.ipad.tests
-        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/KanjiQuest.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/KanjiQuest"
+        PRODUCT_BUNDLE_IDENTIFIER: com.jworks.kanjijourney.ipad.tests
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/KanjiJourney.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/KanjiJourney"
         BUNDLE_LOADER: "$(TEST_HOST)"
 
-  KanjiQuestUITests:
+  KanjiJourneyUITests:
     type: bundle.ui-testing
     platform: iOS
 
     sources:
-      - path: KanjiQuestUITests
+      - path: KanjiJourneyUITests
 
     dependencies:
-      - target: KanjiQuest
+      - target: KanjiJourney
 
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.jworks.kanjiquest.ipad.uitests
-        TEST_TARGET_NAME: KanjiQuest
+        PRODUCT_BUNDLE_IDENTIFIER: com.jworks.kanjijourney.ipad.uitests
+        TEST_TARGET_NAME: KanjiJourney
 
 schemes:
-  KanjiQuest:
+  KanjiJourney:
     build:
       targets:
-        KanjiQuest: all
-        KanjiQuestTests: [test]
-        KanjiQuestUITests: [test]
+        KanjiJourney: all
+        KanjiJourneyTests: [test]
+        KanjiJourneyUITests: [test]
     run:
       config: Debug
     test:
       config: Debug
       targets:
-        - KanjiQuestTests
-        - KanjiQuestUITests
+        - KanjiJourneyTests
+        - KanjiJourneyUITests
     profile:
       config: Release
     analyze:

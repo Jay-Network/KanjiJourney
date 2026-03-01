@@ -11,7 +11,7 @@
 local.properties
 /raw-data/
 *.db
-!android-app/src/main/assets/kanjiquest.db
+!android-app/src/main/assets/kanjijourney.db
 
 # Kotlin
 .kotlin/

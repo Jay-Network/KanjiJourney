@@ -78,7 +78,7 @@ jobs:
             <string>Apple Distribution</string>
             <key>provisioningProfiles</key>
             <dict>
-              <key>com.jworks.kanjiquest.ipad</key>
+              <key>com.jworks.kanjijourney.ipad</key>
               <string>${PP_NAME}</string>
             </dict>
           </dict>

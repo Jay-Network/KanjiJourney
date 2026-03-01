@@ -1,4 +1,4 @@
-# KanjiQuest QA Testing Checklist
+# KanjiJourney QA Testing Checklist
 
 ## Section 22: Kana Recognition Mode
 

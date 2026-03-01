@@ -1,10 +1,10 @@
-# KanjiQuest iPad
+# KanjiJourney iPad
 
 A calligraphy-focused kanji learning app for iPad with Apple Pencil support.
 
 ## Overview
 
-KanjiQuest iPad is the iOS companion to KanjiQuest Android, featuring:
+KanjiJourney iPad is the iOS companion to KanjiJourney Android, featuring:
 
 - **Recognition Mode** - Multiple choice kanji reading quizzes
 - **Calligraphy Mode** - Apple Pencil writing practice with AI feedback
@@ -46,12 +46,12 @@ KanjiQuest iPad is the iOS companion to KanjiQuest Android, featuring:
 
 ```
 ios-app/
-├── KanjiQuest/
+├── KanjiJourney/
 │   ├── App/                    # @main entry point
 │   ├── Core/                   # KMPBridge, Configuration
 │   ├── DI/                     # AppContainer (manual DI)
 │   ├── Navigation/             # NavigationStack + Routes
-│   ├── Theme/                  # KanjiQuestTheme tokens
+│   ├── Theme/                  # KanjiJourneyTheme tokens
 │   ├── Screens/
 │   │   ├── Home/               # Main menu
 │   │   ├── Recognition/        # Quiz mode
@@ -65,10 +65,10 @@ ios-app/
 │   └── Calligraphy/
 │       ├── Canvas/             # CalligraphyCanvasUIView
 │       └── Feedback/           # CalligraphyFeedbackService
-├── KanjiQuestTests/            # Unit tests
-├── KanjiQuestUITests/          # UI tests
+├── KanjiJourneyTests/            # Unit tests
+├── KanjiJourneyUITests/          # UI tests
 ├── project.yml                 # XcodeGen spec
-└── KanjiQuest.xcconfig         # Build configuration
+└── KanjiJourney.xcconfig         # Build configuration
 ```
 
 ## Development Setup
@@ -83,7 +83,7 @@ ios-app/
 
 ```bash
 # 1. Build KMP framework (requires Gradle)
-cd ~/path/to/KanjiQuest
+cd ~/path/to/KanjiJourney
 ./gradlew :shared-core:assembleXCFramework
 
 # 2. Generate Xcode project
@@ -91,7 +91,7 @@ cd ios-app
 xcodegen generate
 
 # 3. Open in Xcode
-open KanjiQuest.xcodeproj
+open KanjiJourney.xcodeproj
 ```
 
 ### Configuration
@@ -99,10 +99,10 @@ open KanjiQuest.xcodeproj
 Copy the template and fill in your values:
 
 ```bash
-cp KanjiQuest.xcconfig.template KanjiQuest.xcconfig
+cp KanjiJourney.xcconfig.template KanjiJourney.xcconfig
 ```
 
-Required values in `KanjiQuest.xcconfig`:
+Required values in `KanjiJourney.xcconfig`:
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
@@ -113,10 +113,10 @@ Required values in `KanjiQuest.xcconfig`:
 
 ```bash
 # Unit tests
-xcodebuild test -scheme KanjiQuest -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M4)'
+xcodebuild test -scheme KanjiJourney -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M4)'
 
 # UI tests
-xcodebuild test -scheme KanjiQuestUITests -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M4)'
+xcodebuild test -scheme KanjiJourneyUITests -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M4)'
 ```
 
 ## CI/CD
@@ -183,7 +183,7 @@ SKIE provides Swift-friendly transforms:
 
 ## Related Projects
 
-- [KanjiQuest Android](../android-app/) - Full-featured Android app
+- [KanjiJourney Android](../android-app/) - Full-featured Android app
 - [KanjiLens](../../KanjiLens/) - Camera OCR companion app
 - [shared-core](../shared-core/) - KMP shared logic
 - [shared-japanese](../shared-japanese/) - Japanese text utilities

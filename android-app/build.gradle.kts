@@ -10,15 +10,15 @@ plugins {
 }
 
 android {
-    namespace = "com.jworks.kanjiquest.android"
+    namespace = "com.jworks.kanjijourney.android"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.jworks.kanjiquest"
+        applicationId = "com.jworks.kanjijourney"
         minSdk = 26
         targetSdk = 35
-        versionCode = 13
-        versionName = "0.1.0-beta13"
+        versionCode = 14
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -70,9 +70,9 @@ android {
             val localProperties = Properties().apply {
                 if (localPropertiesFile.exists()) load(localPropertiesFile.inputStream())
             }
-            storeFile = file(localProperties.getProperty("RELEASE_STORE_FILE", "../keystore/kanjiquest-release.jks"))
+            storeFile = file(localProperties.getProperty("RELEASE_STORE_FILE", "../keystore/kanjijourney-release.jks"))
             storePassword = localProperties.getProperty("RELEASE_STORE_PASSWORD", "")
-            keyAlias = localProperties.getProperty("RELEASE_KEY_ALIAS", "kanjiquest")
+            keyAlias = localProperties.getProperty("RELEASE_KEY_ALIAS", "kanjijourney")
             keyPassword = localProperties.getProperty("RELEASE_KEY_PASSWORD", "")
         }
     }

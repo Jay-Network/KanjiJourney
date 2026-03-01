@@ -1,10 +1,10 @@
-# KanjiQuest ProGuard Rules
+# KanjiJourney ProGuard Rules
 
 # Keep Kuromoji dictionary data
 -keep class com.atilika.kuromoji.** { *; }
 
 # Keep SQLDelight generated code
--keep class com.jworks.kanjiquest.db.** { *; }
+-keep class com.jworks.kanjijourney.db.** { *; }
 
 # Keep Hilt generated code
 -keep class dagger.hilt.** { *; }
@@ -22,11 +22,11 @@
 -keepclasseswithmembers class kotlinx.serialization.json.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
--keep,includedescriptorclasses class com.jworks.kanjiquest.**$$serializer { *; }
--keepclassmembers class com.jworks.kanjiquest.** {
+-keep,includedescriptorclasses class com.jworks.kanjijourney.**$$serializer { *; }
+-keepclassmembers class com.jworks.kanjijourney.** {
     *** Companion;
 }
--keepclasseswithmembers class com.jworks.kanjiquest.** {
+-keepclasseswithmembers class com.jworks.kanjijourney.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
 

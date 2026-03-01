@@ -1,4 +1,4 @@
-# 🚀 KanjiQuest Beta Testing - STARTED
+# 🚀 KanjiJourney Beta Testing - STARTED
 
 **Date:** 2026-02-07 Evening
 **Status:** Beta Testing Active
@@ -109,7 +109,7 @@ None reported yet. Monitoring student feedback.
 ## 🎊 Team Status
 
 ### Active Agents
-- **jworks:44** (KanjiQuest) - Standby for bug reports
+- **jworks:44** (KanjiJourney) - Standby for bug reports
 - **jworks:35** (Backend) - Monitoring subscriptions, ready to update download_url
 - **tutoringjay:0** (Portal) - Recruiting beta students, sending invitations
 - **jworks:25** (BJL) - J Coin integration complete, monitoring transactions
@@ -163,8 +163,8 @@ All agents aware of:
 - **Full Deployment:** `DEPLOYMENT_COMPLETE.md`
 - **Beta Ready:** `BETA_LAUNCH_READY.md`
 - **E2E Testing:** `docs/e2e-testing-checklist.md`
-- **Integration Plan:** `docs/kanjiquests-jcoin-integration.md`
-- **Gameplay Design:** `docs/kanjiquests-gameplay-design.md`
+- **Integration Plan:** `docs/kanjijourney-jcoin-integration.md`
+- **Gameplay Design:** `docs/kanjijourney-gameplay-design.md`
 
 ---
 

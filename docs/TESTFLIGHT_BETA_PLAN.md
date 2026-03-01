@@ -1,8 +1,8 @@
-# KanjiQuest iPad - TestFlight Beta Testing Plan
+# KanjiJourney iPad - TestFlight Beta Testing Plan
 
 ## Overview
 
-2-week beta testing program for KanjiQuest iPad (書道 Calligraphy Edition) before App Store submission. Tests Apple Pencil calligraphy, AI feedback, KMP shared-core integration, and subscription flow.
+2-week beta testing program for KanjiJourney iPad (書道 Calligraphy Edition) before App Store submission. Tests Apple Pencil calligraphy, AI feedback, KMP shared-core integration, and subscription flow.
 
 ## Timeline
 
@@ -25,7 +25,7 @@ Internal testers are added via App Store Connect and get builds instantly (no Ap
 | Jay (developer) | 1 | Full feature coverage |
 | JWorks team | 2-3 | General UX, Japanese accuracy |
 | TutoringJay tutors | 2-3 | Educational effectiveness, grade-level accuracy |
-| KanjiQuest Android users | 2-3 | Cross-platform consistency, feature parity |
+| KanjiJourney Android users | 2-3 | Cross-platform consistency, feature parity |
 
 **How to add internal testers:**
 1. App Store Connect > Users and Access
@@ -45,12 +45,12 @@ External testers require an Apple review of the first build (~24-48 hours). Afte
 
 **How to add external testers:**
 1. App Store Connect > TestFlight > External Testing
-2. Create group: "KanjiQuest Beta"
+2. Create group: "KanjiJourney Beta"
 3. Add testers by email (they get a TestFlight invitation)
 4. Or share a public link (up to 10,000 testers)
 
 **Recruitment message:**
-> Test KanjiQuest - a kanji calligraphy app for iPad with Apple Pencil. Practice 書道 with AI-powered feedback on your brush technique. Free during beta. Join: [TestFlight link]
+> Test KanjiJourney - a kanji calligraphy app for iPad with Apple Pencil. Practice 書道 with AI-powered feedback on your brush technique. Free during beta. Join: [TestFlight link]
 
 ## Testing Checklist
 
@@ -118,14 +118,14 @@ External testers require an Apple review of the first build (~24-48 hours). Afte
 ### For Internal Testers
 
 1. **In-app**: Screenshot > TestFlight automatically attaches device info
-2. **TestFlight app**: Open TestFlight > KanjiQuest > Send Beta Feedback
-3. **Direct**: Message in the TutoringJay Slack #kanjiquest-beta channel
+2. **TestFlight app**: Open TestFlight > KanjiJourney > Send Beta Feedback
+3. **Direct**: Message in the TutoringJay Slack #kanjijourney-beta channel
 
 ### For External Testers
 
 1. **TestFlight feedback**: Built-in screenshot + text feedback
 2. **Form**: Google Form link included in TestFlight description
-3. **Email**: kanjiquest-beta@jworks.com
+3. **Email**: kanjijourney-beta@jworks.com
 
 ### Bug Report Template
 
@@ -213,4 +213,4 @@ The beta is successful and ready for App Store submission when:
 - TestFlight analytics: App Store Connect > TestFlight > Builds > Analytics
 - Crash reports: App Store Connect > TestFlight > Crashes
 - Feedback inbox: App Store Connect > TestFlight > Feedback
-- GitHub Actions builds: github.com/Jay-Network/KanjiQuest/actions
+- GitHub Actions builds: github.com/Jay-Network/KanjiJourney/actions

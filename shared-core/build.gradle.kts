@@ -82,7 +82,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.jworks.kanjiquest.core"
+    namespace = "com.jworks.kanjijourney.core"
     compileSdk = 35
 
     defaultConfig {
@@ -97,8 +97,8 @@ android {
 
 sqldelight {
     databases {
-        create("KanjiQuestDatabase") {
-            packageName.set("com.jworks.kanjiquest.db")
+        create("KanjiJourneyDatabase") {
+            packageName.set("com.jworks.kanjijourney.db")
             dialect("app.cash.sqldelight:sqlite-3-38-dialect:${libs.versions.sqldelight.get()}")
         }
     }

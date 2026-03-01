@@ -6,7 +6,7 @@ This document confirms all shared-core KMP interfaces used by `RecognitionView.s
 
 ---
 
-## GameEngine (com.jworks.kanjiquest.core.engine)
+## GameEngine (com.jworks.kanjijourney.core.engine)
 
 | Swift Usage | Kotlin API | Status |
 |-------------|------------|--------|
@@ -101,9 +101,9 @@ SKIE 0.10.10 provides these automatic transformations:
 
 ## Verification Method
 
-- Source review of `shared-core/src/commonMain/kotlin/com/jworks/kanjiquest/core/engine/GameEngine.kt`
-- Source review of `shared-core/src/commonMain/kotlin/com/jworks/kanjiquest/core/engine/GameState.kt`
-- Source review of `shared-core/src/commonMain/kotlin/com/jworks/kanjiquest/core/domain/model/GameMode.kt`
+- Source review of `shared-core/src/commonMain/kotlin/com/jworks/kanjijourney/core/engine/GameEngine.kt`
+- Source review of `shared-core/src/commonMain/kotlin/com/jworks/kanjijourney/core/engine/GameState.kt`
+- Source review of `shared-core/src/commonMain/kotlin/com/jworks/kanjijourney/core/domain/model/GameMode.kt`
 - Cross-reference with existing `CalligraphySessionViewModel.swift` patterns
 
 **All interfaces verified compatible. Ready for TestFlight build.**

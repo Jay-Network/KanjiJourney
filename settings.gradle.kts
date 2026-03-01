@@ -14,7 +14,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "KanjiQuest"
+rootProject.name = "KanjiJourney"
 
 include(":shared-japanese")
 include(":shared-tokenizer")

@@ -5,7 +5,7 @@ plugins {
 }
 
 application {
-    mainClass.set("com.jworks.kanjiquest.pipeline.MainKt")
+    mainClass.set("com.jworks.kanjijourney.pipeline.MainKt")
 }
 
 dependencies {

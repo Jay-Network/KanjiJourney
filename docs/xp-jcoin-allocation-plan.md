@@ -1,4 +1,4 @@
-# KanjiQuest: XP & J Coin Allocation Plan
+# KanjiJourney: XP & J Coin Allocation Plan
 
 **Version:** 1.1
 **Last Updated:** 2026-02-21

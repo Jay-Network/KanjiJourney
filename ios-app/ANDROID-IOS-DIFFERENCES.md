@@ -1,4 +1,4 @@
-# KanjiQuest: Android vs iOS Differences Tracker
+# KanjiJourney: Android vs iOS Differences Tracker
 
 > This document tracks every difference between the Android and iOS implementations.
 > Updated as files are ported. Use this to verify feature parity.
@@ -17,7 +17,7 @@
 
 ## Phase 1: Foundation
 
-### Theme (KanjiQuestTheme)
+### Theme (KanjiJourneyTheme)
 
 | Property | Android | iOS (Old) | iOS (New) | Notes |
 |----------|---------|-----------|-----------|-------|
@@ -32,7 +32,7 @@
 | Typography scale | Material3 defaults | 8 font tokens | 13 font tokens + 5 kanji sizes | iOS now matches Android typography depth |
 
 **Platform Differences (Intentional):**
-- Android uses `MaterialTheme.colorScheme.*` (Material3 system). iOS uses `KanjiQuestTheme.*` static tokens.
+- Android uses `MaterialTheme.colorScheme.*` (Material3 system). iOS uses `KanjiJourneyTheme.*` static tokens.
 - Android has `isSystemInDarkTheme()` toggle. iOS defines dark tokens but needs `@Environment(\.colorScheme)` per-view.
 - iOS adds `isPhone` flag (not needed on Android since it's phone-only).
 
@@ -109,7 +109,7 @@
 | Route count | 23+ composable blocks | 7 cases | 23+ cases | Full parity now |
 | FeedbackFAB | Global Scaffold overlay | Not present | Global overlay | Ported |
 | FeedbackDialog | `hiltViewModel()` scoped | Not present | `@StateObject` scoped | Ported |
-| Deep linking | `kanjiquest://collect?kanji_id=X` | Not present | TODO (Phase 5+) | Deferred |
+| Deep linking | `kanjijourney://collect?kanji_id=X` | Not present | TODO (Phase 5+) | Deferred |
 | Post-login routing | Placement test check → Home | Direct to Home | Placement test check → Home | Ported |
 
 **Platform Differences (Intentional):**
@@ -122,7 +122,7 @@
 
 | Dependency | Android (Hilt) | iOS (Old) | iOS (New) | Notes |
 |------------|----------------|-----------|-----------|-------|
-| KanjiQuestDatabase | ✅ Singleton | ✅ | ✅ | Same |
+| KanjiJourneyDatabase | ✅ Singleton | ✅ | ✅ | Same |
 | KanjiRepository | ✅ Singleton | ✅ | ✅ | Same |
 | SrsRepository | ✅ Singleton | ✅ | ✅ | Same |
 | UserRepository | ✅ Singleton | ✅ | ✅ | Same |
@@ -312,7 +312,7 @@
 |--------|---------|-----|-------|
 | Trigger | New kanji collected during gameplay | Same | |
 | Display | Fullscreen overlay with rarity animation | Same | |
-| Rarity colors | Inline in composable | Uses KanjiQuestTheme.rarity* | Centralized in iOS |
+| Rarity colors | Inline in composable | Uses KanjiJourneyTheme.rarity* | Centralized in iOS |
 
 ---
 
@@ -405,7 +405,7 @@
 | CollectionViewModel | 89 lines | ~85 lines (new) | New file |
 | Rarity filter tabs | ✅ | ✅ | |
 | Item type filter | ✅ (Kanji/Kana/Radical) | ✅ | |
-| Grid with rarity borders | ✅ | ✅ | Uses KanjiQuestTheme.rarity* |
+| Grid with rarity borders | ✅ | ✅ | Uses KanjiJourneyTheme.rarity* |
 
 ### Flashcard Screens
 
@@ -515,7 +515,7 @@
 | LearningSyncWorker | workers/LearningSyncWorker.kt | WorkManager (iOS TODO) |
 | FeedbackFCMService | service/FeedbackFCMService.kt | Firebase Cloud Messaging (iOS uses APNs — TODO) |
 | OllamaClient | network/OllamaClient.kt | Local LLM inference (desktop/server only) |
-| Deep linking | KanjiQuestNavHost.kt (L68-111) | `kanjiquest://collect?kanji_id=X` (iOS TODO) |
+| Deep linking | KanjiJourneyNavHost.kt (L68-111) | `kanjijourney://collect?kanji_id=X` (iOS TODO) |
 
 ---
 
@@ -535,11 +535,11 @@
 | Android Path | iOS Path | Status |
 |-------------|----------|--------|
 | `di/AppModule.kt` | `DI/AppContainer.swift` | ✅ Expanded |
-| `ui/theme/Theme.kt` | `Theme/KanjiQuestTheme.swift` | ✅ Rewritten |
+| `ui/theme/Theme.kt` | `Theme/KanjiJourneyTheme.swift` | ✅ Rewritten |
 | `ui/theme/KanjiText.kt` | `Theme/KanjiText.swift` | ✅ Created |
 | `ui/components/AssetImage.kt` | `Components/AssetImage.swift` | ✅ Created |
 | `ui/navigation/NavRoutes.kt` | `Navigation/NavRoutes.swift` | ✅ Created |
-| `ui/navigation/KanjiQuestNavHost.kt` | `Navigation/AppNavigation.swift` | ✅ Rewritten |
+| `ui/navigation/KanjiJourneyNavHost.kt` | `Navigation/AppNavigation.swift` | ✅ Rewritten |
 | `ui/splash/SplashScreen.kt` | `Screens/Splash/SplashView.swift` | ⏳ Pending |
 | `ui/auth/LoginScreen.kt` | `Screens/Auth/LoginView.swift` | ⏳ Pending |
 | `ui/auth/AuthViewModel.kt` | `Screens/Auth/AuthViewModel.swift` | ⏳ Pending |

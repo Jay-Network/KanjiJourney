@@ -1,4 +1,4 @@
-# KanjiQuest Deployment - Coordinated Next Steps
+# KanjiJourney Deployment - Coordinated Next Steps
 
 **Date:** 2026-02-07
 **Status:** Phase 2 - Implementation Coordination
@@ -11,7 +11,7 @@
 - **jworks:43** - KanjiLens monetization + strategy (34 tests pass)
 
 ### 🔄 In Progress
-- **jworks:44** - KanjiQuest Android app (Stripe configured, auth pending)
+- **jworks:44** - KanjiJourney Android app (Stripe configured, auth pending)
 - **tutoringjay:0** - Portal integration (cross-promo done, monetization pending)
 
 ## Monetization Decisions (Final)
@@ -39,7 +39,7 @@ App Launch → Auth with Portal → Check Subscription → Feature Gating
 
 **Phase 2: Subscription & Download Pages**
 
-1. **Create /apps/kanjiquest page**
+1. **Create /apps/kanjijourney page**
    - App description, screenshots, features
    - Pricing tiers comparison table
    - "Download Free" button (requires login)
@@ -47,12 +47,12 @@ App Launch → Auth with Portal → Check Subscription → Feature Gating
 
 2. **Stripe Checkout Integration**
    - Create Stripe Checkout session for $9.99/mo Premium
-   - Product: "KanjiQuest Premium"
+   - Product: "KanjiJourney Premium"
    - Price ID: (jworks:43 will provide)
-   - Success URL: /apps/kanjiquest/download?session_id={CHECKOUT_SESSION_ID}
-   - Cancel URL: /apps/kanjiquest
+   - Success URL: /apps/kanjijourney/download?session_id={CHECKOUT_SESSION_ID}
+   - Cancel URL: /apps/kanjijourney
 
-3. **Download Page (/apps/kanjiquest/download)**
+3. **Download Page (/apps/kanjijourney/download)**
    - Verify login (redirect to /login if not authenticated)
    - Call app-download-token Edge Function (jworks:35)
    - Generate signed download URL from Supabase Storage
@@ -61,14 +61,14 @@ App Launch → Auth with Portal → Check Subscription → Feature Gating
 
 4. **APK Upload Infrastructure**
    - Create Supabase Storage bucket 'apps' (if not exists)
-   - Upload signed KanjiQuest APK (jworks:44 will provide)
+   - Upload signed KanjiJourney APK (jworks:44 will provide)
    - Set bucket policy: private (download via signed URLs only)
 
 **Blockers to resolve:**
 - Need Stripe Price ID for $9.99/mo Premium (jworks:43 action)
 - Need signed APK file (jworks:44 action)
 
-### jworks:44 (KanjiQuest Android) - Priority 1
+### jworks:44 (KanjiJourney Android) - Priority 1
 
 **Phase 2-9: Auth, Subscription, Feature Gating**
 
@@ -101,7 +101,7 @@ App Launch → Auth with Portal → Check Subscription → Feature Gating
 **Phase 6: Subscription Screen UI**
 1. Create SubscriptionScreen composable (already exists per system reminder)
 2. Pricing tiers comparison
-3. "Upgrade on Portal" button → deep link to portal /apps/kanjiquest
+3. "Upgrade on Portal" button → deep link to portal /apps/kanjijourney
 4. "Manage Subscription" button → portal /account/subscriptions
 
 **Phase 7: J Coin Integration with Subscription**
@@ -117,7 +117,7 @@ App Launch → Auth with Portal → Check Subscription → Feature Gating
 4. Show upgrade prompt on limit hit
 
 **Phase 9: Deep Link Handling**
-1. Handle kanjiquest://subscription deep link (already configured per system reminder)
+1. Handle kanjijourney://subscription deep link (already configured per system reminder)
 2. Parse return from portal Stripe checkout
 3. Refresh subscription status on return
 4. Show success message
@@ -131,13 +131,13 @@ App Launch → Auth with Portal → Check Subscription → Feature Gating
 **Actions:**
 1. **Create Stripe Price ID for $9.99/mo Premium**
    - Log into Stripe Dashboard
-   - Create Product: "KanjiQuest Premium"
+   - Create Product: "KanjiJourney Premium"
    - Create Price: $9.99/mo recurring
    - Copy Price ID (e.g., price_xxxxxxxxxxxxx)
    - Send Price ID to tutoringjay:0 and jworks:44
 
 2. **Update Database**
-   - Run SQL: `UPDATE app_subscription_tiers SET stripe_price_id = 'price_xxxxxxxxxxxxx' WHERE tier_name = 'premium' AND app_id = (SELECT id FROM app_catalog WHERE app_name = 'KanjiQuest');`
+   - Run SQL: `UPDATE app_subscription_tiers SET stripe_price_id = 'price_xxxxxxxxxxxxx' WHERE tier_name = 'premium' AND app_id = (SELECT id FROM app_catalog WHERE app_name = 'KanjiJourney');`
 
 3. **Configure Webhook Endpoint**
    - Add webhook endpoint in Stripe: https://[SUPABASE_URL]/functions/v1/app-subscription-webhook
@@ -159,7 +159,7 @@ App Launch → Auth with Portal → Check Subscription → Feature Gating
    - Ensure cross-business transactions display correctly
 
 3. **Update Marketing Copy**
-   - Replace placeholder copy with final KanjiQuest messaging
+   - Replace placeholder copy with final KanjiJourney messaging
    - Ensure 10 coins/session, 50/day cap is accurate
 
 ### jworks:35 (Backend) - Priority 3
@@ -223,7 +223,7 @@ App Launch → Auth with Portal → Check Subscription → Feature Gating
 ### Week 1 Goals
 - [ ] Auth flow functional in app
 - [ ] Stripe Price ID created and configured
-- [ ] Portal /apps/kanjiquest page live
+- [ ] Portal /apps/kanjijourney page live
 
 ### Week 2 Goals
 - [ ] End-to-end flow tested (login → checkout → download → launch → feature gating)
@@ -268,7 +268,7 @@ If blocked >4 hours:
 
 **Tomorrow:**
 1. **jworks:44**: Build LoginScreen, integrate auth
-2. **tutoringjay:0**: Start /apps/kanjiquest page with pricing tiers
+2. **tutoringjay:0**: Start /apps/kanjijourney page with pricing tiers
 3. **jworks:25**: Complete BJL UI QA
 
 ## Questions for Jay

@@ -1,6 +1,6 @@
-# Apple Certificate & Signing Guide for KanjiQuest iPad
+# Apple Certificate & Signing Guide for KanjiJourney iPad
 
-Complete step-by-step guide for setting up all 13 GitHub Actions secrets needed to build and deploy KanjiQuest iPad to TestFlight.
+Complete step-by-step guide for setting up all 13 GitHub Actions secrets needed to build and deploy KanjiJourney iPad to TestFlight.
 
 ## Prerequisites
 
@@ -84,8 +84,8 @@ Before creating certificates, register the bundle identifier:
 2. Click the **+** button
 3. Select **App IDs** > **App**
 4. Fill in:
-   - **Description**: `KanjiQuest iPad`
-   - **Bundle ID**: Select **Explicit** and enter `com.jworks.kanjiquest.ipad`
+   - **Description**: `KanjiJourney iPad`
+   - **Bundle ID**: Select **Explicit** and enter `com.jworks.kanjijourney.ipad`
 5. Under **Capabilities**: No special capabilities needed for MVP
 6. Click **Continue** > **Register**
 
@@ -128,14 +128,14 @@ You need a Mac for this step. If you don't have one, you can use a cloud Mac ser
 3. Expand it (click the triangle) - you should see a private key underneath
 4. **Right-click** the certificate (not the key) and select **Export...**
 5. Choose format: **Personal Information Exchange (.p12)**
-6. Save the file (e.g., `KanjiQuest_Distribution.p12`)
+6. Save the file (e.g., `KanjiJourney_Distribution.p12`)
 7. **Set a strong password** when prompted - remember this password!
 
 **E. Base64 Encode the .p12**
 
 ```bash
 # On the Mac terminal:
-base64 -i KanjiQuest_Distribution.p12 -o certificate_base64.txt
+base64 -i KanjiJourney_Distribution.p12 -o certificate_base64.txt
 
 # Copy the contents:
 cat certificate_base64.txt | pbcopy
@@ -165,11 +165,11 @@ The quoted string (e.g., `Apple Distribution: Jay Works (ABC1234DEF)`) is your `
 2. Click the **+** button
 3. Under **Distribution**, select **App Store Connect**
 4. Click **Continue**
-5. Select the App ID: `com.jworks.kanjiquest.ipad (KanjiQuest iPad)`
+5. Select the App ID: `com.jworks.kanjijourney.ipad (KanjiJourney iPad)`
 6. Click **Continue**
 7. Select the distribution certificate you just created
 8. Click **Continue**
-9. Name the profile: `KanjiQuest iPad App Store`
+9. Name the profile: `KanjiJourney iPad App Store`
 10. Click **Generate**
 11. **Download** the `.mobileprovision` file
 
@@ -177,7 +177,7 @@ The quoted string (e.g., `Apple Distribution: Jay Works (ABC1234DEF)`) is your `
 
 ```bash
 # On the Mac terminal:
-base64 -i KanjiQuest_iPad_App_Store.mobileprovision -o profile_base64.txt
+base64 -i KanjiJourney_iPad_App_Store.mobileprovision -o profile_base64.txt
 
 # Copy the contents:
 cat profile_base64.txt | pbcopy
@@ -211,7 +211,7 @@ The API key lets GitHub Actions upload builds to TestFlight without interactive 
 5. Click **App Store Connect API** in the sidebar
 6. Under **Team Keys**, click the **+** button
 7. Fill in:
-   - **Name**: `KanjiQuest CI`
+   - **Name**: `KanjiJourney CI`
    - **Access**: **App Manager** (sufficient for uploads)
 8. Click **Generate**
 
@@ -254,10 +254,10 @@ Before your first TestFlight upload, create the app in App Store Connect:
 2. Click the **+** button > **New App**
 3. Fill in:
    - **Platforms**: iOS
-   - **Name**: `KanjiQuest`
+   - **Name**: `KanjiJourney`
    - **Primary Language**: English (U.S.)
-   - **Bundle ID**: Select `com.jworks.kanjiquest.ipad`
-   - **SKU**: `kanjiquest-ipad`
+   - **Bundle ID**: Select `com.jworks.kanjijourney.ipad`
+   - **SKU**: `kanjijourney-ipad`
    - **User Access**: Full Access
 4. Click **Create**
 
@@ -265,7 +265,7 @@ Before your first TestFlight upload, create the app in App Store Connect:
 
 ## Part 5: Add Secrets to GitHub
 
-1. Go to your GitHub repository: `github.com/Jay-Network/KanjiQuest`
+1. Go to your GitHub repository: `github.com/Jay-Network/KanjiJourney`
 2. Click **Settings** > **Secrets and variables** > **Actions**
 3. Click **New repository secret** for each:
 
@@ -294,14 +294,14 @@ After all secrets are configured:
 ### Option A: Push a change
 ```bash
 # Any change to ios-app/, shared-core/, or shared-japanese/ triggers the workflow
-cd ~/Data_ubuntu/GitHub/Jay-Network/apps/KanjiQuest
-echo "// trigger build" >> ios-app/KanjiQuest/Core/KMPBridge.swift
+cd ~/Data_ubuntu/GitHub/Jay-Network/apps/KanjiJourney
+echo "// trigger build" >> ios-app/KanjiJourney/Core/KMPBridge.swift
 git add -A && git commit -m "ci: trigger first iOS build" && git push
 ```
 
 ### Option B: Manual trigger
 1. Go to **Actions** tab in GitHub
-2. Select **KanjiQuest iPad - Build & Deploy**
+2. Select **KanjiJourney iPad - Build & Deploy**
 3. Click **Run workflow** > **Run workflow**
 
 ### Monitor the build

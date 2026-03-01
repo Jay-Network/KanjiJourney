@@ -1,4 +1,4 @@
-# KanjiQuest Beta Launch - READY! 🚀
+# KanjiJourney Beta Launch - READY! 🚀
 
 **Date:** 2026-02-07 Evening
 **Status:** 95% Complete - Beta Testing Can Start NOW
@@ -71,13 +71,13 @@
 ### Beta Invitation Email (tutoringjay:0 to send)
 
 ```
-Subject: 🎮 Beta Test KanjiQuest - Exclusive Early Access!
+Subject: 🎮 Beta Test KanjiJourney - Exclusive Early Access!
 
 Hi [Student Name],
 
-You're invited to be one of the first to try **KanjiQuest**, our new AI-powered kanji learning app!
+You're invited to be one of the first to try **KanjiJourney**, our new AI-powered kanji learning app!
 
-**What is KanjiQuest?**
+**What is KanjiJourney?**
 Master 2,136 kanji through spaced repetition, interactive games, and real-world camera scanning. Earn J Coins while you learn!
 
 **Beta Access Includes:**
@@ -131,8 +131,8 @@ Located at: `docs/e2e-testing-checklist.md`
 **jworks:44:**
 1. Create release keystore
    ```bash
-   keytool -genkey -v -keystore kanjiquest-release.keystore \
-     -alias kanjiquest -keyalg RSA -keysize 2048 -validity 10000
+   keytool -genkey -v -keystore kanjijourney-release.keystore \
+     -alias kanjijourney -keyalg RSA -keysize 2048 -validity 10000
    ```
 2. Build signed release APK
 3. Upload to Supabase Storage (once limit increased)
@@ -243,7 +243,7 @@ Located at: `docs/e2e-testing-checklist.md`
 
 ## 🎊 Team Accomplishments
 
-### jworks:44 (KanjiQuest Lead)
+### jworks:44 (KanjiJourney Lead)
 - Full app development (95% complete)
 - Dual Supabase architecture
 - Stripe integration

@@ -30,7 +30,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.jworks.kanjiquest.tokenizer"
+    namespace = "com.jworks.kanjijourney.tokenizer"
     compileSdk = 35
 
     defaultConfig {

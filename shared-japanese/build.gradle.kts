@@ -41,7 +41,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.jworks.kanjiquest.japanese"
+    namespace = "com.jworks.kanjijourney.japanese"
     compileSdk = 35
 
     defaultConfig {

@@ -1,12 +1,39 @@
-# KanjiQuest Changelog
+# KanjiJourney Changelog
 
-All notable changes to KanjiQuest are documented here.
+All notable changes to KanjiJourney are documented here.
+Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
+
+---
+
+## v1.0.0 (2026-03-01)
+
+### Changed
+- **Renamed KanjiQuest → KanjiJourney** across entire codebase (415 files, 12 directories)
+  - Package: `com.jworks.kanjiquest` → `com.jworks.kanjijourney`
+  - DB file: `kanjiquest.db` → `kanjijourney.db`
+  - J Coin business ID: `kanjiquests` → `kanjijourney`
+  - Deep link scheme: `kanjijourney://`
+  - All class names, string resources, ProGuard rules, CI/CD workflows
+  - iOS: directories, files, xcconfig, bundle IDs, error domains, workflow files
+- **Applied versioning standard** (vMAJOR.MINOR.PATCH)
+- **Glass UI Phase 2** (Android): Frosted glass top bar and bottom nav with orange brand glow
+- **StudyScreen** (Android): Full glass aesthetic conversion (glass chips, gradient mode cards, brand colors)
+- Version bump from 0.1.0-beta13 → v1.0.0 (Beta stage)
+
+### Added (iOS — iPad builds 23-25, iPhone builds 9-11)
+- **Standalone Calligraphy Mode** (iPad build 23): 8 hardcoded kanji (一二三十大山川日), CalligraphyCanvasView (UIKit), Apple Pencil support, Gemini AI stroke feedback, ghost stroke overlay
+- **Mock Home Screen**: Writing card tappable with green "READY" badge, other modes dimmed at 0.6 opacity
+- **iOS Rename**: KanjiQuest → KanjiJourney (directories, files, configs, bundle IDs, CI workflows)
+
+### Fixed (iOS)
+- **Auto-submit removed** (iPad build 24): Drawing no longer auto-submits after matching stroke count — user presses Submit when ready
+- **Undo button fixed** (iPad build 25): Added undoVersion binding to CalligraphyCanvasView, calls UIView.undo() to properly remove last stroke from canvas
 
 ---
 
 ## [0.1.0-beta5] - 2026-02-21
 
-### Added
+### Added (Android)
 - **Collection Gameplay System**: "Gotta Catch 'Em All" mechanic — kanji, kana, and radicals are discovered through gameplay with probability-based encounters and a pity system
 - **Rarity System**: 5 tiers (Common/Uncommon/Rare/Epic/Legendary) based on grade, frequency, and stroke count; color-coded borders on collected items
 - **Encounter Engine**: Per-answer encounter rolls (40%→2% by rarity), pity counters guarantee discoveries after N correct answers
@@ -14,7 +41,7 @@ All notable changes to KanjiQuest are documented here.
 - **Discovery Overlay**: Pokémon-catch-style animation when a new item is discovered during gameplay (all game modes)
 - **Collection Screen**: Full browser with tabs per type, rarity filters, stats, and grid with rarity borders + level badges
 - **JWorks Splash Screen**: Branded splash matching KanjiLens (black bg, logo shimmer, teal title, fade out)
-- **KanjiLens Deep Link Integration**: `kanjiquest://collect?kanji_id=XXX&source=kanjilens` adds kanji to collection from KanjiLens
+- **KanjiLens Deep Link Integration**: `kanjijourney://collect?kanji_id=XXX&source=kanjilens` adds kanji to collection from KanjiLens
 - **Starter Pack**: New players receive 5 hiragana + 5 katakana + 3 Grade 1 kanji on first launch
 - **Radical Detail Screen**: View radical info, related kanji, and practice buttons
 - **Field Journal**: Camera challenge scan history with photo entries
@@ -34,6 +61,23 @@ All notable changes to KanjiQuest are documented here.
 - **Navigation**: Added routes for Splash, Collection, Radical Detail, Field Journal, Kana Recognition/Writing, Radical Recognition/Builder
 - **Database**: New `collection` and `field_journal` tables with migration for existing SRS data → collection
 - **Data Pipeline**: Enhanced radical parser with image generation
+
+### Added (iOS — iPad builds 13-22, iPhone builds 1-8)
+- **Complete iOS Rebuild** (build 13-16): Full Android-to-SwiftUI port (Phases 1-6), 12 rounds of KMP bridging fixes (KotlinLong, KotlinInt, KotlinBoolean conversions)
+- **Bottom Navigation Tabs** (build 18): Home, Games, Study, Collection tabs ported from Android
+- **Mock Home Screen** (build 19-20): Pure mock UI — zero KMP on launch, crash-safe deferred init
+- **ObjC Exception Catcher**: Wraps all KMP calls to prevent Kotlin exceptions from crashing Swift
+- **Crash-safe KMP Init**: discoveredItems sync, sync_version table, deferred loading
+- **Brush Test App**: Standalone calligraphy canvas prototype (builds 10-12, bristle texture + ink physics)
+- **iPhone Target** (build 1-8): Separate project.yml, CI workflow, DB bundling, icon sizes
+- **Bridging Header**: Proper ObjC↔Swift bridge for exception handling
+
+### Fixed (iOS)
+- KMP bridging: 12 rounds of type conversion fixes (KotlinLong, KotlinInt, KotlinBoolean, IntRange)
+- iPhone launch crash (deferred initialization, crash breadcrumb system)
+- DB bundling (version-based copy, pre-built DB with user_version=1)
+- Linker errors (xcframework search paths, libsqlite3, swiftXPC)
+- onChange iOS 17 syntax compatibility
 
 ### Fixed
 - Smart cast errors across modules for `discoveredItem` in game result screens
@@ -119,7 +163,7 @@ All notable changes to KanjiQuest are documented here.
 
 ## [0.1.0-alpha] - 2026-02-05
 
-### Added
+### Added (Android)
 - Recognition Mode (Game Mode 1) — core kanji quiz gameplay
 - Writing Mode (Game Mode 1b) — stroke-based kanji writing practice
 - Camera Challenge Mode — ML Kit OCR kanji detection
@@ -130,5 +174,8 @@ All notable changes to KanjiQuest are documented here.
 - Stripe subscription integration ($4.99/mo premium)
 - Free user preview mode (daily trial limits)
 - Admin detection for Jay's emails
-- iOS (iPad 書道) Phase 1 foundation
-- GitHub Actions CI/CD for iOS builds
+
+### Added (iOS)
+- iPad project foundation (SwiftUI + KMP bridge)
+- GitHub Actions CI/CD for iOS builds (iPad + iPhone workflows)
+- XCFramework builder for KMP modules

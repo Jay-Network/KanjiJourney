@@ -1,4 +1,4 @@
-# KanjiQuest Release Build Fix
+# KanjiJourney Release Build Fix
 
 **Date:** 2026-02-07
 **Issue:** assembleRelease failed with WorkManagerInitializer configuration error
@@ -26,7 +26,7 @@ This causes a conflict in release builds (lint enforces this in release mode).
 **Current AndroidManifest.xml (incorrect):**
 ```xml
 <application
-    android:name=".KanjiQuestApplication"
+    android:name=".KanjiJourneyApplication"
     ...>
 
     <!-- This needs to be removed -->
@@ -46,7 +46,7 @@ This causes a conflict in release builds (lint enforces this in release mode).
 **Fixed AndroidManifest.xml (correct):**
 ```xml
 <application
-    android:name=".KanjiQuestApplication"
+    android:name=".KanjiJourneyApplication"
     ...>
 
     <!-- Remove the WorkManagerInitializer meta-data -->
@@ -64,7 +64,7 @@ This causes a conflict in release builds (lint enforces this in release mode).
 **Or completely remove the provider if WorkManager is the only initialization:**
 ```xml
 <application
-    android:name=".KanjiQuestApplication"
+    android:name=".KanjiJourneyApplication"
     ...>
 
     <!-- Provider completely removed since we use Configuration.Provider -->
@@ -76,9 +76,9 @@ This causes a conflict in release builds (lint enforces this in release mode).
 
 **Generate keystore:**
 ```bash
-cd ~/Data_ubuntu/GitHub/Jay-Network/apps/KanjiQuest/android-app
-keytool -genkey -v -keystore kanjiquest-release.keystore \
-  -alias kanjiquest \
+cd ~/Data_ubuntu/GitHub/Jay-Network/apps/KanjiJourney/android-app
+keytool -genkey -v -keystore kanjijourney-release.keystore \
+  -alias kanjijourney \
   -keyalg RSA \
   -keysize 2048 \
   -validity 10000
@@ -98,9 +98,9 @@ keytool -genkey -v -keystore kanjiquest-release.keystore \
 android {
     signingConfigs {
         create("release") {
-            storeFile = file("kanjiquest-release.keystore")
+            storeFile = file("kanjijourney-release.keystore")
             storePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
-            keyAlias = "kanjiquest"
+            keyAlias = "kanjijourney"
             keyPassword = System.getenv("KEY_PASSWORD") ?: ""
         }
     }

@@ -1,7 +1,7 @@
-# KanjiQuest Student Deployment - Multi-Agent Coordination Plan
+# KanjiJourney Student Deployment - Multi-Agent Coordination Plan
 
 **Date**: 2026-02-07
-**Goal**: Deploy KanjiQuest to TutoringJay students with portal integration and subscription tiers
+**Goal**: Deploy KanjiJourney to TutoringJay students with portal integration and subscription tiers
 
 ## Requirements
 
@@ -42,7 +42,7 @@
 - Plan revenue tracking and analytics
 - Free vs paid feature split
 
-### JWorks:44 (KanjiQuest Dev)
+### JWorks:44 (KanjiJourney Dev)
 **Focus**: Technical implementation, in-app subscription, feature gating
 **Plan**:
 - Review current app architecture
