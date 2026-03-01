@@ -31,7 +31,7 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
-## [0.1.0-beta5] - 2026-02-21
+## v0.5.0 (2026-02-21)
 
 ### Added (Android)
 - **Collection Gameplay System**: "Gotta Catch 'Em All" mechanic — kanji, kana, and radicals are discovered through gameplay with probability-based encounters and a pity system
@@ -84,7 +84,7 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
-## [0.1.0-beta4] - 2026-02-13
+## v0.4.0 (2026-02-13)
 
 ### Added
 - **Placement Test**: First-time user assessment across Grade 1-6 kanji (5 questions per grade) with automatic level assignment
@@ -125,7 +125,7 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
-## [0.1.0-beta3] - 2026-02-08
+## v0.3.0 (2026-02-08)
 
 ### Added
 - Adaptive difficulty system with grade mastery badges (Beginning/Developing/Proficient/Advanced)
@@ -139,7 +139,7 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
-## [0.1.0-beta2] - 2026-02-07
+## v0.2.0 (2026-02-07)
 
 ### Added
 - J Coin Shop with TutoringJay Featured Banner
@@ -151,7 +151,7 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
-## [0.1.0-beta1] - 2026-02-06
+## v0.1.0 (2026-02-06)
 
 ### Added
 - Ollama AI handwriting feedback in Writing Mode
@@ -161,7 +161,7 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
-## [0.1.0-alpha] - 2026-02-05
+## v0.0.1 (2026-02-05)
 
 ### Added (Android)
 - Recognition Mode (Game Mode 1) — core kanji quiz gameplay
