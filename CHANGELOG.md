@@ -5,6 +5,10 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## [Unreleased]
+
+---
+
 ## v1.0.0 (2026-03-01)
 
 ### Changed
