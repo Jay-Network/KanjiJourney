@@ -20,3 +20,6 @@ local.properties
 keystore/
 *.jks
 *.keystore
+
+# Claude Code local config
+.claude/
