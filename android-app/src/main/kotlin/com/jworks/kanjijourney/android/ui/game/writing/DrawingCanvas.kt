@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -64,6 +65,9 @@ fun DrawingCanvas(
         ) {
             val canvasSize = size.minDimension
 
+            // Cross guide lines (十字) — divides square into 4 quadrants for stroke positioning
+            drawCrossGuides(canvasSize)
+
             // Draw ghost reference strokes based on difficulty level
             drawGhostStrokes(referenceStrokePaths, currentStrokeIndex, canvasSize, writingDifficulty)
 
@@ -78,6 +82,15 @@ fun DrawingCanvas(
             }
         }
     }
+}
+
+private fun DrawScope.drawCrossGuides(canvasSize: Float) {
+    val mid = canvasSize / 2f
+    val color = Color.Gray.copy(alpha = 0.25f)
+    val dash = PathEffect.dashPathEffect(floatArrayOf(8f, 8f), 0f)
+
+    drawLine(color, Offset(mid, 0f), Offset(mid, canvasSize), strokeWidth = 1.5f, pathEffect = dash)
+    drawLine(color, Offset(0f, mid), Offset(canvasSize, mid), strokeWidth = 1.5f, pathEffect = dash)
 }
 
 private fun DrawScope.drawGhostStrokes(

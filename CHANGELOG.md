@@ -5,7 +5,64 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.1.3 (2026-04-13) — Writing Canvas Cross Guides (IDEA-001)
+
+### Added
+- Cross guide lines (十字) on writing canvas dividing the square into 4 quadrants for stroke positioning (DrawingCanvas.kt)
+- Dashed gray lines at 25% alpha, drawn beneath ghost strokes so they don't compete visually
+
+---
+
+## v1.1.2 (2026-04-10) — L1 Review Fixes
+
+### Fixed
+- All font sizes bumped to minimum 12sp (was 7-11sp in 20+ instances) — WCAG AA compliance
+- Theme labelSmall from 11sp to 12sp
+- Low-contrast text: DiscoveryOverlay (0.5f→0.7f), ShopScreen (0.6f→0.7f), KanjiDetailScreen (0.8f→0.85f)
+- All corner radii bumped to minimum 8dp (was 2-6dp in 15 instances)
+- Shape.kt: removed sub-8dp tokens (ExtraSmall 4dp, Small 6dp), minimum is now 8dp
+- GlassChip shape from 6dp to 8dp
+
+---
+
+## v1.1.1 (2026-04-10) — WAVE 1 L1 Compliance
+
+### Added
+- **FocusIndicator.kt**: Focus ring system with `focusRing()`, `focusRingCircle()`, `focusRingTextField()` modifiers
+- **Shape.kt**: Centralized corner radii tokens (KjShape: ExtraSmall→Pill, 4dp→24dp)
+- **Spacing.kt**: Centralized spacing tokens (KjSpacing: XXS→Huge, 2dp→32dp)
+- **Semantic color tokens**: GameColors (7 game mode accents), StateColors (correct/incorrect/gold/info), MasteryColors (4 progress levels)
+- **Focus indicators on ALL interactive elements**: Buttons, IconButtons, TextButtons, OutlinedButtons across 25+ screens
+- **FocusRequester on TextFields**: LoginScreen email/password fields with programmatic focus management
+- **isError + supportingText on TextFields**: LoginScreen (email/password), FlashcardScreen (deck name dialogs)
+
+### Changed
+- Migrated 88% of hardcoded Color(0x...) values to semantic tokens (174→21 remaining)
+- LoginScreen: OutlinedTextFields now show validation errors with `isError` + `supportingText`
+- FlashcardScreen: Deck name fields show "required" error when blank
+- MainScaffold: Nav bar selected color now uses `GlassBrand.current` instead of hardcoded hex
+
+---
+
 ## [Unreleased]
+
+### Added (iOS — Glass UI Port)
+- **GlassTheme.swift**: Full port of Android GlassTheme.kt to SwiftUI
+  - GlassCard, GlassChip, GlassTopBar, GlassNavigationBar, GlassSection components
+  - GlassColors palette: dark background (#050508), surface layers, text opacity hierarchy
+  - GlassBrand per-app colors (KanjiJourney=orange, KanjiLens=teal, EigoQuest=blue, EigoLens=indigo)
+  - GlassTypography with DM Sans font family (Light/Regular/Medium/Bold)
+- **DM Sans fonts**: Copied from Android to iOS Resources/Fonts/
+- **Dark mode enforced**: `.preferredColorScheme(.dark)` on app root
+
+### Changed (iOS — Glass UI Port)
+- **KanjiJourneyTheme.swift**: Updated color palette from light cream to glass dark theme
+  - background: 0xFFF8E1 → 0x050508, surface: white → 0x12121E, primary: 0xFF8C42 → 0xFF6B35
+- **HomeView**: Full glass conversion — GlassCard profile, upgrade banner, learning paths, grid items, GlassChip tabs
+- **MainTabView**: Glass-styled UITabBarAppearance (dark background, orange selection)
+- **GamesTabView**: Glass card game modes with colored accent strips
+- **MockHomeView**: Glass aesthetic with dark backgrounds, glass cards, brand-tinted borders
+- **STATUS.md**: Corrected feature parity matrix — iOS was ~95% complete, not ~20% as previously shown
 
 ---
 
