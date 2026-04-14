@@ -26,10 +26,11 @@ Track improvement ideas. Version at log time from `VERSION` file.
 
 ## IDEA-002: Dakuten/Handakuten Kana Variants in Kana Writing Mode
 - **Version at log**: 1.0.0
-- **Status**: proposed
+- **Status**: implemented (v1.2.1, 2026-04-14, Android)
 - **Severity**: minor
 - **Source**: Jay via jworks:9 (2026-03-06) — UX feedback from @kenichiota0711's son
 - **Description**: Include dakuten (が、ざ、だ、ば), handakuten (ぱ), and small kana (ゃゅょっ) in kana practice.
+- **Implementation**: Data already existed (208 chars incl. 20 dakuten + 5 handakuten + 33 combos per type). Fixed KanaQuestionGenerator to use all-variant distractor pool and prefer same-variant distractors.
 
 ## IDEA-003: Grade + Kanken Dual Taxonomy
 - **Version at log**: 1.0.0

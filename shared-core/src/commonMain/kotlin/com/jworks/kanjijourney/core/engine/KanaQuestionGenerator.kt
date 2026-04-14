@@ -37,7 +37,7 @@ class KanaQuestionGenerator(
         repeat(questionCount) {
             questionQueue.add(KanaQueueEntry(kana, isNew = card == null, srsState = srsState))
         }
-        distractorPool = kanaRepository.getKanaByTypeAndVariant(kana.type, "basic")
+        distractorPool = kanaRepository.getKanaByType(kana.type)
         return true
     }
 
@@ -93,8 +93,8 @@ class KanaQuestionGenerator(
             }
         }
 
-        // Build distractor pool from same kana type (basic variant for cleaner distractors)
-        distractorPool = kanaRepository.getKanaByTypeAndVariant(kanaType, "basic")
+        // Build distractor pool from all variants of same kana type
+        distractorPool = kanaRepository.getKanaByType(kanaType)
 
         questionQueue.shuffle()
         return questionQueue.isNotEmpty()
@@ -152,13 +152,24 @@ class KanaQuestionGenerator(
     private fun generateDistractors(targetKana: Kana, correctRomanization: String, count: Int): List<String> {
         val distractors = mutableSetOf<String>()
 
-        // Prefer distractors from same group first
-        val sameGroup = distractorPool.filter {
-            it.id != targetKana.id && it.group == targetKana.group && it.romanization != correctRomanization
+        // Prefer distractors from same variant first (dakuten with dakuten, etc.)
+        val sameVariant = distractorPool.filter {
+            it.id != targetKana.id && it.variant == targetKana.variant && it.romanization != correctRomanization
         }.shuffled()
-        for (kana in sameGroup) {
-            if (distractors.size >= count) break
+        for (kana in sameVariant.take(count)) {
             distractors.add(kana.romanization)
+        }
+
+        // Then same group
+        if (distractors.size < count) {
+            val sameGroup = distractorPool.filter {
+                it.id != targetKana.id && it.group == targetKana.group
+                    && it.romanization != correctRomanization && it.romanization !in distractors
+            }.shuffled()
+            for (kana in sameGroup) {
+                if (distractors.size >= count) break
+                distractors.add(kana.romanization)
+            }
         }
 
         // Fill from wider pool
@@ -170,12 +181,16 @@ class KanaQuestionGenerator(
             distractors.add(kana.romanization)
         }
 
-        // Fallback
-        val fallback = listOf("a", "i", "u", "e", "o", "ka", "ki", "ku", "ke", "ko",
+        // Fallback — includes basic + dakuten + handakuten readings
+        val fallback = listOf(
+            "a", "i", "u", "e", "o", "ka", "ki", "ku", "ke", "ko",
             "sa", "shi", "su", "se", "so", "ta", "chi", "tsu", "te", "to",
             "na", "ni", "nu", "ne", "no", "ha", "hi", "fu", "he", "ho",
-            "ma", "mi", "mu", "me", "mo", "ya", "yu", "yo", "ra", "ri", "ru", "re", "ro", "wa", "wo", "n")
-            .filter { it != correctRomanization && it !in distractors }.shuffled()
+            "ma", "mi", "mu", "me", "mo", "ya", "yu", "yo", "ra", "ri", "ru", "re", "ro", "wa", "wo", "n",
+            "ga", "gi", "gu", "ge", "go", "za", "ji", "zu", "ze", "zo",
+            "da", "di", "du", "de", "do", "ba", "bi", "bu", "be", "bo",
+            "pa", "pi", "pu", "pe", "po"
+        ).filter { it != correctRomanization && it !in distractors }.shuffled()
         var idx = 0
         while (distractors.size < count && idx < fallback.size) {
             distractors.add(fallback[idx++])

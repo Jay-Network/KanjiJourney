@@ -5,6 +5,16 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.2.1 (2026-04-14) — Dakuten/Handakuten Kana Support (IDEA-002)
+
+### Fixed
+- Kana distractor pool now uses all variants (was basic-only, causing mismatched distractors for dakuten/handakuten questions)
+- Distractors prefer same-variant kana first (dakuten distractors for dakuten questions, etc.)
+- Fallback romanization list now includes dakuten (ga, gi, gu...) and handakuten (pa, pi, pu...) readings
+- Targeted kana sessions use full variant pool instead of basic-only
+
+---
+
 ## v1.2.0 (2026-04-14) — KanjiSage Word Transfer (S1-KJ-1)
 
 ### Added

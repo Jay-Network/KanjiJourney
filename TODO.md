@@ -1,8 +1,8 @@
 # KanjiJourney TODO
 
 ## Active Tasks
-- [ ] S1-KJ-1: Sage → Journey word transfer — Supabase pull sync (Android receiver done, needs cloud pull)
-- [ ] IDEA-002: Dakuten/handakuten/small kana in Kana writing mode
+- [x] S1-KJ-1: Sage → Journey word transfer — deep link E2E done (receiver v1.2.0 + sender KanjiSage v1.7.0)
+- [x] IDEA-002: Dakuten/handakuten kana variant-aware distractors — v1.2.1 (2026-04-14)
 - [ ] Contrast audit for Android native app (UNKNOWN status per L1 audit)
 
 ## Backlog
