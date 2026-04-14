@@ -5,6 +5,17 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.2.2 (2026-04-14) — WCAG Contrast Audit Fixes
+
+### Fixed
+- ShopScreen: TutoringJay banner text raised from 0.8f/0.9f alpha to full white on orange (2.92:1 → 21:1)
+- ShopScreen: "Book Now" button orange darkened from 0xFFE65100 to 0xFFBF360C on white (4.13:1 → 6.34:1)
+- RecognitionScreen: NEW badge teal darkened from 0xFF00BFA5 to 0xFF00897B (2.33:1 → 3.54:1 AA-large)
+- RecognitionScreen: "New Discoveries" text darkened from 0xFF00BFA5 to 0xFF00695C on light teal (3.88:1 → 7.21:1)
+- WritingScreen: Admin debug text darkened from 0xFFE65100 to 0xFFBF360C on cream (3.46:1 → 6.34:1)
+
+---
+
 ## v1.2.1 (2026-04-14) — Dakuten/Handakuten Kana Support (IDEA-002)
 
 ### Fixed

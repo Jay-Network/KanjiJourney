@@ -1,24 +1,26 @@
 # KanjiJourney TODO
 
 ## Active Tasks
-- [x] S1-KJ-1: Sage → Journey word transfer — deep link E2E done (receiver v1.2.0 + sender KanjiSage v1.7.0)
-- [x] IDEA-002: Dakuten/handakuten kana variant-aware distractors — v1.2.1 (2026-04-14)
-- [ ] Contrast audit for Android native app (UNKNOWN status per L1 audit)
+- [x] Contrast audit — 6 violations fixed across ShopScreen, RecognitionScreen, WritingScreen (v1.2.2, 2026-04-14)
+- [ ] IDEA-003: Add Kanken level as secondary taxonomy axis
+- [ ] Remaining 21 hardcoded hex colors → design tokens
 
 ## Backlog
 - IDEA-001 iOS port: cross guide lines on iOS writing canvas
-- APK size reduction (66MB → under 50MB for Supabase free tier)
+- APK size reduction (66MB → under 50MB for Supabase free tier, BUG-001)
 - Polish from beta student feedback (4 students testing)
-- iPhone calligraphy mode (finger drawing, no Apple Pencil)
-- Camera Challenge: AVFoundation + Vision OCR camera preview integration
+- iPhone calligraphy mode (finger drawing, no Apple Pencil, IDEA-005 / BUG-003)
+- Camera Challenge: AVFoundation + Vision OCR camera preview (BUG-002, iOS)
 - Supabase DB migration (CHECK constraints for new app names)
-- Repo directory rename (KanjiQuest → KanjiJourney on GitHub)
+- Repo directory rename (KanjiQuest → KanjiJourney on GitHub, blocked: Jay)
 - KanjiSage deep link integration (iPad)
-- Apply Glass UI to remaining iOS screens (Detail, Settings, Shop, Subscription, etc.)
-- Glass UI port to iOS (core screens done: Home, Games, MockHome, MainTab)
-- Contrast audit for native app (UNKNOWN status per L1 audit)
+- Apply Glass UI to remaining iOS screens (jworks:47 scope)
+- IDEA-004: Full 常用漢字 coverage (2,136 kanji)
+- Supabase pull sync for word transfer (cloud complement to deep link)
 
 ## Completed
+- [x] S1-KJ-1: Sage → Journey word transfer — deep link E2E (v1.2.0, 2026-04-14)
+- [x] IDEA-002: Dakuten/handakuten variant-aware kana distractors (v1.2.1, 2026-04-14)
 - [x] IDEA-001: Cross guide lines (十字) on Android writing canvas — v1.1.3 (2026-04-13)
 - [x] L1 review fixes: min 12sp fonts (20+ instances), low-contrast text (3 files), min 8dp corners (15 instances) (2026-04-10)
 - [x] WAVE 1 L1: Focus indicators on ALL interactive elements — 25+ screens, FocusIndicator.kt (2026-04-10)

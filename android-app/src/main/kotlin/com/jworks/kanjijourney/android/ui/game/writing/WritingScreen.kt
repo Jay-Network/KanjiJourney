@@ -56,6 +56,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jworks.kanjijourney.android.ui.game.DiscoveryOverlay
+import com.jworks.kanjijourney.android.ui.theme.StateColors
+import com.jworks.kanjijourney.android.ui.theme.focusRing
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
 import com.jworks.kanjijourney.core.domain.model.GameMode
 import com.jworks.kanjijourney.core.domain.model.KanaType
 import com.jworks.kanjijourney.core.engine.GameState
@@ -90,7 +93,7 @@ fun WritingScreen(
             TopAppBar(
                 title = { Text("Writing") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = onBack, modifier = Modifier.focusRingCircle()) {
                         Text("\u2190", fontSize = 24.sp)
                     }
                 },
@@ -300,7 +303,7 @@ private fun WritingSetupContent(
                         text = "Debug: Writing Difficulty",
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFFE65100)
+                        color = Color(0xFFBF360C)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
@@ -310,24 +313,24 @@ private fun WritingSetupContent(
                         // Auto option
                         OutlinedButton(
                             onClick = { onAdminDifficultyChange(null) },
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier.weight(1f).focusRing(),
                             shape = RoundedCornerShape(8.dp),
                             colors = if (adminDifficultyOverride == null) {
                                 ButtonDefaults.outlinedButtonColors(containerColor = Color(0xFFE65100).copy(alpha = 0.15f))
                             } else ButtonDefaults.outlinedButtonColors()
                         ) {
-                            Text("Auto", fontSize = 11.sp)
+                            Text("Auto", fontSize = 12.sp)
                         }
                         WritingDifficulty.entries.forEach { diff ->
                             OutlinedButton(
                                 onClick = { onAdminDifficultyChange(diff) },
-                                modifier = Modifier.weight(1f),
+                                modifier = Modifier.weight(1f).focusRing(),
                                 shape = RoundedCornerShape(8.dp),
                                 colors = if (adminDifficultyOverride == diff) {
                                     ButtonDefaults.outlinedButtonColors(containerColor = Color(0xFFE65100).copy(alpha = 0.15f))
                                 } else ButtonDefaults.outlinedButtonColors()
                             ) {
-                                Text(diff.label, fontSize = 11.sp)
+                                Text(diff.label, fontSize = 12.sp)
                             }
                         }
                     }
@@ -341,7 +344,8 @@ private fun WritingSetupContent(
             onClick = onStart,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .height(56.dp)
+                .focusRing(),
             shape = RoundedCornerShape(12.dp)
         ) {
             Text("Start Practice", fontSize = 18.sp)
@@ -420,7 +424,7 @@ private fun WritingQuestionContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
-                .clip(RoundedCornerShape(4.dp)),
+                .clip(RoundedCornerShape(8.dp)),
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -485,7 +489,7 @@ private fun WritingQuestionContent(
             OutlinedButton(
                 onClick = onUndo,
                 enabled = completedStrokes.isNotEmpty(),
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).focusRing(),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Undo")
@@ -493,7 +497,7 @@ private fun WritingQuestionContent(
             OutlinedButton(
                 onClick = onClear,
                 enabled = completedStrokes.isNotEmpty(),
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).focusRing(),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Clear")
@@ -501,7 +505,7 @@ private fun WritingQuestionContent(
             Button(
                 onClick = onSubmit,
                 enabled = completedStrokes.isNotEmpty(),
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).focusRing(),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Submit")
@@ -532,7 +536,7 @@ private fun WritingResultContent(
         Card(
             modifier = Modifier.size(160.dp),
             colors = CardDefaults.cardColors(
-                containerColor = if (state.isCorrect) Color(0xFFE8F5E9) else Color(0xFFFFEBEE)
+                containerColor = if (state.isCorrect) StateColors.CorrectBackground else StateColors.IncorrectBackground
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
@@ -673,7 +677,7 @@ private fun WritingResultContent(
                 } else {
                     OutlinedButton(
                         onClick = onReportAi,
-                        modifier = Modifier.align(Alignment.End),
+                        modifier = Modifier.align(Alignment.End).focusRing(),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.outlinedButtonColors(
                             contentColor = MaterialTheme.colorScheme.error
@@ -691,7 +695,8 @@ private fun WritingResultContent(
             onClick = onNext,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp),
+                .height(48.dp)
+                .focusRing(),
             shape = RoundedCornerShape(12.dp)
         ) {
             Text("Next", fontSize = 18.sp)
@@ -742,7 +747,7 @@ private fun SessionCompleteContent(
                             text = "+${sessionResult.coinsEarned} J Coins",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFFFFD700)
+                            color = StateColors.Gold
                         )
                     }
                     if (sessionResult.leveledUp) {
@@ -778,7 +783,8 @@ private fun SessionCompleteContent(
             onClick = onDone,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .height(56.dp)
+                .focusRing(),
             shape = RoundedCornerShape(12.dp)
         ) {
             Text("Done", fontSize = 18.sp)
@@ -820,7 +826,7 @@ private fun ErrorContent(message: String, onBack: () -> Unit) {
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedButton(onClick = onBack) {
+        OutlinedButton(onClick = onBack, modifier = Modifier.focusRing()) {
             Text("Go Back")
         }
     }

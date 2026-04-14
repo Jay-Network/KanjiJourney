@@ -55,6 +55,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.layout.ContentScale
 import com.jworks.kanjijourney.android.ui.components.AssetImage
+import com.jworks.kanjijourney.android.ui.theme.focusRing
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
+import com.jworks.kanjijourney.android.ui.theme.StateColors
 import com.jworks.kanjijourney.core.domain.model.PurchaseResult
 import com.jworks.kanjijourney.core.domain.model.ShopCategory
 import com.jworks.kanjijourney.core.domain.model.ShopItem
@@ -84,12 +87,12 @@ fun ShopScreen(
                             text = "${uiState.balance.displayBalance} coins",
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFFFFD700)
+                            color = StateColors.Gold
                         )
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = onBack, modifier = Modifier.focusRingCircle()) {
                         Text("\u2190", fontSize = 24.sp)
                     }
                 },
@@ -187,14 +190,14 @@ private fun CategoryFilterRow(
             selected = selectedCategory == null,
             onClick = { onCategorySelected(null) },
             label = { Text("All") },
-            modifier = Modifier.padding(horizontal = 4.dp)
+            modifier = Modifier.padding(horizontal = 4.dp).focusRing()
         )
         categories.forEach { category ->
             FilterChip(
                 selected = selectedCategory == category,
                 onClick = { onCategorySelected(category) },
                 label = { Text(category.displayName) },
-                modifier = Modifier.padding(horizontal = 4.dp)
+                modifier = Modifier.padding(horizontal = 4.dp).focusRing()
             )
         }
     }
@@ -256,14 +259,14 @@ private fun ShopItemCard(
                     text = "Owned",
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF4CAF50)
+                    color = StateColors.Correct
                 )
             } else {
                 Text(
                     text = "${item.cost} coins",
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
-                    color = if (canAfford) Color(0xFFFFD700) else MaterialTheme.colorScheme.error
+                    color = if (canAfford) StateColors.Gold else MaterialTheme.colorScheme.error
                 )
             }
         }
@@ -311,7 +314,7 @@ private fun PurchaseDialog(
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = "New balance: ${purchaseResult.newBalance} coins",
-                                color = Color(0xFFFFD700),
+                                color = StateColors.Gold,
                                 fontWeight = FontWeight.Bold
                             )
                         } else {
@@ -319,7 +322,7 @@ private fun PurchaseDialog(
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 text = "New balance: ${purchaseResult.newBalance} coins",
-                                color = Color(0xFFFFD700),
+                                color = StateColors.Gold,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -359,7 +362,8 @@ private fun PurchaseDialog(
                 null -> {
                     Button(
                         onClick = onConfirm,
-                        enabled = balance >= item.cost
+                        enabled = balance >= item.cost,
+                        modifier = Modifier.focusRing()
                     ) {
                         Text("Buy (${item.cost})")
                     }
@@ -372,6 +376,7 @@ private fun PurchaseDialog(
                                     onOpenBooking()
                                     onDismiss()
                                 },
+                                modifier = Modifier.focusRing(),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color(0xFFE65100)
                                 )
@@ -380,7 +385,7 @@ private fun PurchaseDialog(
                             }
                             Spacer(modifier = Modifier.width(8.dp))
                         }
-                        Button(onClick = onDismiss) {
+                        Button(onClick = onDismiss, modifier = Modifier.focusRing()) {
                             Text("OK")
                         }
                     }
@@ -389,7 +394,7 @@ private fun PurchaseDialog(
         },
         dismissButton = {
             if (purchaseResult == null) {
-                TextButton(onClick = onDismiss) {
+                TextButton(onClick = onDismiss, modifier = Modifier.focusRing()) {
                     Text("Cancel")
                 }
             }
@@ -435,7 +440,7 @@ private fun FeaturedBanner(
                     Text(
                         text = "TutoringJay",
                         style = MaterialTheme.typography.labelMedium,
-                        color = Color.White.copy(alpha = 0.8f),
+                        color = Color.White,
                         fontWeight = FontWeight.Medium
                     )
                     Text(
@@ -448,7 +453,7 @@ private fun FeaturedBanner(
                     Text(
                         text = "Earn coins playing KanjiJourney, redeem for a real tutoring session!",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.White.copy(alpha = 0.9f)
+                        color = Color.White
                     )
                 }
 
@@ -463,7 +468,7 @@ private fun FeaturedBanner(
                             modifier = Modifier
                                 .size(36.dp)
                                 .clip(CircleShape)
-                                .background(Color(0xFF4CAF50)),
+                                .background(StateColors.Correct),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
@@ -476,6 +481,7 @@ private fun FeaturedBanner(
                         Spacer(modifier = Modifier.height(6.dp))
                         Button(
                             onClick = onBookNow,
+                            modifier = Modifier.focusRing(),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.White
                             ),
@@ -483,7 +489,7 @@ private fun FeaturedBanner(
                         ) {
                             Text(
                                 text = "Book Now",
-                                color = Color(0xFFE65100),
+                                color = Color(0xFFBF360C),
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 12.sp
                             )
@@ -499,7 +505,7 @@ private fun FeaturedBanner(
                         ) {
                             Text(
                                 text = "${item.cost}",
-                                color = if (canAfford) Color(0xFFFFD700) else Color(0xFFFF8A80),
+                                color = if (canAfford) StateColors.Gold else Color(0xFFFF8A80),
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp
                             )
@@ -508,6 +514,7 @@ private fun FeaturedBanner(
                         Button(
                             onClick = onRedeem,
                             enabled = canAfford,
+                            modifier = Modifier.focusRing(),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.White,
                                 disabledContainerColor = Color.White.copy(alpha = 0.4f)
@@ -516,7 +523,7 @@ private fun FeaturedBanner(
                         ) {
                             Text(
                                 text = "Redeem",
-                                color = if (canAfford) Color(0xFFE65100) else Color.White.copy(alpha = 0.6f),
+                                color = if (canAfford) Color(0xFFE65100) else Color.White.copy(alpha = 0.7f),
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 12.sp
                             )
