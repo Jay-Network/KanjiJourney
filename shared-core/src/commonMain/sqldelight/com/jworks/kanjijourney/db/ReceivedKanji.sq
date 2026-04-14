@@ -1,0 +1,35 @@
+CREATE TABLE received_kanji (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    kanji_literal TEXT NOT NULL,
+    kanji_id INTEGER,
+    source_app TEXT NOT NULL DEFAULT 'kanjisage',
+    received_at INTEGER NOT NULL,
+    processed_at INTEGER,
+    status TEXT NOT NULL DEFAULT 'pending',
+    UNIQUE(kanji_literal, source_app)
+);
+
+getPending:
+SELECT * FROM received_kanji WHERE status = 'pending' ORDER BY received_at ASC;
+
+getAll:
+SELECT * FROM received_kanji ORDER BY received_at DESC;
+
+getByLiteral:
+SELECT * FROM received_kanji WHERE kanji_literal = ? AND source_app = ?;
+
+insert:
+INSERT OR IGNORE INTO received_kanji(kanji_literal, kanji_id, source_app, received_at, status)
+VALUES (?, ?, ?, ?, 'pending');
+
+markProcessed:
+UPDATE received_kanji SET status = 'processed', processed_at = ?, kanji_id = ? WHERE id = ?;
+
+markFailed:
+UPDATE received_kanji SET status = 'failed' WHERE id = ?;
+
+countPending:
+SELECT COUNT(*) FROM received_kanji WHERE status = 'pending';
+
+countAll:
+SELECT COUNT(*) FROM received_kanji;

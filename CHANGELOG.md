@@ -5,6 +5,21 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.2.0 (2026-04-14) — KanjiSage Word Transfer (S1-KJ-1)
+
+### Added
+- **Cross-app word transfer**: KanjiSage scan results can now be imported into KanjiJourney study deck
+- `received_kanji` SQLDelight table for local tracking of transferred kanji
+- `ReceivedKanjiRepository` — domain interface + implementation for received word management
+- `ImportKanjiUseCase` — processes received kanji literals → SRS card + flashcard deck entry
+- `ImportKanjiViewModel` — Hilt-injected ViewModel for deep link import handling
+- Deep link `kanjijourney://import?source=kanjisage&kanji=漢,字,日` — transfers kanji to study system
+- AndroidManifest intent-filter for `kanjijourney://import` scheme
+- Supabase migration SQL (`docs/migration-received-words.sql`) for `kj_received_words` table
+- DI wiring in AppModule for ReceivedKanjiRepository + ImportKanjiUseCase
+
+---
+
 ## v1.1.3 (2026-04-13) — Writing Canvas Cross Guides (IDEA-001)
 
 ### Added

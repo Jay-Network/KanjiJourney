@@ -6,6 +6,7 @@ import com.jworks.kanjijourney.android.data.PreviewTrialManager
 import com.jworks.kanjijourney.android.network.GeminiClient
 import com.jworks.kanjijourney.android.ui.game.writing.AiFeedbackReporter
 import com.jworks.kanjijourney.android.ui.game.writing.HandwritingChecker
+import com.jworks.kanjijourney.core.data.ReceivedKanjiRepositoryImpl
 import com.jworks.kanjijourney.core.data.AchievementRepositoryImpl
 import com.jworks.kanjijourney.core.data.AuthRepositoryImpl
 import com.jworks.kanjijourney.core.data.CollectionRepositoryImpl
@@ -38,6 +39,7 @@ import com.jworks.kanjijourney.core.domain.repository.JCoinRepository
 import com.jworks.kanjijourney.core.domain.repository.KanaRepository
 import com.jworks.kanjijourney.core.domain.repository.KanaSrsRepository
 import com.jworks.kanjijourney.core.domain.repository.KanjiRepository
+import com.jworks.kanjijourney.core.domain.repository.ReceivedKanjiRepository
 import com.jworks.kanjijourney.core.domain.repository.LearningSyncRepository
 import com.jworks.kanjijourney.core.domain.repository.RadicalRepository
 import com.jworks.kanjijourney.core.domain.repository.RadicalSrsRepository
@@ -48,6 +50,7 @@ import com.jworks.kanjijourney.core.domain.repository.VocabSrsRepository
 import com.jworks.kanjijourney.core.domain.usecase.CompleteSessionUseCase
 import com.jworks.kanjijourney.core.domain.usecase.DataRestorationUseCase
 import com.jworks.kanjijourney.core.domain.usecase.MigrateLocalDataUseCase
+import com.jworks.kanjijourney.core.domain.usecase.ImportKanjiUseCase
 import com.jworks.kanjijourney.core.domain.usecase.WordOfTheDayUseCase
 import com.jworks.kanjijourney.core.collection.EncounterEngine
 import com.jworks.kanjijourney.core.collection.ItemLevelEngine
@@ -207,6 +210,24 @@ object AppModule {
     @Singleton
     fun provideCollectionRepository(db: KanjiJourneyDatabase): CollectionRepository {
         return CollectionRepositoryImpl(db)
+    }
+
+    @Provides
+    @Singleton
+    fun provideReceivedKanjiRepository(db: KanjiJourneyDatabase): ReceivedKanjiRepository {
+        return ReceivedKanjiRepositoryImpl(db)
+    }
+
+    @Provides
+    fun provideImportKanjiUseCase(
+        receivedKanjiRepository: ReceivedKanjiRepository,
+        kanjiRepository: KanjiRepository,
+        srsRepository: SrsRepository,
+        flashcardRepository: FlashcardRepository
+    ): ImportKanjiUseCase {
+        return ImportKanjiUseCase(
+            receivedKanjiRepository, kanjiRepository, srsRepository, flashcardRepository
+        )
     }
 
     @Provides

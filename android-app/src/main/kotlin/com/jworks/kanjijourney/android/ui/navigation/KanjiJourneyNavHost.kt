@@ -78,6 +78,7 @@ fun KanjiJourneyNavHost(
 
     // Handle deep link
     val deepLinkViewModel: DeepLinkCollectionViewModel = hiltViewModel()
+    val importViewModel: ImportKanjiViewModel = hiltViewModel()
     LaunchedEffect(deepLinkUri, currentRoute) {
         if (deepLinkUri == null) return@LaunchedEffect
         if (currentRoute == NavRoute.Splash.route || currentRoute == NavRoute.Login.route || currentRoute == null) {
@@ -98,6 +99,27 @@ fun KanjiJourneyNavHost(
                     } else {
                         Toast.makeText(context, "Already in collection!", Toast.LENGTH_SHORT).show()
                     }
+                }
+                onDeepLinkConsumed()
+            }
+            "import" -> {
+                val kanjiParam = deepLinkUri.getQueryParameter("kanji") ?: ""
+                val source = deepLinkUri.getQueryParameter("source") ?: "kanjisage"
+                val literals = kanjiParam.split(",").filter { it.isNotBlank() }
+                if (literals.isNotEmpty()) {
+                    val result = importViewModel.importFromDeepLink(literals, source)
+                    val msg = buildString {
+                        if (result.imported > 0) append("${result.imported} kanji added to study deck")
+                        if (result.alreadyKnown > 0) {
+                            if (isNotEmpty()) append(", ")
+                            append("${result.alreadyKnown} already studying")
+                        }
+                        if (result.notFound > 0) {
+                            if (isNotEmpty()) append(", ")
+                            append("${result.notFound} not found")
+                        }
+                    }
+                    Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
                 }
                 onDeepLinkConsumed()
             }
