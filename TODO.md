@@ -1,7 +1,7 @@
 # KanjiJourney TODO
 
 ## Active Tasks
-- [ ] Accessibility audit — content descriptions on images and icons
+(none)
 
 ## Backlog
 - Release APK size measurement — confirm under 50MB after R8+ABI filter (BUG-001)
@@ -17,6 +17,7 @@
 - Polish from beta student feedback (4 students testing)
 
 ## Completed
+- [x] Accessibility: 14 back buttons Text("←")→Icon(ArrowBack) + contentDescription (v1.2.6, 2026-04-15)
 - [x] APK size reduction: 123MB→67MB debug — db.bak, PNG→WebP, ABI filter, shrinkResources (v1.2.5, 2026-04-15)
 - [x] IDEA-003: Add Kanken level as secondary taxonomy axis (v1.2.4, 2026-04-13)
 - [x] Remaining 21 hardcoded hex colors → design tokens (v1.2.3, 2026-04-13)

@@ -18,6 +18,8 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -84,7 +86,7 @@ fun CameraChallengeScreen(
                 title = { Text("Camera Challenge") },
                 navigationIcon = {
                     IconButton(onClick = onBack, modifier = Modifier.focusRingCircle()) {
-                        Text("\u2190", fontSize = 24.sp)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {

@@ -5,6 +5,15 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.2.6 (2026-04-15) — Accessibility: Back Button Content Descriptions
+
+### Fixed
+- **Replaced 14 text-arrow back buttons** with proper `Icon(ArrowBack)` + `contentDescription = "Back"` for TalkBack/screen reader support
+- Added missing `focusRingCircle()` modifier on FlashcardScreen back button
+- Screens fixed: KanjiDetail, RadicalDetail, CameraChallenge, FieldJournal, Recognition, Writing, KanaRecognition, Vocabulary, WordDetail, Shop, Flashcard, FlashcardStudy, RadicalRecognition, RadicalBuilder
+
+---
+
 ## v1.2.5 (2026-04-15) — APK Size Reduction (BUG-001)
 
 ### Fixed
