@@ -5,6 +5,20 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.2.4 (2026-04-13) — Kanken Level Taxonomy (IDEA-003)
+
+### Added
+- **漢検 (Kanken) level as secondary taxonomy axis** alongside school grade, JLPT, strokes, and frequency
+- Kanken level derived from school grade: Grade 1→10級, Grade 2→9級, ..., Grade 6→5級, Grade 8→4級
+- `kankenLevel` and `kankenLabel` computed properties on `Kanji` domain model
+- `getKanjiByKankenLevel()` and `getKanjiCountByKankenLevel()` on `KanjiRepository`
+- `KANKEN_LEVEL` sort mode in `KanjiSortMode` enum (appears between School Grade and JLPT)
+- `selectKankenLevel()` in `HomeViewModel` with preserved selection across refresh
+- Kanken level selector chips (10級–4級) in `CollectionHubScreen`
+- Kanken level chip on `KanjiDetailScreen` info row
+
+---
+
 ## v1.2.3 (2026-04-13) — Design Token Migration Complete
 
 ### Changed

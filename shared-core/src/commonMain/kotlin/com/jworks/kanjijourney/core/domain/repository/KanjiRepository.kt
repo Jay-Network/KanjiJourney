@@ -28,4 +28,6 @@ interface KanjiRepository {
     suspend fun getKanjiByStrokeCount(strokeCount: Int): List<Kanji>
     suspend fun getDistinctStrokeCounts(): List<Int>
     suspend fun getKanjiByFrequencyRange(from: Int, to: Int): List<Kanji>
+    suspend fun getKanjiByKankenLevel(kankenLevel: Int): List<Kanji>
+    suspend fun getKanjiCountByKankenLevel(kankenLevel: Int): Long
 }

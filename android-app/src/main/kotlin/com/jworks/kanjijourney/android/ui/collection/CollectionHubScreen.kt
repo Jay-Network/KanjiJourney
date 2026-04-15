@@ -250,6 +250,23 @@ fun CollectionHubScreen(
                                 }
                             }
                         }
+                        KanjiSortMode.KANKEN_LEVEL -> {
+                            HomeViewModel.kankenLevels.forEach { level ->
+                                val isSelected = level == uiState.selectedKankenLevel
+                                GlassChip(
+                                    selected = isSelected,
+                                    selectedColor = GameColors.Writing,
+                                    modifier = Modifier.clickable { viewModel.selectKankenLevel(level) }
+                                ) {
+                                    Text(
+                                        text = "${level}級",
+                                        fontSize = 12.sp,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                        color = if (isSelected) GlassTextPrimary else GlassTextSecondary
+                                    )
+                                }
+                            }
+                        }
                         KanjiSortMode.JLPT_LEVEL -> {
                             listOf(5, 4, 3, 2, 1).forEach { level ->
                                 val isSelected = level == uiState.selectedJlptLevel
@@ -318,6 +335,7 @@ fun CollectionHubScreen(
                     MainTab.RADICALS -> "部首 Radicals"
                     MainTab.KANJI -> when (uiState.kanjiSortMode) {
                         KanjiSortMode.SCHOOL_GRADE -> "Grade ${uiState.selectedGrade} Kanji"
+                        KanjiSortMode.KANKEN_LEVEL -> "漢検 ${uiState.selectedKankenLevel}級 Kanji"
                         KanjiSortMode.JLPT_LEVEL -> "JLPT N${uiState.selectedJlptLevel} Kanji"
                         KanjiSortMode.STROKES -> "${uiState.selectedStrokeCount}-Stroke Kanji"
                         KanjiSortMode.FREQUENCY -> "${HomeViewModel.frequencyLabels[uiState.selectedFrequencyRange]} Kanji"

@@ -121,6 +121,9 @@ fun KanjiDetailScreen(
                     kanji.jlptLabel?.let {
                         AssistChip(onClick = {}, label = { Text(it) })
                     }
+                    kanji.kankenLabel?.let {
+                        AssistChip(onClick = {}, label = { Text(it) })
+                    }
                     AssistChip(onClick = {}, label = { Text("${kanji.strokeCount} strokes") })
                     kanji.frequency?.let {
                         AssistChip(onClick = {}, label = { Text("Freq #$it") })

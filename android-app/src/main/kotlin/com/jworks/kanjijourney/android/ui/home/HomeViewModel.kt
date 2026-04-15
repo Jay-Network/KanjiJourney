@@ -45,6 +45,7 @@ enum class MainTab(val label: String) {
 
 enum class KanjiSortMode(val label: String) {
     SCHOOL_GRADE("School Grade"),
+    KANKEN_LEVEL("漢検 Level"),
     JLPT_LEVEL("JLPT Level"),
     STROKES("Strokes"),
     FREQUENCY("Frequency")
@@ -87,6 +88,7 @@ data class HomeUiState(
     val selectedMainTab: MainTab = MainTab.KANJI,
     val radicals: List<Radical> = emptyList(),
     val kanjiSortMode: KanjiSortMode = KanjiSortMode.SCHOOL_GRADE,
+    val selectedKankenLevel: Int = 10,
     val selectedJlptLevel: Int = 5,
     val selectedStrokeCount: Int = 1,
     val selectedFrequencyRange: Int = 0,
@@ -143,6 +145,7 @@ class HomeViewModel @Inject constructor(
             val preserveMainTab = prev.selectedMainTab
             val preserveSortMode = prev.kanjiSortMode
             val preserveGrade = prev.selectedGrade
+            val preserveKanken = prev.selectedKankenLevel
             val preserveJlpt = prev.selectedJlptLevel
             val preserveStroke = prev.selectedStrokeCount
             val preserveFreq = prev.selectedFrequencyRange
@@ -313,6 +316,7 @@ class HomeViewModel @Inject constructor(
                 perJlptCollectedCounts = perJlptCollected,
                 perJlptTotalCounts = perJlptTotal,
                 kanjiSortMode = if (isFirstLoad) KanjiSortMode.SCHOOL_GRADE else preserveSortMode,
+                selectedKankenLevel = if (isFirstLoad) 10 else preserveKanken,
                 selectedJlptLevel = if (isFirstLoad) 5 else preserveJlpt,
                 selectedStrokeCount = if (isFirstLoad) (strokeCounts.firstOrNull() ?: 1) else preserveStroke,
                 selectedFrequencyRange = if (isFirstLoad) 0 else preserveFreq,
@@ -399,6 +403,20 @@ class HomeViewModel @Inject constructor(
                         selectedMainTab = MainTab.KANJI
                     )
                 }
+                KanjiSortMode.KANKEN_LEVEL -> {
+                    val level = _uiState.value.selectedKankenLevel
+                    val kanji = kanjiRepository.getKanjiByKankenLevel(level)
+                    val kanjiIds = kanji.map { it.id.toLong() }
+                    val practiceCounts = loadPracticeCounts(kanjiIds)
+                    val modeStats = loadModeStats(kanjiIds)
+                    _uiState.value = _uiState.value.copy(
+                        kanjiSortMode = mode,
+                        gradeOneKanji = kanji,
+                        kanjiPracticeCounts = practiceCounts,
+                        kanjiModeStats = modeStats,
+                        selectedMainTab = MainTab.KANJI
+                    )
+                }
                 KanjiSortMode.JLPT_LEVEL -> {
                     val level = _uiState.value.selectedJlptLevel
                     val kanji = kanjiRepository.getKanjiByJlptLevel(level)
@@ -464,6 +482,21 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun selectKankenLevel(level: Int) {
+        viewModelScope.launch {
+            val kanji = kanjiRepository.getKanjiByKankenLevel(level)
+            val kanjiIds = kanji.map { it.id.toLong() }
+            val practiceCounts = loadPracticeCounts(kanjiIds)
+            val modeStats = loadModeStats(kanjiIds)
+            _uiState.value = _uiState.value.copy(
+                gradeOneKanji = kanji,
+                selectedKankenLevel = level,
+                kanjiPracticeCounts = practiceCounts,
+                kanjiModeStats = modeStats
+            )
+        }
+    }
+
     fun selectStrokeCount(count: Int) {
         viewModelScope.launch {
             val kanji = kanjiRepository.getKanjiByStrokeCount(count)
@@ -511,6 +544,8 @@ class HomeViewModel @Inject constructor(
     }
 
     companion object {
+        val kankenLevels = listOf(10, 9, 8, 7, 6, 5, 4)
+
         val frequencyRanges = listOf(
             1 to 500,
             501 to 1000,

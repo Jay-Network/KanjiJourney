@@ -34,10 +34,11 @@ Track improvement ideas. Version at log time from `VERSION` file.
 
 ## IDEA-003: Grade + Kanken Dual Taxonomy
 - **Version at log**: 1.0.0
-- **Status**: proposed
+- **Status**: implemented (v1.2.4, 2026-04-13, Android)
 - **Severity**: minor
 - **Source**: Jay via jworks:9 (2026-03-06) — reference by @mocchicc (CPO at StudyPocket.ai)
 - **Description**: Add 漢検 (Kanken) level as secondary axis alongside school grade.
+- **Implementation**: Kanken level derived from school grade (Grade 1→10級, Grade 2→9級, ..., Grade 6→5級, Grade 8→4級). Added to Kanji domain model, KanjiRepository, HomeViewModel sort mode, CollectionHubScreen tabs, and KanjiDetailScreen info chips.
 
 ## IDEA-004: Full 常用漢字 Coverage (2,136 kanji)
 - **Version at log**: 1.0.0

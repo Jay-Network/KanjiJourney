@@ -122,6 +122,27 @@ class KanjiRepositoryImpl(
     override suspend fun getKanjiByFrequencyRange(from: Int, to: Int): List<Kanji> {
         return db.kanjiQueries.getByFrequencyRange(from.toLong(), to.toLong()).executeAsList().map { it.toKanji() }
     }
+
+    override suspend fun getKanjiByKankenLevel(kankenLevel: Int): List<Kanji> {
+        val grade = kankenLevelToGrade(kankenLevel) ?: return emptyList()
+        return getKanjiByGrade(grade)
+    }
+
+    override suspend fun getKanjiCountByKankenLevel(kankenLevel: Int): Long {
+        val grade = kankenLevelToGrade(kankenLevel) ?: return 0
+        return getKanjiCountByGrade(grade)
+    }
+
+    private fun kankenLevelToGrade(kankenLevel: Int): Int? = when (kankenLevel) {
+        10 -> 1
+        9 -> 2
+        8 -> 3
+        7 -> 4
+        6 -> 5
+        5 -> 6
+        4 -> 8
+        else -> null
+    }
 }
 
 internal fun com.jworks.kanjijourney.db.Kanji.toKanji(): Kanji = Kanji(
