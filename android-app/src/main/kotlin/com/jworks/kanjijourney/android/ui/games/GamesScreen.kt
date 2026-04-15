@@ -97,7 +97,7 @@ fun GamesScreen(
                 title = "Radical Builder",
                 description = "Build kanji from radical parts",
                 accentColor = GameColors.Radical,
-                imageAsset = "mode-radical-builder.png",
+                imageAsset = "mode-radical-builder.webp",
                 isPlayable = true,
                 onClick = onRadicalBuilder
             )

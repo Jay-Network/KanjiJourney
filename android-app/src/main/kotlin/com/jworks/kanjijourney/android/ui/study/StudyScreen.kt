@@ -397,13 +397,13 @@ private data class ModeInfo(
 
 private fun getModeInfo(mode: GameMode): ModeInfo {
     return when (mode) {
-        GameMode.RECOGNITION -> ModeInfo("Recognition", GameColors.Recognition, "mode-recognition.png")
-        GameMode.WRITING -> ModeInfo("Writing", StateColors.Correct, "mode-writing.png")
-        GameMode.VOCABULARY -> ModeInfo("Vocabulary", StateColors.Warning, "mode-vocabulary.png")
-        GameMode.CAMERA_CHALLENGE -> ModeInfo("Camera", GameColors.Camera, "mode-camera.png")
-        GameMode.KANA_RECOGNITION -> ModeInfo("Recognition", GameColors.Hiragana, "mode-kana-recognition.png")
-        GameMode.KANA_WRITING -> ModeInfo("Writing", GameColors.Katakana, "mode-kana-writing.png")
-        GameMode.RADICAL_RECOGNITION -> ModeInfo("Recognition", GameColors.Radical, "mode-radical-recognition.png")
-        GameMode.RADICAL_BUILDER -> ModeInfo("Builder", GameColors.Radical, "mode-radical-builder.png")
+        GameMode.RECOGNITION -> ModeInfo("Recognition", GameColors.Recognition, "mode-recognition.webp")
+        GameMode.WRITING -> ModeInfo("Writing", StateColors.Correct, "mode-writing.webp")
+        GameMode.VOCABULARY -> ModeInfo("Vocabulary", StateColors.Warning, "mode-vocabulary.webp")
+        GameMode.CAMERA_CHALLENGE -> ModeInfo("Camera", GameColors.Camera, "mode-camera.webp")
+        GameMode.KANA_RECOGNITION -> ModeInfo("Recognition", GameColors.Hiragana, "mode-kana-recognition.webp")
+        GameMode.KANA_WRITING -> ModeInfo("Writing", GameColors.Katakana, "mode-kana-writing.webp")
+        GameMode.RADICAL_RECOGNITION -> ModeInfo("Recognition", GameColors.Radical, "mode-radical-recognition.webp")
+        GameMode.RADICAL_BUILDER -> ModeInfo("Builder", GameColors.Radical, "mode-radical-builder.webp")
     }
 }

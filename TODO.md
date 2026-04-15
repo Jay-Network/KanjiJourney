@@ -1,24 +1,26 @@
 # KanjiJourney TODO
 
 ## Active Tasks
-- [x] Contrast audit — 6 violations fixed across ShopScreen, RecognitionScreen, WritingScreen (v1.2.2, 2026-04-14)
-- [x] IDEA-003: Add Kanken level as secondary taxonomy axis (v1.2.4, 2026-04-13)
-- [x] Remaining 21 hardcoded hex colors → design tokens (v1.2.3, 2026-04-13)
+- [ ] Accessibility audit — content descriptions on images and icons
 
 ## Backlog
-- IDEA-001 iOS port: cross guide lines on iOS writing canvas
-- APK size reduction (66MB → under 50MB for Supabase free tier, BUG-001)
-- Polish from beta student feedback (4 students testing)
-- iPhone calligraphy mode (finger drawing, no Apple Pencil, IDEA-005 / BUG-003)
-- Camera Challenge: AVFoundation + Vision OCR camera preview (BUG-002, iOS)
+- Release APK size measurement — confirm under 50MB after R8+ABI filter (BUG-001)
+- Supabase pull sync for word transfer (cloud complement to deep link)
 - Supabase DB migration (CHECK constraints for new app names)
 - Repo directory rename (KanjiQuest → KanjiJourney on GitHub, blocked: Jay)
-- KanjiSage deep link integration (iPad)
-- Apply Glass UI to remaining iOS screens (jworks:47 scope)
 - IDEA-004: Full 常用漢字 coverage (2,136 kanji)
-- Supabase pull sync for word transfer (cloud complement to deep link)
+- IDEA-001 iOS port: cross guide lines on iOS writing canvas
+- iPhone calligraphy mode (finger drawing, no Apple Pencil, IDEA-005 / BUG-003)
+- Camera Challenge: AVFoundation + Vision OCR camera preview (BUG-002, iOS)
+- Apply Glass UI to remaining iOS screens (jworks:47 scope)
+- KanjiSage deep link integration (iPad)
+- Polish from beta student feedback (4 students testing)
 
 ## Completed
+- [x] APK size reduction: 123MB→67MB debug — db.bak, PNG→WebP, ABI filter, shrinkResources (v1.2.5, 2026-04-15)
+- [x] IDEA-003: Add Kanken level as secondary taxonomy axis (v1.2.4, 2026-04-13)
+- [x] Remaining 21 hardcoded hex colors → design tokens (v1.2.3, 2026-04-13)
+- [x] Contrast audit — 6 violations fixed across ShopScreen, RecognitionScreen, WritingScreen (v1.2.2, 2026-04-14)
 - [x] S1-KJ-1: Sage → Journey word transfer — deep link E2E (v1.2.0, 2026-04-14)
 - [x] IDEA-002: Dakuten/handakuten variant-aware kana distractors (v1.2.1, 2026-04-14)
 - [x] IDEA-001: Cross guide lines (十字) on Android writing canvas — v1.1.3 (2026-04-13)

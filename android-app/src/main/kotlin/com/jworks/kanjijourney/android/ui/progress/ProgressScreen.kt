@@ -499,10 +499,10 @@ private fun GradeMasteryRow(mastery: GradeMastery) {
     }
 
     val badgeAsset = when (mastery.masteryLevel) {
-        MasteryLevel.BEGINNING -> "grade-beginning.png"
-        MasteryLevel.DEVELOPING -> "grade-developing.png"
-        MasteryLevel.PROFICIENT -> "grade-proficient.png"
-        MasteryLevel.ADVANCED -> "grade-advanced.png"
+        MasteryLevel.BEGINNING -> "grade-beginning.webp"
+        MasteryLevel.DEVELOPING -> "grade-developing.webp"
+        MasteryLevel.PROFICIENT -> "grade-proficient.webp"
+        MasteryLevel.ADVANCED -> "grade-advanced.webp"
     }
 
     Row(

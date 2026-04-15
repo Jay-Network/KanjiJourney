@@ -382,7 +382,7 @@ private fun EmptyJournalContent(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center
     ) {
         AssetImage(
-            filename = "empty-journal.png",
+            filename = "empty-journal.webp",
             contentDescription = "Empty journal",
             modifier = Modifier.size(160.dp),
             contentScale = ContentScale.Fit

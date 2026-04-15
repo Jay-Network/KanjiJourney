@@ -537,9 +537,9 @@ private fun FeaturedBanner(
 }
 
 private fun categoryImageAsset(category: ShopCategory): String = when (category) {
-    ShopCategory.THEME -> "shop-themes.png"
-    ShopCategory.BOOSTER -> "shop-boosters.png"
-    ShopCategory.UTILITY -> "shop-cosmetics.png"
-    ShopCategory.CONTENT -> "shop-themes.png"
-    ShopCategory.CROSS_BUSINESS -> "shop-featured.png"
+    ShopCategory.THEME -> "shop-themes.webp"
+    ShopCategory.BOOSTER -> "shop-boosters.webp"
+    ShopCategory.UTILITY -> "shop-cosmetics.webp"
+    ShopCategory.CONTENT -> "shop-themes.webp"
+    ShopCategory.CROSS_BUSINESS -> "shop-featured.webp"
 }

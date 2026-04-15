@@ -156,7 +156,7 @@ private fun AchievementSummaryCard(unlockedCount: Int, totalCount: Int) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AssetImage(
-                filename = "achievement-mastery.png",
+                filename = "achievement-mastery.webp",
                 contentDescription = "Achievements",
                 modifier = Modifier.size(64.dp),
                 contentScale = ContentScale.Fit
@@ -276,11 +276,11 @@ private fun AchievementCard(achievement: AchievementDefinition) {
 }
 
 private fun categoryImageAsset(categoryName: String): String? = when (categoryName) {
-    "Progress" -> "achievement-learning.png"
-    "Mastery" -> "achievement-mastery.png"
-    "Consistency" -> "achievement-streak.png"
-    "Games" -> "achievement-exploration.png"
-    "Accuracy" -> "achievement-speed.png"
-    "Rewards" -> "achievement-social.png"
+    "Progress" -> "achievement-learning.webp"
+    "Mastery" -> "achievement-mastery.webp"
+    "Consistency" -> "achievement-streak.webp"
+    "Games" -> "achievement-exploration.webp"
+    "Accuracy" -> "achievement-speed.webp"
+    "Rewards" -> "achievement-social.webp"
     else -> null
 }

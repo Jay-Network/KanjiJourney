@@ -2,9 +2,10 @@
 
 ## Open
 
-- [ ] [BUG-001] APK 66MB exceeds Supabase free tier 50MB storage limit
-  - **Severity**: Medium (blocker for Supabase-hosted APK distribution)
-  - **Workaround**: Direct install / GitHub releases
+- [ ] [BUG-001] APK size — debug 67MB (was 123MB), release untested
+  - **Severity**: Low (significantly reduced; release build with R8+ABI filter expected under 50MB)
+  - **Progress**: v1.2.5 — deleted db.bak (24MB), PNG→WebP (49MB→460KB), ABI filter, resource shrinking
+  - **Remaining**: Release build measurement needed to confirm under 50MB target
 - [ ] [BUG-002] Camera Challenge: AVFoundation camera preview is a placeholder
   - **Severity**: Low (game logic works, just no live camera feed)
   - **Platform**: iOS only

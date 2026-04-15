@@ -91,7 +91,7 @@ fun LoginScreen(
 
             // Hero illustration
             AssetImage(
-                filename = "login-hero.png",
+                filename = "login-hero.webp",
                 contentDescription = "KanjiJourney adventure",
                 modifier = Modifier
                     .fillMaxWidth()

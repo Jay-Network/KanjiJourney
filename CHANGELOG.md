@@ -5,6 +5,20 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.2.5 (2026-04-15) — APK Size Reduction (BUG-001)
+
+### Fixed
+- **Deleted stale `kanjijourney.db.bak`** from assets — 24MB savings
+- **Converted all 34 PNG images to WebP** at 512px/q80 — 49MB down to 460KB
+- Updated all `.png` references to `.webp` across 10 screen files (ShopScreen, StudyScreen, FlashcardScreen, ProgressScreen, AchievementsScreen, FieldJournalScreen, HomeScreen, GamesScreen, LoginScreen, AssetImage docstring)
+
+### Changed
+- Enabled `isShrinkResources = true` in release build (pairs with existing R8 minification)
+- Added ABI filter for release builds: `arm64-v8a` + `armeabi-v7a` only (drops x86/x86_64 native libs ~21MB)
+- Debug APK: 123MB → 67MB; release APK expected significantly smaller with R8 + ABI filtering
+
+---
+
 ## v1.2.4 (2026-04-13) — Kanken Level Taxonomy (IDEA-003)
 
 ### Added

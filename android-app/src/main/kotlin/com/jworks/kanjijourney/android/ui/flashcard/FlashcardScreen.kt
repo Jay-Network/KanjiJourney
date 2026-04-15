@@ -152,7 +152,7 @@ fun FlashcardScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     AssetImage(
-                        filename = "empty-flashcards.png",
+                        filename = "empty-flashcards.webp",
                         contentDescription = "No flashcards yet",
                         modifier = Modifier.size(160.dp),
                         contentScale = ContentScale.Fit

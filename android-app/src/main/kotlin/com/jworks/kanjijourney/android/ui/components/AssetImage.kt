@@ -15,9 +15,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 
 /**
- * Loads and displays a PNG image from the assets/images/ directory.
+ * Loads and displays an image from the assets/images/ directory.
  *
- * @param filename The image filename (e.g. "mode-recognition.png")
+ * @param filename The image filename (e.g. "mode-recognition.webp")
  * @param contentDescription Accessibility description
  * @param modifier Modifier for the Image composable
  * @param contentScale How the image should be scaled (default: Fit)
