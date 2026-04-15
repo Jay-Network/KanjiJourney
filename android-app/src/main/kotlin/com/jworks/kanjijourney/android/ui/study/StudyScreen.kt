@@ -46,6 +46,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jworks.kanjijourney.android.ui.components.AssetImage
+import com.jworks.kanjijourney.android.ui.theme.focusRing
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
+import com.jworks.kanjijourney.android.ui.theme.GameColors
+import com.jworks.kanjijourney.android.ui.theme.StateColors
 import com.jworks.kanjijourney.android.ui.theme.GlassBackground
 import com.jworks.kanjijourney.android.ui.theme.GlassCard
 import com.jworks.kanjijourney.android.ui.theme.GlassChip
@@ -72,7 +76,7 @@ fun StudyScreen(
             GlassTopBar(
                 title = { Text("Study", color = GlassTextPrimary) },
                 actions = {
-                    IconButton(onClick = onFeedbackClick) {
+                    IconButton(onClick = onFeedbackClick, modifier = Modifier.focusRingCircle()) {
                         Icon(
                             Icons.Default.Email,
                             contentDescription = "Send Feedback",
@@ -100,7 +104,7 @@ fun StudyScreen(
                     val isSelected = tab == uiState.selectedTab
                     GlassChip(
                         selected = isSelected,
-                        selectedColor = Color(0xFFFF6B35),
+                        selectedColor = GameColors.Writing,
                         modifier = Modifier.clickable { viewModel.selectTab(tab) }
                     ) {
                         Text(
@@ -195,8 +199,8 @@ fun StudyScreen(
                                 val trials = uiState.previewTrialsRemaining[mode] ?: 0
                                 Text(
                                     text = if (trials > 0) "Preview ($trials)" else "Premium",
-                                    fontSize = 9.sp,
-                                    color = Color(0xFFFFD700)
+                                    fontSize = 12.sp,
+                                    color = StateColors.Gold
                                 )
                             }
                         }
@@ -285,7 +289,7 @@ fun StudyScreen(
                         val isSelected = filter == uiState.kanaFilter
                         GlassChip(
                             selected = isSelected,
-                            selectedColor = Color(0xFFE91E63),
+                            selectedColor = GameColors.Hiragana,
                             modifier = Modifier.clickable { viewModel.selectKanaFilter(filter) }
                         ) {
                             Text(
@@ -334,10 +338,11 @@ fun StudyScreen(
                 enabled = canStart,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(56.dp)
+                    .focusRing(),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFFF6B35)
+                    containerColor = GameColors.Writing
                 )
             ) {
                 Text(
@@ -352,7 +357,7 @@ fun StudyScreen(
                 Text(
                     text = "Upgrade to Premium to unlock this mode",
                     fontSize = 12.sp,
-                    color = Color(0xFFFFD700),
+                    color = StateColors.Gold,
                     modifier = Modifier
                         .clickable(onClick = onSubscriptionClick)
                         .padding(4.dp)
@@ -372,7 +377,7 @@ private fun SourceChip(
 ) {
     GlassChip(
         selected = isSelected,
-        selectedColor = Color(0xFFFF6B35),
+        selectedColor = GameColors.Writing,
         modifier = Modifier.clickable(onClick = onClick)
     ) {
         Text(
@@ -392,13 +397,13 @@ private data class ModeInfo(
 
 private fun getModeInfo(mode: GameMode): ModeInfo {
     return when (mode) {
-        GameMode.RECOGNITION -> ModeInfo("Recognition", Color(0xFF2196F3), "mode-recognition.png")
-        GameMode.WRITING -> ModeInfo("Writing", Color(0xFF4CAF50), "mode-writing.png")
-        GameMode.VOCABULARY -> ModeInfo("Vocabulary", Color(0xFFFF9800), "mode-vocabulary.png")
-        GameMode.CAMERA_CHALLENGE -> ModeInfo("Camera", Color(0xFF9C27B0), "mode-camera.png")
-        GameMode.KANA_RECOGNITION -> ModeInfo("Recognition", Color(0xFFE91E63), "mode-kana-recognition.png")
-        GameMode.KANA_WRITING -> ModeInfo("Writing", Color(0xFF00BCD4), "mode-kana-writing.png")
-        GameMode.RADICAL_RECOGNITION -> ModeInfo("Recognition", Color(0xFF795548), "mode-radical-recognition.png")
-        GameMode.RADICAL_BUILDER -> ModeInfo("Builder", Color(0xFF795548), "mode-radical-builder.png")
+        GameMode.RECOGNITION -> ModeInfo("Recognition", GameColors.Recognition, "mode-recognition.png")
+        GameMode.WRITING -> ModeInfo("Writing", StateColors.Correct, "mode-writing.png")
+        GameMode.VOCABULARY -> ModeInfo("Vocabulary", StateColors.Warning, "mode-vocabulary.png")
+        GameMode.CAMERA_CHALLENGE -> ModeInfo("Camera", GameColors.Camera, "mode-camera.png")
+        GameMode.KANA_RECOGNITION -> ModeInfo("Recognition", GameColors.Hiragana, "mode-kana-recognition.png")
+        GameMode.KANA_WRITING -> ModeInfo("Writing", GameColors.Katakana, "mode-kana-writing.png")
+        GameMode.RADICAL_RECOGNITION -> ModeInfo("Recognition", GameColors.Radical, "mode-radical-recognition.png")
+        GameMode.RADICAL_BUILDER -> ModeInfo("Builder", GameColors.Radical, "mode-radical-builder.png")
     }
 }

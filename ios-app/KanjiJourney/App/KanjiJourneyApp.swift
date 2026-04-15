@@ -4,10 +4,15 @@ import SwiftUI
 struct KanjiJourneyApp: App {
     @StateObject private var appState = AppState()
 
+    init() {
+        GlassTypography.registerFonts()
+    }
+
     var body: some Scene {
         WindowGroup {
             AppRootView()
                 .environmentObject(appState)
+                .preferredColorScheme(.dark)
         }
     }
 }
@@ -160,110 +165,110 @@ struct MockHomeView: View {
     @State private var isInitializing = false
     @State private var showCalligraphy = false
 
-    private let teal = Color(red: 0.05, green: 0.58, blue: 0.53)
-
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     // Welcome card
-                    VStack(spacing: 8) {
-                        Image("JWorksLogo")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 80, height: 80)
-                        Text("Welcome to KanjiJourney!")
-                            .font(.title2).bold()
-                        Text("Gamified Kanji Learning")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                    GlassCard {
+                        VStack(spacing: 8) {
+                            Image("JWorksLogo")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 80, height: 80)
+                            Text("Welcome to KanjiJourney!")
+                                .font(GlassTypography.headlineSmall)
+                                .foregroundColor(GlassColors.textPrimary)
+                            Text("Gamified Kanji Learning")
+                                .font(GlassTypography.bodyMedium)
+                                .foregroundColor(GlassColors.textSecondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(24)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(24)
-                    .background(teal.opacity(0.1))
-                    .cornerRadius(16)
 
-                    // Game modes
                     Text("Game Modes")
-                        .font(.title3).bold()
+                        .font(GlassTypography.titleMedium)
+                        .foregroundColor(GlassColors.textPrimary)
 
-                    mockModeCard(title: "Recognition", desc: "Identify kanji from choices", color: Color(red: 0.13, green: 0.59, blue: 0.95), icon: "eye.fill", available: false)
+                    mockModeCard(title: "Recognition", desc: "Identify kanji from choices", color: Color(hex: 0x2196F3), icon: "eye.fill", available: false)
 
                     #if IPAD_TARGET
-                    // Writing → Calligraphy (works without KMP!)
                     Button(action: { showCalligraphy = true }) {
-                        mockModeCardContent(title: "書道 Writing", desc: "Practice calligraphy with AI feedback", color: Color(red: 0.30, green: 0.69, blue: 0.31), icon: "pencil.tip", available: true)
+                        mockModeCardContent(title: "書道 Writing", desc: "Practice calligraphy with AI feedback", color: Color(hex: 0x4CAF50), icon: "pencil.tip", available: true)
                     }
                     .buttonStyle(.plain)
                     #else
-                    mockModeCard(title: "Writing", desc: "Practice writing kanji", color: Color(red: 0.30, green: 0.69, blue: 0.31), icon: "pencil.tip", available: false)
+                    mockModeCard(title: "Writing", desc: "Practice writing kanji", color: Color(hex: 0x4CAF50), icon: "pencil.tip", available: false)
                     #endif
 
-                    mockModeCard(title: "Vocabulary", desc: "Learn words using kanji", color: Color(red: 1.0, green: 0.60, blue: 0.0), icon: "book.fill", available: false)
-                    mockModeCard(title: "Camera Challenge", desc: "Find kanji in the real world", color: Color(red: 0.61, green: 0.15, blue: 0.69), icon: "camera.fill", available: false)
+                    mockModeCard(title: "Vocabulary", desc: "Learn words using kanji", color: Color(hex: 0xFF9800), icon: "book.fill", available: false)
+                    mockModeCard(title: "Camera Challenge", desc: "Find kanji in the real world", color: Color(hex: 0x9C27B0), icon: "camera.fill", available: false)
 
                     Text("Study")
-                        .font(.title3).bold()
+                        .font(GlassTypography.titleMedium)
+                        .foregroundColor(GlassColors.textPrimary)
 
-                    mockModeCard(title: "Kana", desc: "Learn Hiragana & Katakana", color: Color(red: 0.91, green: 0.12, blue: 0.39), icon: "textformat.abc", available: false)
-                    mockModeCard(title: "Radicals", desc: "Master kanji building blocks", color: Color(red: 0.47, green: 0.33, blue: 0.28), icon: "square.grid.3x3.fill", available: false)
+                    mockModeCard(title: "Kana", desc: "Learn Hiragana & Katakana", color: Color(hex: 0xE91E63), icon: "textformat.abc", available: false)
+                    mockModeCard(title: "Radicals", desc: "Master kanji building blocks", color: Color(hex: 0x795548), icon: "square.grid.3x3.fill", available: false)
 
-                    // Initialize full app button
                     Spacer().frame(height: 16)
 
                     Button(action: {
                         isInitializing = true
                         appState.tryKMPInit()
                     }) {
-                        HStack {
-                            if isInitializing {
-                                ProgressView().tint(.white)
-                            } else {
-                                Image(systemName: "play.fill")
+                        GlassCard(borderColor: GlassBrand.current.opacity(0.45)) {
+                            HStack {
+                                if isInitializing {
+                                    ProgressView().tint(.white)
+                                } else {
+                                    Image(systemName: "play.fill")
+                                        .foregroundColor(GlassBrand.current)
+                                }
+                                Text(isInitializing ? "Loading database..." : "Unlock All Modes")
+                                    .font(GlassTypography.titleMedium)
+                                    .foregroundColor(GlassColors.textPrimary)
                             }
-                            Text(isInitializing ? "Loading database..." : "Unlock All Modes")
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 56)
                         }
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 56)
-                        .background(isInitializing ? .gray : teal)
-                        .cornerRadius(16)
                     }
                     .disabled(isInitializing)
+                    .opacity(isInitializing ? 0.5 : 1.0)
 
-                    // Diagnostic log (shown when initializing)
                     if !appState.diagnosticLog.isEmpty {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Init Log:")
-                                .font(.caption).bold()
-                            ForEach(appState.diagnosticLog, id: \.self) { line in
-                                Text(line)
-                                    .font(.system(.caption2, design: .monospaced))
-                                    .foregroundColor(.secondary)
+                        GlassCard(borderColor: Color.white.opacity(0.10)) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Init Log:")
+                                    .font(GlassTypography.labelSmall)
+                                    .foregroundColor(GlassColors.textSecondary)
+                                ForEach(appState.diagnosticLog, id: \.self) { line in
+                                    Text(line)
+                                        .font(.system(.caption2, design: .monospaced))
+                                        .foregroundColor(GlassColors.textMuted)
+                                }
                             }
+                            .padding(8)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         }
-                        .padding(8)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color(.systemGray6))
-                        .cornerRadius(8)
                     }
 
                     Spacer().frame(height: 32)
                 }
                 .padding(16)
             }
-            .background(Color(.systemBackground))
+            .background(GlassColors.background)
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Text("KanjiJourney")
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(.white)
+                        .font(GlassTypography.titleSmall)
+                        .foregroundColor(GlassColors.textPrimary)
                 }
             }
-            .toolbarBackground(teal, for: .navigationBar)
+            .toolbarBackground(GlassColors.surfaceDark, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
             #if IPAD_TARGET
@@ -278,41 +283,42 @@ struct MockHomeView: View {
 
     private func mockModeCard(title: String, desc: String, color: Color, icon: String, available: Bool) -> some View {
         mockModeCardContent(title: title, desc: desc, color: color, icon: icon, available: available)
-            .opacity(available ? 1.0 : 0.6)
+            .opacity(available ? 1.0 : 0.5)
     }
 
     private func mockModeCardContent(title: String, desc: String, color: Color, icon: String, available: Bool = true) -> some View {
-        HStack {
-            Image(systemName: icon)
-                .font(.system(size: 24))
-                .foregroundColor(.white)
-                .frame(width: 48, height: 48)
-                .background(color)
-                .cornerRadius(12)
-            VStack(alignment: .leading, spacing: 2) {
-                HStack(spacing: 6) {
-                    Text(title)
-                        .font(.system(size: 16, weight: .bold))
-                    if available {
-                        Text("READY")
-                            .font(.system(size: 9, weight: .bold))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Color.green)
-                            .cornerRadius(4)
+        GlassCard(borderColor: color.opacity(available ? 0.40 : 0.15)) {
+            HStack {
+                Image(systemName: icon)
+                    .font(.system(size: 24))
+                    .foregroundColor(.white)
+                    .frame(width: 48, height: 48)
+                    .background(color.opacity(0.8))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 6) {
+                        Text(title)
+                            .font(GlassTypography.labelLarge)
+                            .foregroundColor(GlassColors.textPrimary)
+                        if available {
+                            Text("READY")
+                                .font(.system(size: 9, weight: .bold))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Color(hex: 0x4CAF50))
+                                .cornerRadius(4)
+                        }
                     }
+                    Text(desc)
+                        .font(GlassTypography.bodySmall)
+                        .foregroundColor(GlassColors.textSecondary)
                 }
-                Text(desc)
-                    .font(.system(size: 13))
-                    .foregroundColor(.secondary)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundColor(available ? color : GlassColors.textMuted)
             }
-            Spacer()
-            Image(systemName: "chevron.right")
-                .foregroundColor(available ? color : .secondary)
+            .padding(12)
         }
-        .padding(12)
-        .background(Color(.secondarySystemBackground))
-        .cornerRadius(12)
     }
 }

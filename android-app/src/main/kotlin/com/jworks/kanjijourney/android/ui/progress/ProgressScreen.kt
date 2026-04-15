@@ -46,6 +46,8 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import com.jworks.kanjijourney.android.ui.components.AssetImage
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
+import com.jworks.kanjijourney.android.ui.theme.MasteryColors
 import com.jworks.kanjijourney.core.domain.model.GradeMastery
 import com.jworks.kanjijourney.core.domain.model.MasteryLevel
 import com.jworks.kanjijourney.core.domain.model.StudySession
@@ -68,12 +70,12 @@ fun ProgressScreen(
             TopAppBar(
                 title = { Text("Progress & Stats") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = onBack, modifier = Modifier.focusRingCircle()) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
-                    IconButton(onClick = { viewModel.refresh() }) {
+                    IconButton(onClick = { viewModel.refresh() }, modifier = Modifier.focusRingCircle()) {
                         Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }
                 },
@@ -490,10 +492,10 @@ private fun GradeMasteryBreakdownCard(grades: List<GradeMastery>) {
 @Composable
 private fun GradeMasteryRow(mastery: GradeMastery) {
     val levelColor = when (mastery.masteryLevel) {
-        MasteryLevel.BEGINNING -> Color(0xFFE57373)
-        MasteryLevel.DEVELOPING -> Color(0xFFFFB74D)
-        MasteryLevel.PROFICIENT -> Color(0xFF81C784)
-        MasteryLevel.ADVANCED -> Color(0xFFFFD700)
+        MasteryLevel.BEGINNING -> MasteryColors.Beginning
+        MasteryLevel.DEVELOPING -> MasteryColors.Developing
+        MasteryLevel.PROFICIENT -> MasteryColors.Proficient
+        MasteryLevel.ADVANCED -> MasteryColors.Advanced
     }
 
     val badgeAsset = when (mastery.masteryLevel) {

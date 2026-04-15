@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
 import com.jworks.kanjijourney.core.domain.model.Kanji
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -51,7 +52,7 @@ fun WordDetailScreen(
             TopAppBar(
                 title = { Text("Word Detail") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = onBack, modifier = Modifier.focusRingCircle()) {
                         Text("\u2190", fontSize = 24.sp)
                     }
                 },

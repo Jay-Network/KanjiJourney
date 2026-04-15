@@ -8,6 +8,20 @@ struct MainTabView: View {
 
     @State private var selectedTab: BottomTab = .main
 
+    init(navigateTo: @escaping (NavRoute) -> Void) {
+        self.navigateTo = navigateTo
+        // Glass-styled tab bar appearance
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.configureWithOpaqueBackground()
+        tabBarAppearance.backgroundColor = UIColor(Color(hex: 0x08080F))
+        tabBarAppearance.stackedLayoutAppearance.normal.iconColor = UIColor.white.withAlphaComponent(0.5)
+        tabBarAppearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.white.withAlphaComponent(0.5)]
+        tabBarAppearance.stackedLayoutAppearance.selected.iconColor = UIColor(Color(hex: 0xFF6B35))
+        tabBarAppearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(Color(hex: 0xFF6B35))]
+        UITabBar.appearance().standardAppearance = tabBarAppearance
+        UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+    }
+
     var body: some View {
         TabView(selection: $selectedTab) {
             // Tab 1: Main (Home)
@@ -42,7 +56,7 @@ struct MainTabView: View {
                 }
                 .tag(BottomTab.collect)
         }
-        .accentColor(KanjiJourneyTheme.primary)
+        .accentColor(GlassBrand.current)
     }
 }
 

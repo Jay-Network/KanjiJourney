@@ -18,35 +18,39 @@ struct HomeView: View {
 private struct GameModeButtonView: View {
     let label: String
     var subtitle: String? = nil
-    var modeColor: Color = KanjiJourneyTheme.primary
+    var modeColor: Color = GlassBrand.current
     var imageAsset: String? = nil
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            HStack {
-                if let imageAsset {
-                    AssetImage(filename: imageAsset, contentDescription: label)
-                        .frame(width: 48, height: 48)
-                    Spacer().frame(width: 8)
-                }
-                VStack(alignment: .leading) {
-                    Text(label)
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundColor(.white)
-                    if let subtitle {
-                        Text(subtitle)
-                            .font(.system(size: 10))
-                            .foregroundColor(.white.opacity(0.7))
+            GlassCard(borderColor: modeColor.opacity(0.40)) {
+                HStack {
+                    if let imageAsset {
+                        AssetImage(filename: imageAsset, contentDescription: label)
+                            .frame(width: 48, height: 48)
+                        Spacer().frame(width: 8)
                     }
+                    // Colored accent strip
+                    Rectangle()
+                        .fill(modeColor)
+                        .frame(width: 4)
+                    VStack(alignment: .leading) {
+                        Text(label)
+                            .font(GlassTypography.labelLarge)
+                            .foregroundColor(GlassColors.textPrimary)
+                        if let subtitle {
+                            Text(subtitle)
+                                .font(GlassTypography.labelSmall)
+                                .foregroundColor(GlassColors.textSecondary)
+                        }
+                    }
+                    Spacer()
                 }
-                Spacer()
+                .padding(.horizontal, 12)
+                .frame(height: 80)
+                .frame(maxWidth: .infinity)
             }
-            .padding(.horizontal, 12)
-            .frame(height: 80)
-            .frame(maxWidth: .infinity)
-            .background(modeColor)
-            .cornerRadius(KanjiJourneyTheme.radiusM)
         }
     }
 }
@@ -55,7 +59,7 @@ private struct PreviewableGameModeButtonView: View {
     let label: String
     let isPremium: Bool
     let trialInfo: PreviewTrialInfo?
-    var modeColor: Color = KanjiJourneyTheme.primary
+    var modeColor: Color = GlassBrand.current
     var imageAsset: String? = nil
     let onPremiumClick: () -> Void
     let onPreviewClick: () -> Void
@@ -72,27 +76,27 @@ private struct PreviewableGameModeButtonView: View {
             let hasTrials = remaining > 0
 
             Button(action: { hasTrials ? onPreviewClick() : onUpgradeClick() }) {
-                HStack {
-                    if let imageAsset {
-                        AssetImage(filename: imageAsset, contentDescription: label)
-                            .frame(width: 48, height: 48)
-                        Spacer().frame(width: 8)
+                GlassCard(borderColor: hasTrials ? modeColor.opacity(0.28) : Color.white.opacity(0.08)) {
+                    HStack {
+                        if let imageAsset {
+                            AssetImage(filename: imageAsset, contentDescription: label)
+                                .frame(width: 48, height: 48)
+                            Spacer().frame(width: 8)
+                        }
+                        VStack(alignment: .leading) {
+                            Text(label)
+                                .font(GlassTypography.labelLarge)
+                                .foregroundColor(hasTrials ? GlassColors.textPrimary : GlassColors.textMuted)
+                            Text(hasTrials ? "Preview (\(remaining) left)" : "Upgrade to unlock")
+                                .font(GlassTypography.labelSmall)
+                                .foregroundColor(hasTrials ? GlassColors.textSecondary : KanjiJourneyTheme.coinGold)
+                        }
+                        Spacer()
                     }
-                    VStack(alignment: .leading) {
-                        Text(label)
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(hasTrials ? KanjiJourneyTheme.onSurface : KanjiJourneyTheme.onSurfaceVariant)
-                        Text(hasTrials ? "Preview (\(remaining) left)" : "Upgrade to unlock")
-                            .font(.system(size: 10, weight: hasTrials ? .regular : .bold))
-                            .foregroundColor(hasTrials ? KanjiJourneyTheme.onSurfaceVariant : Color(hex: 0xB8860B))
-                    }
-                    Spacer()
+                    .padding(.horizontal, 12)
+                    .frame(height: 80)
+                    .frame(maxWidth: .infinity)
                 }
-                .padding(.horizontal, 12)
-                .frame(height: 80)
-                .frame(maxWidth: .infinity)
-                .background(hasTrials ? KanjiJourneyTheme.secondary.opacity(0.15) : KanjiJourneyTheme.surfaceVariant)
-                .cornerRadius(KanjiJourneyTheme.radiusM)
             }
         }
     }
@@ -105,23 +109,23 @@ private struct LearningPathCardView: View {
     let color: Color
 
     var body: some View {
-        VStack(spacing: 4) {
-            Text(title)
-                .font(KanjiJourneyTheme.labelMedium)
-                .fontWeight(.bold)
-            Text(subtitle)
-                .font(.system(size: 10))
-                .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
-            ProgressView(value: Double(min(max(progress, 0), 1)))
-                .tint(color)
-            Text("\(Int(progress * 100))%")
-                .font(.system(size: 9))
-                .foregroundColor(color)
+        GlassCard(borderColor: color.opacity(0.28)) {
+            VStack(spacing: 4) {
+                Text(title)
+                    .font(GlassTypography.labelMedium)
+                    .foregroundColor(GlassColors.textPrimary)
+                Text(subtitle)
+                    .font(GlassTypography.labelSmall)
+                    .foregroundColor(GlassColors.textSecondary)
+                ProgressView(value: Double(min(max(progress, 0), 1)))
+                    .tint(color)
+                Text("\(Int(progress * 100))%")
+                    .font(.system(size: 9))
+                    .foregroundColor(color)
+            }
+            .padding(8)
+            .frame(width: 100, height: 80)
         }
-        .padding(8)
-        .frame(width: 100, height: 80)
-        .background(KanjiJourneyTheme.surface)
-        .cornerRadius(KanjiJourneyTheme.radiusM)
     }
 }
 
@@ -219,11 +223,11 @@ private struct KanjiGridItemView: View {
         }
         .frame(height: 64)
         .frame(maxWidth: .infinity)
-        .background(isCollected ? KanjiJourneyTheme.surface : KanjiJourneyTheme.surface.opacity(0.3))
-        .cornerRadius(KanjiJourneyTheme.radiusM)
+        .background(isCollected ? GlassColors.cardGradient : GlassColors.cardDisabledGradient)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
         .overlay(
-            RoundedRectangle(cornerRadius: KanjiJourneyTheme.radiusM)
-                .stroke(borderColor ?? .clear, lineWidth: borderColor != nil ? 2 : 0)
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(borderColor ?? GlassColors.border, lineWidth: borderColor != nil ? 2 : 1)
         )
         .onTapGesture { if isCollected { onClick() } }
     }
@@ -243,19 +247,20 @@ private struct KanaGridItemView: View {
                 VStack(spacing: 0) {
                     Text(kana.literal)
                         .font(.system(size: 26, weight: .bold))
+                        .foregroundColor(GlassColors.textPrimary)
                     Text(kana.romanization)
                         .font(.system(size: 8))
-                        .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
+                        .foregroundColor(GlassColors.textSecondary)
                 }
             }
         }
         .frame(height: 64)
         .frame(maxWidth: .infinity)
-        .background(isCollected ? KanjiJourneyTheme.surface : KanjiJourneyTheme.surface.opacity(0.3))
-        .cornerRadius(KanjiJourneyTheme.radiusM)
+        .background(isCollected ? GlassColors.cardGradient : GlassColors.cardDisabledGradient)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
         .overlay(
-            RoundedRectangle(cornerRadius: KanjiJourneyTheme.radiusM)
-                .stroke(borderColor ?? .clear, lineWidth: borderColor != nil ? 2 : 0)
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(borderColor ?? GlassColors.border, lineWidth: borderColor != nil ? 2 : 1)
         )
         .onTapGesture { if isCollected { onClick() } }
     }
@@ -278,7 +283,7 @@ private struct RadicalGridItemView: View {
                     if let meaningJp = radical.meaningJp, !meaningJp.isEmpty {
                         Text(meaningJp)
                             .font(.system(size: 9))
-                            .foregroundColor(.white)
+                            .foregroundColor(GlassColors.textPrimary)
                             .lineLimit(1)
                     }
                 }
@@ -286,11 +291,11 @@ private struct RadicalGridItemView: View {
         }
         .frame(height: 72)
         .frame(maxWidth: .infinity)
-        .background(isCollected ? KanjiJourneyTheme.surface : KanjiJourneyTheme.surface.opacity(0.3))
-        .cornerRadius(KanjiJourneyTheme.radiusM)
+        .background(isCollected ? GlassColors.cardGradient : GlassColors.cardDisabledGradient)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
         .overlay(
-            RoundedRectangle(cornerRadius: KanjiJourneyTheme.radiusM)
-                .stroke(borderColor ?? .clear, lineWidth: borderColor != nil ? 2 : 0)
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(borderColor ?? GlassColors.border, lineWidth: borderColor != nil ? 2 : 1)
         )
         .onTapGesture { if isCollected { onClick() } }
     }
@@ -373,15 +378,15 @@ private struct HomeViewBody: View {
             }
             .padding(16)
         }
-        .background(KanjiJourneyTheme.background)
+        .background(GlassColors.background)
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 HStack(spacing: 4) {
                     Text("KanjiJourney")
-                        .font(KanjiJourneyTheme.titleSmall)
-                        .foregroundColor(.white)
+                        .font(GlassTypography.titleSmall)
+                        .foregroundColor(GlassColors.textPrimary)
                     if state.isAdmin {
                         Text(state.effectiveLevel.displayName)
                             .font(.system(size: 10, weight: .bold))
@@ -401,17 +406,17 @@ private struct HomeViewBody: View {
                             .foregroundColor(KanjiJourneyTheme.coinGold)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
-                            .background(Color.white.opacity(0.2))
+                            .background(GlassBrand.current.opacity(0.20))
                             .cornerRadius(6)
                     }
                     Button(action: { navigateTo(.settings) }) {
                         Image(systemName: "gearshape.fill")
-                            .foregroundColor(.white)
+                            .foregroundColor(GlassColors.textPrimary)
                     }
                 }
             }
         }
-        .toolbarBackground(KanjiJourneyTheme.primary, for: .navigationBar)
+        .toolbarBackground(GlassColors.surfaceDark, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar)
     }
@@ -420,63 +425,64 @@ private struct HomeViewBody: View {
     // They reference `viewModel` and `navigateTo` from the struct context.
 
     private func profileCard(state: HomeUiState) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(state.tierNameJp)
-                        .font(KanjiJourneyTheme.labelMedium)
-                        .foregroundColor(KanjiJourneyTheme.primary)
-                        .fontWeight(.bold)
-                    Text("\(state.tierName) - Lv.\(state.displayLevel)")
-                        .font(KanjiJourneyTheme.titleLarge)
-                        .fontWeight(.bold)
-                    Text("\((state.profile?.totalXp ?? 0)) XP")
-                        .font(KanjiJourneyTheme.bodyMedium)
-                        .foregroundColor(KanjiJourneyTheme.tertiary)
-                }
-                Spacer()
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text("\((state.coinBalance?.displayBalance ?? 0)) J Coins")
-                        .font(KanjiJourneyTheme.bodyMedium)
-                        .fontWeight(.bold)
-                        .foregroundColor(KanjiJourneyTheme.coinGold)
-                        .onTapGesture { navigateTo(.shop) }
-                    if (state.coinBalance?.needsSync ?? false) {
-                        Text("Pending sync...")
-                            .font(KanjiJourneyTheme.labelSmall)
-                            .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
+        GlassCard {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(state.tierNameJp)
+                            .font(GlassTypography.labelMedium)
+                            .foregroundColor(GlassBrand.current)
+                            .fontWeight(.bold)
+                        Text("\(state.tierName) - Lv.\(state.displayLevel)")
+                            .font(GlassTypography.titleLarge)
+                            .foregroundColor(GlassColors.textPrimary)
+                            .fontWeight(.bold)
+                        Text("\((state.profile?.totalXp ?? 0)) XP")
+                            .font(GlassTypography.bodyMedium)
+                            .foregroundColor(KanjiJourneyTheme.coinGold)
                     }
-                    Text("\(state.kanjiCount) kanji loaded")
-                        .font(KanjiJourneyTheme.bodySmall)
-                        .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
+                    Spacer()
+                    VStack(alignment: .trailing, spacing: 2) {
+                        Text("\((state.coinBalance?.displayBalance ?? 0)) J Coins")
+                            .font(GlassTypography.bodyMedium)
+                            .fontWeight(.bold)
+                            .foregroundColor(KanjiJourneyTheme.coinGold)
+                            .onTapGesture { navigateTo(.shop) }
+                        if (state.coinBalance?.needsSync ?? false) {
+                            Text("Pending sync...")
+                                .font(GlassTypography.labelSmall)
+                                .foregroundColor(GlassColors.textMuted)
+                        }
+                        Text("\(state.kanjiCount) kanji loaded")
+                            .font(GlassTypography.bodySmall)
+                            .foregroundColor(GlassColors.textSecondary)
+                    }
+                }
+                ProgressView(value: Double((state.profile?.xpProgress ?? 0)))
+                    .tint(GlassBrand.current)
+                if let nextName = state.nextTierName, let nextLevel = state.nextTierLevel {
+                    Text("Next: \(nextName) at Lv.\(nextLevel)")
+                        .font(GlassTypography.bodySmall)
+                        .foregroundColor(GlassColors.textSecondary)
                 }
             }
-            ProgressView(value: Double((state.profile?.xpProgress ?? 0)))
-                .tint(KanjiJourneyTheme.primary)
-            if let nextName = state.nextTierName, let nextLevel = state.nextTierLevel {
-                Text("Next: \(nextName) at Lv.\(nextLevel)")
-                    .font(KanjiJourneyTheme.bodySmall)
-                    .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
-            }
+            .padding(16)
         }
-        .padding(16)
-        .background(KanjiJourneyTheme.surface)
-        .cornerRadius(KanjiJourneyTheme.radiusM)
     }
 
     private var upgradeBanner: some View {
         Button(action: { navigateTo(.subscription) }) {
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Upgrade to Premium").font(KanjiJourneyTheme.labelLarge).fontWeight(.bold).foregroundColor(Color(hex: 0xB8860B))
-                    Text("Unlock all modes, J Coins & more").font(KanjiJourneyTheme.labelSmall).foregroundColor(Color(hex: 0xB8860B).opacity(0.8))
+            GlassCard(borderColor: KanjiJourneyTheme.coinGold.opacity(0.40)) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Upgrade to Premium").font(GlassTypography.labelLarge).fontWeight(.bold).foregroundColor(KanjiJourneyTheme.coinGold)
+                        Text("Unlock all modes, J Coins & more").font(GlassTypography.labelSmall).foregroundColor(KanjiJourneyTheme.coinGold.opacity(0.7))
+                    }
+                    Spacer()
+                    Text("$4.99/mo").font(GlassTypography.titleMedium).fontWeight(.bold).foregroundColor(KanjiJourneyTheme.coinGold)
                 }
-                Spacer()
-                Text("$4.99/mo").font(KanjiJourneyTheme.titleMedium).fontWeight(.bold).foregroundColor(Color(hex: 0xB8860B))
+                .padding(12)
             }
-            .padding(12)
-            .background(KanjiJourneyTheme.coinGold.opacity(0.15))
-            .cornerRadius(KanjiJourneyTheme.radiusM)
         }
         .padding(.top, 8)
     }
@@ -484,21 +490,22 @@ private struct HomeViewBody: View {
     private var actionButtonsRow: some View {
         HStack(spacing: 8) {
             Button(action: { navigateTo(.progress) }) {
-                Text("Progress").font(.system(size: 14, weight: .bold)).frame(maxWidth: .infinity).frame(height: 48)
+                GlassCard(borderColor: KanjiJourneyTheme.secondary.opacity(0.28)) {
+                    Text("Progress").font(GlassTypography.labelLarge).foregroundColor(KanjiJourneyTheme.secondary).frame(maxWidth: .infinity).frame(height: 48)
+                }
             }
-            .buttonStyle(.borderedProminent).tint(KanjiJourneyTheme.secondary.opacity(0.2)).foregroundColor(KanjiJourneyTheme.secondary)
-
             Button(action: { navigateTo(.achievements) }) {
-                Text("Achievements").font(.system(size: 14, weight: .bold)).frame(maxWidth: .infinity).frame(height: 48)
+                GlassCard(borderColor: KanjiJourneyTheme.coinGold.opacity(0.28)) {
+                    Text("Achievements").font(GlassTypography.labelLarge).foregroundColor(KanjiJourneyTheme.coinGold).frame(maxWidth: .infinity).frame(height: 48)
+                }
             }
-            .buttonStyle(.borderedProminent).tint(KanjiJourneyTheme.tertiary.opacity(0.2)).foregroundColor(KanjiJourneyTheme.onTertiary)
         }
     }
 
     private func gradeMasterySection(mastery: [GradeMastery]) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Spacer().frame(height: 12)
-            Text("Grade Mastery").font(KanjiJourneyTheme.titleMedium).fontWeight(.bold)
+            Text("Grade Mastery").font(GlassTypography.titleMedium).foregroundColor(GlassColors.textPrimary)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     ForEach(mastery, id: \.grade) { m in GradeMasteryBadgeView(mastery: m) }
@@ -509,25 +516,25 @@ private struct HomeViewBody: View {
 
     private func wordOfTheDayCard(wotd: Vocabulary) -> some View {
         Button(action: { navigateTo(.wordDetail(wordId: wotd.id)) }) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Word of the Day").font(KanjiJourneyTheme.labelMedium)
-                    Text(wotd.reading).font(KanjiJourneyTheme.bodySmall)
-                    Text(wotd.primaryMeaning).font(KanjiJourneyTheme.bodyMedium)
+            GlassCard(borderColor: KanjiJourneyTheme.coinGold.opacity(0.28)) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Word of the Day").font(GlassTypography.labelMedium).foregroundColor(KanjiJourneyTheme.coinGold)
+                        Text(wotd.reading).font(GlassTypography.bodySmall).foregroundColor(GlassColors.textSecondary)
+                        Text(wotd.primaryMeaning).font(GlassTypography.bodyMedium).foregroundColor(GlassColors.textPrimary)
+                    }
+                    Spacer()
+                    KanjiText(text: wotd.kanjiForm, font: .system(size: 40, weight: .bold))
                 }
-                Spacer()
-                KanjiText(text: wotd.kanjiForm, font: .system(size: 40, weight: .bold))
+                .padding(16)
             }
-            .padding(16)
-            .background(KanjiJourneyTheme.tertiary.opacity(0.2))
-            .cornerRadius(KanjiJourneyTheme.radiusM)
         }
         .buttonStyle(.plain)
     }
 
     private func learningPathSection(state: HomeUiState) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Learning Path").font(KanjiJourneyTheme.titleMedium).fontWeight(.bold)
+            Text("Learning Path").font(GlassTypography.titleMedium).foregroundColor(GlassColors.textPrimary)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     LearningPathCardView(title: "Hiragana", subtitle: "ひらがな", progress: state.hiraganaProgress, color: Color(hex: 0xE91E63))
@@ -543,7 +550,7 @@ private struct HomeViewBody: View {
 
     private var kanaPracticeSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Kana Practice").font(KanjiJourneyTheme.titleMedium).fontWeight(.bold)
+            Text("Kana Practice").font(GlassTypography.titleMedium).foregroundColor(GlassColors.textPrimary)
             HStack(spacing: 12) {
                 GameModeButtonView(label: "Hiragana", subtitle: "Recognition", modeColor: Color(hex: 0xE91E63), imageAsset: "mode-kana-recognition.png", action: { navigateTo(.kanaRecognition(kanaType: "HIRAGANA")) })
                 GameModeButtonView(label: "Katakana", subtitle: "Recognition", modeColor: Color(hex: 0x00BCD4), imageAsset: "mode-kana-writing.png", action: { navigateTo(.kanaRecognition(kanaType: "KATAKANA")) })
@@ -560,7 +567,7 @@ private struct HomeViewBody: View {
 
     private func kanjiStudyModesSection(state: HomeUiState) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Kanji Study Modes").font(KanjiJourneyTheme.titleMedium).fontWeight(.bold)
+            Text("Kanji Study Modes").font(GlassTypography.titleMedium).foregroundColor(GlassColors.textPrimary)
             HStack(spacing: 12) {
                 GameModeButtonView(label: "Recognition", subtitle: "Free", modeColor: Color(hex: 0x2196F3), imageAsset: "mode-recognition.png", action: { navigateTo(.recognition) })
                 PreviewableGameModeButtonView(label: "Writing", isPremium: state.isPremium, trialInfo: state.previewTrials["WRITING"], modeColor: Color(hex: 0x4CAF50), imageAsset: "mode-writing.png", onPremiumClick: { navigateTo(.writing) }, onPreviewClick: { if viewModel.usePreviewTrial(mode: "WRITING") { navigateTo(.writing) } }, onUpgradeClick: { navigateTo(.subscription) })
@@ -575,12 +582,17 @@ private struct HomeViewBody: View {
     private func flashcardCollectionRow(state: HomeUiState) -> some View {
         HStack(spacing: 8) {
             Button(action: { navigateTo(.flashcards) }) {
-                Text(state.flashcardDeckCount > 0 ? "Flashcards (\(state.flashcardDeckCount))" : "Flashcards").font(.system(size: 14, weight: .bold)).frame(maxWidth: .infinity).frame(height: 48)
-            }.buttonStyle(.borderedProminent).tint(KanjiJourneyTheme.tertiary.opacity(0.2)).foregroundColor(KanjiJourneyTheme.onTertiary)
-
+                GlassCard(borderColor: KanjiJourneyTheme.coinGold.opacity(0.28)) {
+                    Text(state.flashcardDeckCount > 0 ? "Flashcards (\(state.flashcardDeckCount))" : "Flashcards")
+                        .font(GlassTypography.labelLarge).foregroundColor(KanjiJourneyTheme.coinGold).frame(maxWidth: .infinity).frame(height: 48)
+                }
+            }
             Button(action: { navigateTo(.collection) }) {
-                Text("Collection \(state.collectedKanjiCount)/\(state.totalKanjiInGrades)").font(.system(size: 14, weight: .bold)).foregroundColor(.white).frame(maxWidth: .infinity).frame(height: 48)
-            }.buttonStyle(.borderedProminent).tint(Color(hex: 0x9C27B0).opacity(0.8))
+                GlassCard(borderColor: Color(hex: 0x9C27B0).opacity(0.40)) {
+                    Text("Collection \(state.collectedKanjiCount)/\(state.totalKanjiInGrades)")
+                        .font(GlassTypography.labelLarge).foregroundColor(GlassColors.textPrimary).frame(maxWidth: .infinity).frame(height: 48)
+                }
+            }
         }
     }
 
@@ -589,12 +601,11 @@ private struct HomeViewBody: View {
             HStack(spacing: 4) {
                 ForEach(MainTab.allCases, id: \.self) { tab in
                     let isSelected = tab == state.selectedMainTab
-                    Text(tab.rawValue).font(.system(size: 12, weight: isSelected ? .bold : .regular))
-                        .foregroundColor(isSelected ? .white : KanjiJourneyTheme.primary)
-                        .padding(.horizontal, 10).padding(.vertical, 5)
-                        .background(isSelected ? KanjiJourneyTheme.primary : KanjiJourneyTheme.surfaceVariant)
-                        .cornerRadius(6)
-                        .onTapGesture { viewModel.selectMainTab(tab) }
+                    GlassChip(selected: isSelected) {
+                        Text(tab.rawValue).font(GlassTypography.labelMedium)
+                            .foregroundColor(isSelected ? GlassColors.textPrimary : GlassColors.textSecondary)
+                    }
+                    .onTapGesture { viewModel.selectMainTab(tab) }
                 }
             }
         }
@@ -605,12 +616,11 @@ private struct HomeViewBody: View {
             HStack(spacing: 4) {
                 ForEach(KanjiSortMode.allCases, id: \.self) { mode in
                     let isSelected = mode == state.kanjiSortMode
-                    Text(mode.rawValue).font(.system(size: 11, weight: isSelected ? .bold : .regular))
-                        .foregroundColor(isSelected ? .white : KanjiJourneyTheme.onSurfaceVariant)
-                        .padding(.horizontal, 8).padding(.vertical, 4)
-                        .background(isSelected ? KanjiJourneyTheme.tertiary : KanjiJourneyTheme.surfaceVariant)
-                        .cornerRadius(6)
-                        .onTapGesture { viewModel.selectSortMode(mode) }
+                    GlassChip(selected: isSelected, selectedColor: KanjiJourneyTheme.coinGold) {
+                        Text(mode.rawValue).font(GlassTypography.labelSmall)
+                            .foregroundColor(isSelected ? GlassColors.textPrimary : GlassColors.textMuted)
+                    }
+                    .onTapGesture { viewModel.selectSortMode(mode) }
                 }
             }
         }
@@ -628,12 +638,12 @@ private struct HomeViewBody: View {
                         let total = state.perGradeTotalCounts[grade] ?? 0
                         let gradeLabel = grade == 8 ? "G8+" : "G\(grade)"
                         let labelText = total > 0 ? "\(gradeLabel)\n\(collected)/\(total)" : gradeLabel
-                        Text(labelText).font(.system(size: 11, weight: isSelected ? .bold : .regular)).multilineTextAlignment(.center)
-                            .foregroundColor(isSelected ? .white : (hasCollection ? KanjiJourneyTheme.primary : KanjiJourneyTheme.onSurfaceVariant.opacity(0.38)))
-                            .padding(.horizontal, 8).padding(.vertical, 4)
-                            .background(isSelected ? KanjiJourneyTheme.primary : (hasCollection ? KanjiJourneyTheme.surfaceVariant : KanjiJourneyTheme.surfaceVariant.opacity(0.5)))
-                            .cornerRadius(6)
-                            .onTapGesture { if hasCollection { viewModel.selectGrade(grade) } }
+                        GlassChip(selected: isSelected) {
+                            Text(labelText).font(GlassTypography.labelSmall).multilineTextAlignment(.center)
+                                .foregroundColor(isSelected ? GlassColors.textPrimary : (hasCollection ? GlassBrand.current : GlassColors.textMuted))
+                        }
+                        .opacity(hasCollection ? 1.0 : 0.5)
+                        .onTapGesture { if hasCollection { viewModel.selectGrade(grade) } }
                     }
                 case .jlptLevel:
                     ForEach([5, 4, 3, 2, 1] as [Int32], id: \.self) { level in
@@ -641,32 +651,29 @@ private struct HomeViewBody: View {
                         let collected = state.perJlptCollectedCounts[level] ?? 0
                         let total = state.perJlptTotalCounts[level] ?? 0
                         let labelText = total > 0 ? "N\(level)\n\(collected)/\(total)" : "N\(level)"
-                        Text(labelText).font(.system(size: 11, weight: isSelected ? .bold : .regular)).multilineTextAlignment(.center)
-                            .foregroundColor(isSelected ? .white : KanjiJourneyTheme.primary)
-                            .padding(.horizontal, 8).padding(.vertical, 4)
-                            .background(isSelected ? KanjiJourneyTheme.primary : KanjiJourneyTheme.surfaceVariant)
-                            .cornerRadius(6)
-                            .onTapGesture { viewModel.selectJlptLevel(level) }
+                        GlassChip(selected: isSelected) {
+                            Text(labelText).font(GlassTypography.labelSmall).multilineTextAlignment(.center)
+                                .foregroundColor(isSelected ? GlassColors.textPrimary : GlassBrand.current)
+                        }
+                        .onTapGesture { viewModel.selectJlptLevel(level) }
                     }
                 case .strokes:
                     ForEach(state.availableStrokeCounts, id: \.self) { count in
                         let isSelected = count == state.selectedStrokeCount
-                        Text("\(count)画").font(.system(size: 12, weight: isSelected ? .bold : .regular))
-                            .foregroundColor(isSelected ? .white : KanjiJourneyTheme.primary)
-                            .padding(.horizontal, 8).padding(.vertical, 4)
-                            .background(isSelected ? KanjiJourneyTheme.primary : KanjiJourneyTheme.surfaceVariant)
-                            .cornerRadius(6)
-                            .onTapGesture { viewModel.selectStrokeCount(count) }
+                        GlassChip(selected: isSelected) {
+                            Text("\(count)画").font(GlassTypography.labelSmall)
+                                .foregroundColor(isSelected ? GlassColors.textPrimary : GlassBrand.current)
+                        }
+                        .onTapGesture { viewModel.selectStrokeCount(count) }
                     }
                 case .frequency:
                     ForEach(Array(HomeViewModel.frequencyLabels.enumerated()), id: \.offset) { index, label in
                         let isSelected = index == state.selectedFrequencyRange
-                        Text(label).font(.system(size: 12, weight: isSelected ? .bold : .regular))
-                            .foregroundColor(isSelected ? .white : KanjiJourneyTheme.primary)
-                            .padding(.horizontal, 8).padding(.vertical, 4)
-                            .background(isSelected ? KanjiJourneyTheme.primary : KanjiJourneyTheme.surfaceVariant)
-                            .cornerRadius(6)
-                            .onTapGesture { viewModel.selectFrequencyRange(index) }
+                        GlassChip(selected: isSelected) {
+                            Text(label).font(GlassTypography.labelSmall)
+                                .foregroundColor(isSelected ? GlassColors.textPrimary : GlassBrand.current)
+                        }
+                        .onTapGesture { viewModel.selectFrequencyRange(index) }
                     }
                 }
             }
@@ -687,7 +694,7 @@ private struct HomeViewBody: View {
             case .frequency: title = "\(HomeViewModel.frequencyLabels[state.selectedFrequencyRange]) Kanji"
             }
         }
-        return Text(title).font(KanjiJourneyTheme.titleMedium).fontWeight(.bold)
+        return Text(title).font(GlassTypography.titleMedium).foregroundColor(GlassColors.textPrimary)
     }
 
     @ViewBuilder

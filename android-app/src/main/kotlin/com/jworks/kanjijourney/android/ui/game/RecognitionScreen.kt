@@ -49,6 +49,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jworks.kanjijourney.android.ui.components.XpPopup
+import com.jworks.kanjijourney.android.ui.theme.DiscoveryColors
 import com.jworks.kanjijourney.android.ui.theme.StateColors
 import com.jworks.kanjijourney.android.ui.theme.focusRing
 import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
@@ -291,7 +292,7 @@ private fun QuestionContent(
                         .align(Alignment.TopStart)
                         .padding(4.dp)
                         .background(
-                            color = Color(0xFF00897B),
+                            color = DiscoveryColors.Badge,
                             shape = RoundedCornerShape(8.dp)
                         )
                         .padding(horizontal = 6.dp, vertical = 2.dp)
@@ -489,7 +490,7 @@ private fun SessionCompleteContent(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFF00BFA5).copy(alpha = 0.1f)
+                    containerColor = DiscoveryColors.CardBackground.copy(alpha = 0.1f)
                 )
             ) {
                 Column(
@@ -499,7 +500,7 @@ private fun SessionCompleteContent(
                         text = "New Discoveries",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF00695C)
+                        color = DiscoveryColors.Text
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(

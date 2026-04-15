@@ -39,8 +39,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import com.jworks.kanjijourney.android.ui.theme.focusRing
+import com.jworks.kanjijourney.android.ui.theme.focusRingTextField
+import com.jworks.kanjijourney.android.ui.theme.StateColors
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -64,6 +69,8 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
+    val emailFocusRequester = remember { FocusRequester() }
+    val passwordFocusRequester = remember { FocusRequester() }
 
     LaunchedEffect(uiState.isLoggedIn) {
         if (uiState.isLoggedIn) {
@@ -147,16 +154,23 @@ fun LoginScreen(
                         value = email,
                         onValueChange = { email = it },
                         label = { Text("Email") },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(emailFocusRequester)
+                            .focusRingTextField(),
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Email,
                             imeAction = ImeAction.Next
                         ),
                         keyboardActions = KeyboardActions(
-                            onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                            onNext = { passwordFocusRequester.requestFocus() }
                         ),
-                        enabled = !uiState.isLoading
+                        enabled = !uiState.isLoading,
+                        isError = uiState.error != null && email.isBlank(),
+                        supportingText = if (uiState.error != null && email.isBlank()) {
+                            { Text("Email is required") }
+                        } else null
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -165,7 +179,10 @@ fun LoginScreen(
                         value = password,
                         onValueChange = { password = it },
                         label = { Text("Password") },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(passwordFocusRequester)
+                            .focusRingTextField(),
                         singleLine = true,
                         visualTransformation = PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(
@@ -181,7 +198,11 @@ fun LoginScreen(
                                 }
                             }
                         ),
-                        enabled = !uiState.isLoading
+                        enabled = !uiState.isLoading,
+                        isError = uiState.error != null && password.isBlank(),
+                        supportingText = if (uiState.error != null && password.isBlank()) {
+                            { Text("Password is required") }
+                        } else null
                     )
 
                     // Error message
@@ -205,7 +226,8 @@ fun LoginScreen(
                         },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(50.dp),
+                            .height(50.dp)
+                            .focusRing(shape = RoundedCornerShape(12.dp)),
                         shape = RoundedCornerShape(12.dp),
                         enabled = email.isNotBlank() && password.isNotBlank() && !uiState.isLoading
                     ) {
@@ -245,7 +267,7 @@ fun LoginScreen(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFF1E88E5).copy(alpha = 0.08f)
+                    containerColor = StateColors.Info.copy(alpha = 0.08f)
                 ),
                 shape = RoundedCornerShape(12.dp)
             ) {
@@ -256,7 +278,7 @@ fun LoginScreen(
                         text = "TutoringJay Members get more",
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1565C0)
+                        color = StateColors.InfoBrand
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     MemberPerk("Premium app access included with tutoring")
@@ -267,7 +289,7 @@ fun LoginScreen(
                     Text(
                         text = "Learn more at tutoringjay.com",
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color(0xFF1565C0).copy(alpha = 0.7f)
+                        color = StateColors.InfoBrand.copy(alpha = 0.7f)
                     )
                 }
             }
@@ -295,7 +317,8 @@ fun LoginScreen(
                 onClick = onContinueWithoutAccount,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
+                    .height(50.dp)
+                    .focusRing(shape = RoundedCornerShape(12.dp)),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -331,14 +354,14 @@ private fun MemberPerk(text: String) {
     ) {
         Text(
             text = "\u2713 ",
-            color = Color(0xFF1565C0),
+            color = StateColors.InfoBrand,
             fontWeight = FontWeight.Bold,
             fontSize = 13.sp
         )
         Text(
             text = text,
             style = MaterialTheme.typography.bodySmall,
-            color = Color(0xFF1565C0).copy(alpha = 0.85f)
+            color = StateColors.InfoBrand.copy(alpha = 0.85f)
         )
     }
 }

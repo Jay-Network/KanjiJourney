@@ -43,6 +43,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.jworks.kanjijourney.android.ui.theme.focusRing
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
+import com.jworks.kanjijourney.android.ui.theme.GameColors
+import com.jworks.kanjijourney.android.ui.theme.StateColors
 import com.jworks.kanjijourney.core.domain.model.ExampleSentence
 import com.jworks.kanjijourney.core.domain.model.GameMode
 import com.jworks.kanjijourney.core.domain.model.Kanji
@@ -64,17 +68,17 @@ fun KanjiDetailScreen(
             TopAppBar(
                 title = { Text(uiState.kanji?.literal ?: "Kanji Detail") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = onBack, modifier = Modifier.focusRingCircle()) {
                         Text("\u2190", fontSize = 24.sp)
                     }
                 },
                 actions = {
                     // Flashcard bookmark toggle
-                    IconButton(onClick = { viewModel.toggleFlashcard() }) {
+                    IconButton(onClick = { viewModel.toggleFlashcard() }, modifier = Modifier.focusRingCircle()) {
                         Text(
                             text = if (uiState.isInFlashcardDeck) "\u2605" else "\u2606",
                             fontSize = 24.sp,
-                            color = if (uiState.isInFlashcardDeck) Color(0xFFFFD700) else MaterialTheme.colorScheme.onPrimary
+                            color = if (uiState.isInFlashcardDeck) StateColors.Gold else MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 },
@@ -156,9 +160,9 @@ fun KanjiDetailScreen(
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold,
                                         color = when {
-                                            acc >= 0.8f -> Color(0xFF4CAF50)
-                                            acc >= 0.6f -> Color(0xFFFF9800)
-                                            else -> Color(0xFFF44336)
+                                            acc >= 0.8f -> StateColors.Correct
+                                            acc >= 0.6f -> StateColors.Warning
+                                            else -> StateColors.Incorrect
                                         }
                                     )
                                     Text(
@@ -199,11 +203,11 @@ fun KanjiDetailScreen(
                                     onPracticeWriting(kanjiId)
                                 },
                                 enabled = canPractice,
-                                modifier = Modifier.weight(1f).height(48.dp),
+                                modifier = Modifier.weight(1f).height(48.dp).focusRing(),
                                 shape = RoundedCornerShape(10.dp),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFF4CAF50),
-                                    disabledContainerColor = Color(0xFF4CAF50).copy(alpha = 0.3f)
+                                    containerColor = StateColors.Correct,
+                                    disabledContainerColor = StateColors.Correct.copy(alpha = 0.3f)
                                 )
                             ) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -211,7 +215,7 @@ fun KanjiDetailScreen(
                                     if (!uiState.isPremium && !uiState.isAdmin && writingTrial != null) {
                                         Text(
                                             text = if (canPractice) "${writingTrial.trialsRemaining} left" else "No trials",
-                                            fontSize = 9.sp, color = Color.White.copy(alpha = 0.8f)
+                                            fontSize = 12.sp, color = Color.White.copy(alpha = 0.85f)
                                         )
                                     }
                                 }
@@ -229,11 +233,11 @@ fun KanjiDetailScreen(
                                     onPracticeCamera(kanjiId)
                                 },
                                 enabled = canPractice,
-                                modifier = Modifier.weight(1f).height(48.dp),
+                                modifier = Modifier.weight(1f).height(48.dp).focusRing(),
                                 shape = RoundedCornerShape(10.dp),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFF9C27B0),
-                                    disabledContainerColor = Color(0xFF9C27B0).copy(alpha = 0.3f)
+                                    containerColor = GameColors.Camera,
+                                    disabledContainerColor = GameColors.Camera.copy(alpha = 0.3f)
                                 )
                             ) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -241,7 +245,7 @@ fun KanjiDetailScreen(
                                     if (!uiState.isPremium && !uiState.isAdmin && cameraTrial != null) {
                                         Text(
                                             text = if (canPractice) "${cameraTrial.trialsRemaining} left" else "No trials",
-                                            fontSize = 9.sp, color = Color.White.copy(alpha = 0.8f)
+                                            fontSize = 12.sp, color = Color.White.copy(alpha = 0.85f)
                                         )
                                     }
                                 }
@@ -350,7 +354,7 @@ fun KanjiDetailScreen(
                 }
             },
             confirmButton = {
-                TextButton(onClick = { viewModel.dismissDeckChooser() }) {
+                TextButton(onClick = { viewModel.dismissDeckChooser() }, modifier = Modifier.focusRing()) {
                     Text("Done")
                 }
             }

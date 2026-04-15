@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jworks.kanjijourney.android.ui.components.AssetImage
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
+import com.jworks.kanjijourney.android.ui.theme.GameColors
 import com.jworks.kanjijourney.android.ui.theme.GlassBackground
 import com.jworks.kanjijourney.android.ui.theme.GlassBorder
 import com.jworks.kanjijourney.android.ui.theme.GlassTextPrimary
@@ -63,7 +65,7 @@ fun GamesScreen(
             GlassTopBar(
                 title = { Text("Play", color = GlassTextPrimary) },
                 actions = {
-                    IconButton(onClick = onFeedbackClick) {
+                    IconButton(onClick = onFeedbackClick, modifier = Modifier.focusRingCircle()) {
                         Icon(
                             Icons.Default.Email,
                             contentDescription = "Send Feedback",
@@ -94,7 +96,7 @@ fun GamesScreen(
             GameCard(
                 title = "Radical Builder",
                 description = "Build kanji from radical parts",
-                accentColor = Color(0xFF795548),
+                accentColor = GameColors.Radical,
                 imageAsset = "mode-radical-builder.png",
                 isPlayable = true,
                 onClick = onRadicalBuilder
@@ -105,7 +107,7 @@ fun GamesScreen(
             GameCard(
                 title = "Test Mode",
                 description = "Quiz yourself on grades, JLPT, kana, or radicals",
-                accentColor = Color(0xFF2196F3),
+                accentColor = GameColors.Recognition,
                 imageAsset = null,
                 isPlayable = true,
                 onClick = onTestMode
@@ -116,7 +118,7 @@ fun GamesScreen(
             GameCard(
                 title = "Speed Challenge",
                 description = "Answer as fast as you can before time runs out",
-                accentColor = Color(0xFFFF5722),
+                accentColor = GameColors.Speed,
                 imageAsset = null,
                 isPlayable = false,
                 comingSoonLabel = "Coming Soon"
@@ -127,7 +129,7 @@ fun GamesScreen(
             GameCard(
                 title = "Battle",
                 description = "Challenge friends online",
-                accentColor = Color(0xFF673AB7),
+                accentColor = GameColors.Vocabulary,
                 imageAsset = null,
                 isPlayable = false,
                 comingSoonLabel = "Coming Soon"
@@ -180,7 +182,7 @@ private fun GameCard(
                 modifier = Modifier
                     .width(4.dp)
                     .height(48.dp)
-                    .clip(RoundedCornerShape(2.dp))
+                    .clip(RoundedCornerShape(8.dp))
                     .background(if (isPlayable) accentColor else accentColor.copy(alpha = 0.3f))
             )
             Spacer(modifier = Modifier.width(12.dp))
@@ -209,13 +211,13 @@ private fun GameCard(
             if (comingSoonLabel != null) {
                 Text(
                     text = comingSoonLabel,
-                    fontSize = 10.sp,
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                     color = GlassTextMuted,
                     modifier = Modifier
                         .background(
                             color = Color.White.copy(alpha = 0.08f),
-                            shape = RoundedCornerShape(6.dp)
+                            shape = RoundedCornerShape(8.dp)
                         )
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 )

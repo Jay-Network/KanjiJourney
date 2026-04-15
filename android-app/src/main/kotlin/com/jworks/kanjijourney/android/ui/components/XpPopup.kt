@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import com.jworks.kanjijourney.android.ui.theme.StateColors
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -28,7 +29,7 @@ fun XpPopup(
         exit = fadeOut() + slideOutHorizontally { it },
         modifier = modifier
     ) {
-        val bgColor = if (isCorrect == true) Color(0xFF4CAF50) else Color(0xFFF44336)
+        val bgColor = if (isCorrect == true) StateColors.Correct else StateColors.Incorrect
         val label = if (isCorrect == true) "+$xpGained XP" else "Incorrect"
 
         Text(

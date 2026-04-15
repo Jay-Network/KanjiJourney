@@ -103,7 +103,7 @@ fun GlassChip(
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit
 ) {
-    val shape = RoundedCornerShape(6.dp)
+    val shape = RoundedCornerShape(8.dp)
     val bg = if (selected)
         selectedColor.copy(alpha = 0.30f)
     else

@@ -10,10 +10,9 @@ struct GamesTabView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Game Modes")
-                    .font(KanjiJourneyTheme.titleLarge)
-                    .fontWeight(.bold)
+                    .font(GlassTypography.titleLarge)
+                    .foregroundColor(GlassColors.textPrimary)
 
-                // Radical Builder - playable
                 GameCardView(
                     title: "Radical Builder",
                     description: "Build kanji from radical parts",
@@ -23,7 +22,6 @@ struct GamesTabView: View {
                     action: { navigateTo(.radicalBuilder) }
                 )
 
-                // Test Mode - playable
                 GameCardView(
                     title: "Test Mode",
                     description: "Quiz yourself on grades, JLPT, kana, or radicals",
@@ -32,7 +30,6 @@ struct GamesTabView: View {
                     action: { navigateTo(.testMode) }
                 )
 
-                // Speed Challenge - coming soon
                 GameCardView(
                     title: "Speed Challenge",
                     description: "Answer as fast as you can before time runs out",
@@ -41,7 +38,6 @@ struct GamesTabView: View {
                     comingSoonLabel: "Coming Soon"
                 )
 
-                // Battle - coming soon
                 GameCardView(
                     title: "Battle",
                     description: "Challenge friends online",
@@ -52,11 +48,11 @@ struct GamesTabView: View {
             }
             .padding(16)
         }
-        .background(KanjiJourneyTheme.background)
+        .background(GlassColors.background)
     }
 }
 
-/// Game mode card matching Android's GameCard composable.
+/// Game mode card with glass styling and colored accent border.
 private struct GameCardView: View {
     let title: String
     let description: String
@@ -68,35 +64,43 @@ private struct GameCardView: View {
 
     var body: some View {
         Button(action: { if isPlayable { action() } }) {
-            HStack {
-                if let imageAsset {
-                    AssetImage(filename: imageAsset, contentDescription: title)
-                        .frame(width: 56, height: 56)
-                    Spacer().frame(width: 12)
+            GlassCard(
+                cornerRadius: 16,
+                borderColor: isPlayable ? color.opacity(0.40) : Color.white.opacity(0.08)
+            ) {
+                HStack {
+                    // Colored accent strip
+                    Rectangle()
+                        .fill(color.opacity(isPlayable ? 0.8 : 0.3))
+                        .frame(width: 4)
+
+                    if let imageAsset {
+                        AssetImage(filename: imageAsset, contentDescription: title)
+                            .frame(width: 56, height: 56)
+                        Spacer().frame(width: 12)
+                    }
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(title)
+                            .font(GlassTypography.titleMedium)
+                            .foregroundColor(isPlayable ? GlassColors.textPrimary : GlassColors.textMuted)
+                        Text(description)
+                            .font(GlassTypography.bodySmall)
+                            .foregroundColor(isPlayable ? GlassColors.textSecondary : GlassColors.textMuted)
+                    }
+                    Spacer()
+                    if let comingSoonLabel {
+                        Text(comingSoonLabel)
+                            .font(GlassTypography.labelSmall)
+                            .foregroundColor(GlassColors.textMuted)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.white.opacity(0.06))
+                            .cornerRadius(6)
+                    }
                 }
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(title)
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(isPlayable ? .white : .white.opacity(0.6))
-                    Text(description)
-                        .font(.system(size: 12))
-                        .foregroundColor(isPlayable ? .white.opacity(0.8) : .white.opacity(0.4))
-                }
-                Spacer()
-                if let comingSoonLabel {
-                    Text(comingSoonLabel)
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundColor(.white.opacity(0.5))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(.white.opacity(0.15))
-                        .cornerRadius(6)
-                }
+                .padding(16)
+                .frame(maxWidth: .infinity, minHeight: 100, alignment: .leading)
             }
-            .padding(16)
-            .frame(maxWidth: .infinity, minHeight: 100, alignment: .leading)
-            .background(isPlayable ? color : color.opacity(0.3))
-            .cornerRadius(16)
         }
         .disabled(!isPlayable)
     }

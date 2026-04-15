@@ -26,6 +26,7 @@ import com.jworks.kanjijourney.android.ui.games.GamesScreen
 import com.jworks.kanjijourney.android.ui.home.HomeScreen
 import com.jworks.kanjijourney.android.ui.navigation.NavRoute
 import com.jworks.kanjijourney.android.ui.study.StudyScreen
+import com.jworks.kanjijourney.android.ui.theme.GlassBrand
 import com.jworks.kanjijourney.android.ui.theme.GlassBackground
 import com.jworks.kanjijourney.android.ui.theme.GlassNavigationBar
 import com.jworks.kanjijourney.android.ui.theme.GlassTextSecondary
@@ -56,7 +57,7 @@ fun MainScaffold(
     val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    val selectedColor = Color(0xFFFF6B35)
+    val selectedColor = GlassBrand.current
     val unselectedColor = Color.White.copy(alpha = 0.50f)
 
     Scaffold(
@@ -90,7 +91,7 @@ fun MainScaffold(
                         )
                         Text(
                             text = item.label,
-                            fontSize = 11.sp,
+                            fontSize = 12.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                             color = if (isSelected) selectedColor else unselectedColor
                         )

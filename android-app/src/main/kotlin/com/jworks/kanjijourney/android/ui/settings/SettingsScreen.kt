@@ -23,6 +23,9 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.ui.graphics.Color
+import com.jworks.kanjijourney.android.ui.theme.focusRing
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
+import com.jworks.kanjijourney.android.ui.theme.StateColors
 import com.jworks.kanjijourney.core.domain.model.LevelProgression
 import com.jworks.kanjijourney.core.domain.model.UserLevel
 import androidx.compose.material3.AlertDialog
@@ -74,7 +77,7 @@ fun SettingsScreen(
             TopAppBar(
                 title = { Text("Settings") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = onBack, modifier = Modifier.focusRingCircle()) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
@@ -149,7 +152,7 @@ fun SettingsScreen(
                                     .background(
                                         if (isSelected) MaterialTheme.colorScheme.primary
                                         else Color.Transparent,
-                                        RoundedCornerShape(6.dp)
+                                        RoundedCornerShape(8.dp)
                                     )
                                     .clickable { viewModel.setSessionLength(length) }
                                     .padding(vertical = 10.dp),
@@ -268,7 +271,7 @@ fun SettingsScreen(
                                 Text(
                                     text = "(active)",
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = Color(0xFF4CAF50)
+                                    color = StateColors.Correct
                                 )
                             }
                         }
@@ -330,7 +333,7 @@ fun SettingsScreen(
                     ) {
                         TextButton(
                             onClick = { viewModel.setAdminPlayerLevelOverride(sliderLevel.roundToInt()) },
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f).focusRing()
                         ) {
                             Text("Apply", fontWeight = FontWeight.Bold)
                         }
@@ -339,7 +342,7 @@ fun SettingsScreen(
                                 viewModel.setAdminPlayerLevelOverride(null)
                                 sliderLevel = uiState.currentPlayerLevel.toFloat()
                             },
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier.weight(1f).focusRing(),
                             enabled = overrideActive
                         ) {
                             Text("Clear")
@@ -349,7 +352,7 @@ fun SettingsScreen(
                         Text(
                             text = "Override active: Level ${uiState.adminPlayerLevelOverride}",
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color(0xFF4CAF50),
+                            color = StateColors.Correct,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -361,7 +364,7 @@ fun SettingsScreen(
             // Reset Button
             TextButton(
                 onClick = { showResetDialog = true },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().focusRing()
             ) {
                 Text(
                     text = "Reset to Defaults",
@@ -425,13 +428,14 @@ fun SettingsScreen(
                     onClick = {
                         viewModel.resetToDefaults()
                         showResetDialog = false
-                    }
+                    },
+                    modifier = Modifier.focusRing()
                 ) {
                     Text("Reset", color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showResetDialog = false }) {
+                TextButton(onClick = { showResetDialog = false }, modifier = Modifier.focusRing()) {
                     Text("Cancel")
                 }
             }
@@ -571,12 +575,12 @@ private fun DailyGoalDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm(sliderValue.roundToInt()) }) {
+            TextButton(onClick = { onConfirm(sliderValue.roundToInt()) }, modifier = Modifier.focusRing()) {
                 Text("Set Goal")
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(onClick = onDismiss, modifier = Modifier.focusRing()) {
                 Text("Cancel")
             }
         }
@@ -622,7 +626,7 @@ private fun <T> SelectionDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(onClick = onDismiss, modifier = Modifier.focusRing()) {
                 Text("Close")
             }
         }

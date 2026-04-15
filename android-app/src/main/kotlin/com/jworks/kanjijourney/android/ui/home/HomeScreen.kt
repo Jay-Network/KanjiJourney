@@ -43,6 +43,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import com.jworks.kanjijourney.android.ui.components.AssetImage
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
+import com.jworks.kanjijourney.android.ui.theme.DebugColors
+import com.jworks.kanjijourney.android.ui.theme.GameColors
+import com.jworks.kanjijourney.android.ui.theme.MasteryColors
+import com.jworks.kanjijourney.android.ui.theme.StateColors
 import com.jworks.kanjijourney.android.ui.theme.GlassBackground
 import com.jworks.kanjijourney.android.ui.theme.GlassCard
 import com.jworks.kanjijourney.android.ui.theme.GlassCardGradient
@@ -97,14 +102,14 @@ fun HomeScreen(
                                 style = MaterialTheme.typography.labelSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = when (uiState.effectiveLevel) {
-                                    UserLevel.ADMIN -> Color(0xFFFF6B6B)
-                                    UserLevel.PREMIUM -> Color(0xFFFFD700)
+                                    UserLevel.ADMIN -> DebugColors.AdminBadge
+                                    UserLevel.PREMIUM -> StateColors.Gold
                                     UserLevel.FREE -> GlassTextSecondary
                                 },
                                 modifier = Modifier
                                     .background(
                                         color = Color.White.copy(alpha = 0.10f),
-                                        shape = RoundedCornerShape(4.dp)
+                                        shape = RoundedCornerShape(8.dp)
                                     )
                                     .padding(horizontal = 6.dp, vertical = 2.dp)
                             )
@@ -112,28 +117,28 @@ fun HomeScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = onFeedbackClick) {
+                    IconButton(onClick = onFeedbackClick, modifier = Modifier.focusRingCircle()) {
                         Icon(
                             Icons.Default.Email,
                             contentDescription = "Send Feedback",
                             tint = GlassTextSecondary
                         )
                     }
-                    IconButton(onClick = onShopClick) {
+                    IconButton(onClick = onShopClick, modifier = Modifier.focusRingCircle()) {
                         Text(
                             text = "J",
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
-                            color = Color(0xFFFFD700),
+                            color = StateColors.Gold,
                             modifier = Modifier
                                 .background(
                                     color = Color.White.copy(alpha = 0.10f),
-                                    shape = RoundedCornerShape(6.dp)
+                                    shape = RoundedCornerShape(8.dp)
                                 )
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         )
                     }
-                    IconButton(onClick = onSettingsClick) {
+                    IconButton(onClick = onSettingsClick, modifier = Modifier.focusRingCircle()) {
                         Icon(
                             Icons.Default.Settings,
                             contentDescription = "Settings",
@@ -168,7 +173,7 @@ fun HomeScreen(
                             Text(
                                 text = uiState.tierNameJp,
                                 style = MaterialTheme.typography.labelMedium,
-                                color = Color(0xFFFF6B35),
+                                color = GameColors.Writing,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
@@ -180,7 +185,7 @@ fun HomeScreen(
                             Text(
                                 text = "${uiState.profile.totalXp} XP",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = Color(0xFFFFD54F)
+                                color = StateColors.GoldLight
                             )
                         }
                         Column(horizontalAlignment = Alignment.End) {
@@ -188,7 +193,7 @@ fun HomeScreen(
                                 text = "${uiState.coinBalance.displayBalance} J Coins",
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFFFFD700),
+                                color = StateColors.Gold,
                                 modifier = Modifier.clickable(onClick = onShopClick)
                             )
                             if (uiState.coinBalance.needsSync) {
@@ -211,8 +216,8 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(6.dp)
-                            .clip(RoundedCornerShape(3.dp)),
-                        color = Color(0xFFFF6B35),
+                            .clip(RoundedCornerShape(8.dp)),
+                        color = GameColors.Writing,
                         trackColor = Color.White.copy(alpha = 0.08f)
                     )
                     if (uiState.nextTierName != null && uiState.nextTierLevel != null) {
@@ -233,7 +238,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable(onClick = onSubscriptionClick),
-                    borderColor = Color(0xFFFFD700).copy(alpha = 0.35f)
+                    borderColor = StateColors.Gold.copy(alpha = 0.35f)
                 ) {
                     Row(
                         modifier = Modifier
@@ -247,19 +252,19 @@ fun HomeScreen(
                                 text = "Upgrade to Premium",
                                 style = MaterialTheme.typography.labelLarge,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFFFFD700)
+                                color = StateColors.Gold
                             )
                             Text(
                                 text = "Unlock all modes, J Coins & more",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = Color(0xFFFFD700).copy(alpha = 0.7f)
+                                color = StateColors.Gold.copy(alpha = 0.7f)
                             )
                         }
                         Text(
                             text = "$4.99/mo",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFFFFD700)
+                            color = StateColors.Gold
                         )
                     }
                 }
@@ -281,7 +286,7 @@ fun HomeScreen(
                             text = "${uiState.profile.currentStreak}",
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFFFF6B35)
+                            color = GameColors.Writing
                         )
                         Text(
                             text = "Day Streak",
@@ -294,7 +299,7 @@ fun HomeScreen(
                             text = "${uiState.collectedKanjiCount}",
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF9C27B0)
+                            color = GameColors.Camera
                         )
                         Text(
                             text = "Collected",
@@ -307,7 +312,7 @@ fun HomeScreen(
                             text = "${uiState.flashcardDeckCount}",
                             style = MaterialTheme.typography.headlineMedium,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFFFF6B35)
+                            color = GameColors.Writing
                         )
                         Text(
                             text = "Decks",
@@ -326,7 +331,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { onWordOfDayClick(wotd.id) },
-                    borderColor = Color(0xFFFFD54F).copy(alpha = 0.28f)
+                    borderColor = StateColors.GoldLight.copy(alpha = 0.28f)
                 ) {
                     Row(
                         modifier = Modifier
@@ -338,7 +343,7 @@ fun HomeScreen(
                             Text(
                                 text = "Word of the Day",
                                 style = MaterialTheme.typography.labelMedium,
-                                color = Color(0xFFFFD54F)
+                                color = StateColors.GoldLight
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
@@ -382,26 +387,26 @@ fun HomeScreen(
                     title = "Hiragana",
                     subtitle = "ひらがな",
                     progress = uiState.hiraganaProgress,
-                    color = Color(0xFFE91E63)
+                    color = GameColors.Hiragana
                 )
                 LearningPathCard(
                     title = "Katakana",
                     subtitle = "カタカナ",
                     progress = uiState.katakanaProgress,
-                    color = Color(0xFF00BCD4)
+                    color = GameColors.Katakana
                 )
                 LearningPathCard(
                     title = "Radicals",
                     subtitle = "部首",
                     progress = uiState.radicalProgress,
-                    color = Color(0xFF795548)
+                    color = GameColors.Radical
                 )
                 uiState.gradeMasteryList.forEach { mastery ->
                     LearningPathCard(
                         title = "Grade ${mastery.grade}",
                         subtitle = "漢字",
                         progress = mastery.masteryScore,
-                        color = Color(0xFFFF6B35)
+                        color = GameColors.Writing
                     )
                 }
             }
@@ -453,16 +458,16 @@ private fun LearningPathCard(
             Text(title, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold,
                 color = GlassTextPrimary)
             Text(subtitle, style = MaterialTheme.typography.labelSmall,
-                color = GlassTextSecondary, fontSize = 10.sp)
+                color = GlassTextSecondary, fontSize = 12.sp)
             Spacer(modifier = Modifier.height(4.dp))
             LinearProgressIndicator(
                 progress = { progress.coerceIn(0f, 1f) },
-                modifier = Modifier.fillMaxWidth().height(4.dp).clip(RoundedCornerShape(2.dp)),
+                modifier = Modifier.fillMaxWidth().height(4.dp).clip(RoundedCornerShape(8.dp)),
                 color = color,
                 trackColor = Color.White.copy(alpha = 0.08f)
             )
             Text("${(progress * 100).toInt()}%", style = MaterialTheme.typography.labelSmall,
-                color = color, fontSize = 9.sp)
+                color = color, fontSize = 12.sp)
         }
     }
 }
@@ -477,10 +482,10 @@ private fun GradeMasteryBadge(mastery: GradeMastery) {
     }
 
     val ringColor = when (mastery.masteryLevel) {
-        MasteryLevel.BEGINNING -> Color(0xFFE57373)
-        MasteryLevel.DEVELOPING -> Color(0xFFFFB74D)
-        MasteryLevel.PROFICIENT -> Color(0xFF81C784)
-        MasteryLevel.ADVANCED -> Color(0xFFFFD700)
+        MasteryLevel.BEGINNING -> MasteryColors.Beginning
+        MasteryLevel.DEVELOPING -> MasteryColors.Developing
+        MasteryLevel.PROFICIENT -> MasteryColors.Proficient
+        MasteryLevel.ADVANCED -> MasteryColors.Advanced
     }
 
     Column(
@@ -510,7 +515,7 @@ private fun GradeMasteryBadge(mastery: GradeMastery) {
             style = MaterialTheme.typography.labelSmall,
             color = ringColor,
             fontWeight = FontWeight.Bold,
-            fontSize = 9.sp
+            fontSize = 12.sp
         )
     }
 }

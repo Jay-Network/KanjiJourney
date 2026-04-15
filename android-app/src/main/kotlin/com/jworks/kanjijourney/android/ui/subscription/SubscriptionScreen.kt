@@ -39,6 +39,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.jworks.kanjijourney.android.ui.theme.focusRing
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
+import com.jworks.kanjijourney.android.ui.theme.StateColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,7 +57,7 @@ fun SubscriptionScreen(
             TopAppBar(
                 title = { Text("Subscription") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = onBack, modifier = Modifier.focusRingCircle()) {
                         Text("<", fontSize = 20.sp)
                     }
                 }
@@ -71,7 +74,7 @@ fun SubscriptionScreen(
         ) {
             // Current plan badge
             val planLabel = if (uiState.isPremium) "Premium" else "Free"
-            val planColor = if (uiState.isPremium) Color(0xFFFFD700) else MaterialTheme.colorScheme.surfaceVariant
+            val planColor = if (uiState.isPremium) StateColors.Gold else MaterialTheme.colorScheme.surfaceVariant
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = planColor)
@@ -135,10 +138,11 @@ fun SubscriptionScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp),
+                        .height(56.dp)
+                        .focusRing(),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFFFD700)
+                        containerColor = StateColors.Gold
                     )
                 ) {
                     Text(
@@ -166,7 +170,8 @@ fun SubscriptionScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp),
+                        .height(56.dp)
+                        .focusRing(),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
@@ -213,7 +218,7 @@ private fun FeatureRow(
                 text = premiumText ?: if (premium) "Yes" else "---",
                 style = MaterialTheme.typography.bodySmall,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFFFFD700),
+                color = StateColors.Gold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.weight(1f)
             )

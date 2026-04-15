@@ -56,6 +56,8 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jworks.kanjijourney.android.ui.game.DiscoveryOverlay
+import com.jworks.kanjijourney.android.ui.theme.DebugColors
+import com.jworks.kanjijourney.android.ui.theme.ShopColors
 import com.jworks.kanjijourney.android.ui.theme.StateColors
 import com.jworks.kanjijourney.android.ui.theme.focusRing
 import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
@@ -296,14 +298,14 @@ private fun WritingSetupContent(
             Spacer(modifier = Modifier.height(8.dp))
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF3E0))
+                colors = CardDefaults.cardColors(containerColor = DebugColors.CardBackground)
             ) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     Text(
                         text = "Debug: Writing Difficulty",
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFFBF360C)
+                        color = DebugColors.Text
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
@@ -316,7 +318,7 @@ private fun WritingSetupContent(
                             modifier = Modifier.weight(1f).focusRing(),
                             shape = RoundedCornerShape(8.dp),
                             colors = if (adminDifficultyOverride == null) {
-                                ButtonDefaults.outlinedButtonColors(containerColor = Color(0xFFE65100).copy(alpha = 0.15f))
+                                ButtonDefaults.outlinedButtonColors(containerColor = ShopColors.Accent.copy(alpha = 0.15f))
                             } else ButtonDefaults.outlinedButtonColors()
                         ) {
                             Text("Auto", fontSize = 12.sp)
@@ -327,7 +329,7 @@ private fun WritingSetupContent(
                                 modifier = Modifier.weight(1f).focusRing(),
                                 shape = RoundedCornerShape(8.dp),
                                 colors = if (adminDifficultyOverride == diff) {
-                                    ButtonDefaults.outlinedButtonColors(containerColor = Color(0xFFE65100).copy(alpha = 0.15f))
+                                    ButtonDefaults.outlinedButtonColors(containerColor = ShopColors.Accent.copy(alpha = 0.15f))
                                 } else ButtonDefaults.outlinedButtonColors()
                             ) {
                                 Text(diff.label, fontSize = 12.sp)

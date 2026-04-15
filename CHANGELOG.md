@@ -5,6 +5,21 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.2.3 (2026-04-13) — Design Token Migration Complete
+
+### Changed
+- Migrated remaining 19 hardcoded `Color(0x...)` values to semantic design tokens (21→2 remaining, both file-local named constants in SplashScreen)
+- RecognitionScreen: 3 teal hex colors → DiscoveryColors.Badge, DiscoveryColors.CardBackground, DiscoveryColors.Text
+- WritingScreen: 4 hex colors → DebugColors.CardBackground, DebugColors.Text, ShopColors.Accent (2x admin button tints)
+- DrawingCanvas: active stroke blue → GameColors.Recognition
+- HomeScreen: admin badge red → DebugColors.AdminBadge
+- GamesScreen: Speed Challenge accent → GameColors.Speed (new token)
+- LoginScreen: membership pitch card blue → StateColors.Info
+- VocabularyScreen: 2 discovery teal hex → DiscoveryColors.CardBackground
+- Added GameColors.Speed token (0xFFFF5722, deep orange) to Theme.kt
+
+---
+
 ## v1.2.2 (2026-04-14) — WCAG Contrast Audit Fixes
 
 ### Fixed

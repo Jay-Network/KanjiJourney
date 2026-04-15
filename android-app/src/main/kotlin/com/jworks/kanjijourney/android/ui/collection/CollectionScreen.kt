@@ -39,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.jworks.kanjijourney.core.domain.model.CollectedItem
 import com.jworks.kanjijourney.core.domain.model.CollectionItemType
 import com.jworks.kanjijourney.core.domain.model.Rarity
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
 import com.jworks.kanjijourney.android.ui.theme.GlassBackground
 import com.jworks.kanjijourney.android.ui.theme.GlassBrand
 import com.jworks.kanjijourney.android.ui.theme.GlassCard
@@ -71,7 +72,7 @@ fun CollectionScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = onBack, modifier = Modifier.focusRingCircle()) {
                         Text(
                             "\u2190",
                             fontSize = 24.sp,
@@ -240,7 +241,7 @@ private fun RarityStatChip(label: String, count: Int, color: Color) {
         )
         Text(
             text = label,
-            fontSize = 9.sp,
+            fontSize = 12.sp,
             color = color.copy(alpha = 0.8f)
         )
     }
@@ -285,7 +286,7 @@ private fun RarityFilterChip(
     ) {
         Text(
             text = label,
-            fontSize = 11.sp,
+            fontSize = 12.sp,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             color = if (isSelected) GlassTextPrimary else chipColor
         )
@@ -322,7 +323,7 @@ private fun CollectionGridItem(
         if (item.itemLevel > 0) {
             Text(
                 text = "Lv.${item.itemLevel}",
-                fontSize = 8.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
                 color = rarityColor,
                 modifier = Modifier

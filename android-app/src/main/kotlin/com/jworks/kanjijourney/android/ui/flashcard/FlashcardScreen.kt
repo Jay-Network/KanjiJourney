@@ -46,6 +46,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import com.jworks.kanjijourney.android.ui.theme.focusRing
+import com.jworks.kanjijourney.android.ui.theme.focusRingTextField
+import com.jworks.kanjijourney.android.ui.theme.StateColors
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -175,7 +178,8 @@ fun FlashcardScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .height(48.dp),
+                        .height(48.dp)
+                        .focusRing(shape = RoundedCornerShape(12.dp)),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text("Study This Deck (${uiState.items.size})", fontSize = 16.sp)
@@ -235,19 +239,27 @@ private fun CreateDeckDialog(
                 onValueChange = { name = it },
                 label = { Text("Deck name") },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().focusRingTextField(),
+                isError = name.isBlank(),
+                supportingText = if (name.isBlank()) {
+                    { Text("Deck name is required") }
+                } else null
             )
         },
         confirmButton = {
             Button(
                 onClick = { if (name.isNotBlank()) onCreate(name.trim()) },
-                enabled = name.isNotBlank()
+                enabled = name.isNotBlank(),
+                modifier = Modifier.focusRing()
             ) {
                 Text("Create")
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.focusRing()
+            ) {
                 Text("Cancel")
             }
         }
@@ -272,13 +284,17 @@ private fun EditDeckDialog(
             confirmButton = {
                 Button(
                     onClick = onDelete,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336))
+                    colors = ButtonDefaults.buttonColors(containerColor = StateColors.Incorrect),
+                    modifier = Modifier.focusRing()
                 ) {
                     Text("Delete")
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteConfirm = false }) {
+                TextButton(
+                    onClick = { showDeleteConfirm = false },
+                    modifier = Modifier.focusRing()
+                ) {
                     Text("Cancel")
                 }
             }
@@ -294,13 +310,17 @@ private fun EditDeckDialog(
                         onValueChange = { name = it },
                         label = { Text("Deck name") },
                         singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().focusRingTextField(),
+                        isError = name.isBlank(),
+                        supportingText = if (name.isBlank()) {
+                            { Text("Deck name is required") }
+                        } else null
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     OutlinedButton(
                         onClick = { showDeleteConfirm = true },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFF44336))
+                        modifier = Modifier.fillMaxWidth().focusRing(),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = StateColors.Incorrect)
                     ) {
                         Text("Delete Deck")
                     }
@@ -309,13 +329,17 @@ private fun EditDeckDialog(
             confirmButton = {
                 Button(
                     onClick = { if (name.isNotBlank()) onRename(name.trim()) },
-                    enabled = name.isNotBlank() && name.trim() != deck.name
+                    enabled = name.isNotBlank() && name.trim() != deck.name,
+                    modifier = Modifier.focusRing()
                 ) {
                     Text("Rename")
                 }
             },
             dismissButton = {
-                TextButton(onClick = onDismiss) {
+                TextButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.focusRing()
+                ) {
                     Text("Cancel")
                 }
             }
@@ -372,7 +396,7 @@ private fun FlashcardListItem(
                 Text(
                     text = "\u2715",
                     fontSize = 18.sp,
-                    color = Color(0xFFF44336)
+                    color = StateColors.Incorrect
                 )
             }
         }

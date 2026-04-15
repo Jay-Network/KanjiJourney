@@ -35,6 +35,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
+import com.jworks.kanjijourney.android.ui.theme.StateColors
+import com.jworks.kanjijourney.android.ui.theme.focusRing
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
 import java.util.concurrent.Executors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -80,13 +83,13 @@ fun CameraChallengeScreen(
             TopAppBar(
                 title = { Text("Camera Challenge") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = onBack, modifier = Modifier.focusRingCircle()) {
                         Text("\u2190", fontSize = 24.sp)
                     }
                 },
                 actions = {
                     if (onJournal != null) {
-                        IconButton(onClick = onJournal) {
+                        IconButton(onClick = onJournal, modifier = Modifier.focusRingCircle()) {
                             Text("\uD83D\uDCD3", fontSize = 20.sp)
                         }
                     }
@@ -252,7 +255,7 @@ private fun TargetOverlay(state: CameraChallengeState.ShowTarget) {
             Text(
                 text = "${state.sessionXp} XP",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFFFFD700),
+                color = StateColors.Gold,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(8.dp))
@@ -320,7 +323,7 @@ private fun SuccessOverlay(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF4CAF50).copy(alpha = 0.92f)),
+            .background(StateColors.Correct.copy(alpha = 0.92f)),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -349,7 +352,7 @@ private fun SuccessOverlay(
                         text = "+${state.xpGained} XP",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFFFFD700)
+                        color = StateColors.Gold
                     )
                     Spacer(modifier = Modifier.height(32.dp))
                     com.jworks.kanjijourney.android.ui.theme.KanjiText(
@@ -367,7 +370,8 @@ private fun SuccessOverlay(
                         onClick = onNext,
                         modifier = Modifier
                             .fillMaxWidth(0.7f)
-                            .height(56.dp),
+                            .height(56.dp)
+                            .focusRing(),
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White
@@ -376,7 +380,7 @@ private fun SuccessOverlay(
                         Text(
                             text = if (state.challengeNumber < state.totalChallenges) "Next Challenge" else "Finish",
                             fontSize = 18.sp,
-                            color = Color(0xFF4CAF50),
+                            color = StateColors.Correct,
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -428,7 +432,8 @@ private fun SessionCompleteContent(
             onClick = onDone,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .height(56.dp)
+                .focusRing(),
             shape = RoundedCornerShape(12.dp)
         ) {
             Text("Done", fontSize = 18.sp)
@@ -441,7 +446,8 @@ private fun SessionCompleteContent(
                 onClick = onJournal,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(56.dp)
+                    .focusRing(),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text("View Field Journal", fontSize = 18.sp)
@@ -501,7 +507,7 @@ private fun PermissionDeniedContent(onRequestPermission: () -> Unit) {
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onRequestPermission) {
+        Button(onClick = onRequestPermission, modifier = Modifier.focusRing()) {
             Text("Grant Permission")
         }
     }
@@ -522,7 +528,7 @@ private fun ErrorContent(message: String, onBack: () -> Unit) {
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedButton(onClick = onBack) {
+        OutlinedButton(onClick = onBack, modifier = Modifier.focusRing()) {
             Text("Go Back")
         }
     }

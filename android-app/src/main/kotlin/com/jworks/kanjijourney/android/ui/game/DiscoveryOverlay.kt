@@ -181,7 +181,7 @@ fun DiscoveryOverlay(
                 Text(
                     text = "Tap to continue",
                     fontSize = 12.sp,
-                    color = Color.White.copy(alpha = 0.5f)
+                    color = Color.White.copy(alpha = 0.7f)
                 )
             }
         }

@@ -47,6 +47,9 @@ import com.jworks.kanjijourney.android.ui.home.HomeViewModel
 import com.jworks.kanjijourney.android.ui.home.MainTab
 import com.jworks.kanjijourney.android.ui.home.KanjiSortMode
 import com.jworks.kanjijourney.android.ui.components.RadicalImage
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
+import com.jworks.kanjijourney.android.ui.theme.GameColors
+import com.jworks.kanjijourney.android.ui.theme.StateColors
 import com.jworks.kanjijourney.android.ui.theme.GlassBackground
 import com.jworks.kanjijourney.android.ui.theme.GlassCard
 import com.jworks.kanjijourney.android.ui.theme.GlassCardGradient
@@ -91,7 +94,7 @@ fun CollectionHubScreen(
             GlassTopBar(
                 title = { Text("Collect", color = GlassTextPrimary) },
                 actions = {
-                    IconButton(onClick = onFeedbackClick) {
+                    IconButton(onClick = onFeedbackClick, modifier = Modifier.focusRingCircle()) {
                         Icon(
                             Icons.Default.Email,
                             contentDescription = "Send Feedback",
@@ -123,36 +126,36 @@ fun CollectionHubScreen(
                             text = "${uiState.collectedKanjiCount}",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFFFF6B35)
+                            color = GameColors.Writing
                         )
-                        Text("Kanji", fontSize = 10.sp, color = GlassTextSecondary)
+                        Text("Kanji", fontSize = 12.sp, color = GlassTextSecondary)
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = "${uiState.collectedHiraganaIds.size}/${uiState.hiraganaList.size}",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFFE91E63)
+                            color = GameColors.Hiragana
                         )
-                        Text("Hiragana", fontSize = 10.sp, color = GlassTextSecondary)
+                        Text("Hiragana", fontSize = 12.sp, color = GlassTextSecondary)
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = "${uiState.collectedKatakanaIds.size}/${uiState.katakanaList.size}",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF00BCD4)
+                            color = GameColors.Katakana
                         )
-                        Text("Katakana", fontSize = 10.sp, color = GlassTextSecondary)
+                        Text("Katakana", fontSize = 12.sp, color = GlassTextSecondary)
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = "${uiState.collectedRadicalIds.size}/${uiState.radicals.size}",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF795548)
+                            color = GameColors.Radical
                         )
-                        Text("Radicals", fontSize = 10.sp, color = GlassTextSecondary)
+                        Text("Radicals", fontSize = 12.sp, color = GlassTextSecondary)
                     }
                 }
             }
@@ -170,7 +173,7 @@ fun CollectionHubScreen(
                     val isSelected = tab == uiState.selectedMainTab
                     GlassChip(
                         selected = isSelected,
-                        selectedColor = Color(0xFFFF6B35),
+                        selectedColor = GameColors.Writing,
                         modifier = Modifier.clickable { viewModel.selectMainTab(tab) }
                     ) {
                         Text(
@@ -196,12 +199,12 @@ fun CollectionHubScreen(
                         val isSelected = mode == uiState.kanjiSortMode
                         GlassChip(
                             selected = isSelected,
-                            selectedColor = Color(0xFFFFD54F),
+                            selectedColor = StateColors.GoldLight,
                             modifier = Modifier.clickable { viewModel.selectSortMode(mode) }
                         ) {
                             Text(
                                 text = mode.label,
-                                fontSize = 11.sp,
+                                fontSize = 12.sp,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                                 color = if (isSelected) GlassTextPrimary else GlassTextSecondary
                             )
@@ -229,12 +232,12 @@ fun CollectionHubScreen(
                                 val labelText = if (total > 0) "$gradeLabel\n$collected/$total" else gradeLabel
                                 GlassChip(
                                     selected = isSelected,
-                                    selectedColor = Color(0xFFFF6B35),
+                                    selectedColor = GameColors.Writing,
                                     modifier = if (hasCollection) Modifier.clickable { viewModel.selectGrade(grade) } else Modifier
                                 ) {
                                     Text(
                                         text = labelText,
-                                        fontSize = 11.sp,
+                                        fontSize = 12.sp,
                                         lineHeight = 14.sp,
                                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                                         textAlign = TextAlign.Center,
@@ -255,12 +258,12 @@ fun CollectionHubScreen(
                                 val labelText = if (total > 0) "N$level\n$collected/$total" else "N$level"
                                 GlassChip(
                                     selected = isSelected,
-                                    selectedColor = Color(0xFFFF6B35),
+                                    selectedColor = GameColors.Writing,
                                     modifier = Modifier.clickable { viewModel.selectJlptLevel(level) }
                                 ) {
                                     Text(
                                         text = labelText,
-                                        fontSize = 11.sp,
+                                        fontSize = 12.sp,
                                         lineHeight = 14.sp,
                                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                                         textAlign = TextAlign.Center,
@@ -274,7 +277,7 @@ fun CollectionHubScreen(
                                 val isSelected = count == uiState.selectedStrokeCount
                                 GlassChip(
                                     selected = isSelected,
-                                    selectedColor = Color(0xFFFF6B35),
+                                    selectedColor = GameColors.Writing,
                                     modifier = Modifier.clickable { viewModel.selectStrokeCount(count) }
                                 ) {
                                     Text(
@@ -291,7 +294,7 @@ fun CollectionHubScreen(
                                 val isSelected = index == uiState.selectedFrequencyRange
                                 GlassChip(
                                     selected = isSelected,
-                                    selectedColor = Color(0xFFFF6B35),
+                                    selectedColor = GameColors.Writing,
                                     modifier = Modifier.clickable { viewModel.selectFrequencyRange(index) }
                                 ) {
                                     Text(
@@ -473,7 +476,7 @@ private fun KanjiGridItem(
             if (collectedItem.itemLevel > 1) {
                 Text(
                     text = "Lv.${collectedItem.itemLevel}",
-                    fontSize = 7.sp,
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(collectedItem.rarity.colorValue),
                     modifier = Modifier.align(Alignment.TopEnd).padding(2.dp)
@@ -484,20 +487,20 @@ private fun KanjiGridItem(
             val wrtCount = modeStats["writing"] ?: 0
             val camCount = modeStats["camera_challenge"] ?: 0
             if (recCount > 0) {
-                Text("$recCount", fontSize = 7.sp, fontWeight = FontWeight.Bold,
-                    color = Color(0xFF2196F3), modifier = Modifier.align(Alignment.TopStart).padding(3.dp))
+                Text("$recCount", fontSize = 12.sp, fontWeight = FontWeight.Bold,
+                    color = StateColors.Info, modifier = Modifier.align(Alignment.TopStart).padding(3.dp))
             }
             if (vocCount > 0 && collectedItem.itemLevel <= 1) {
-                Text("$vocCount", fontSize = 7.sp, fontWeight = FontWeight.Bold,
-                    color = Color(0xFFFF9800), modifier = Modifier.align(Alignment.TopEnd).padding(3.dp))
+                Text("$vocCount", fontSize = 12.sp, fontWeight = FontWeight.Bold,
+                    color = StateColors.Warning, modifier = Modifier.align(Alignment.TopEnd).padding(3.dp))
             }
             if (wrtCount > 0) {
-                Text("$wrtCount", fontSize = 7.sp, fontWeight = FontWeight.Bold,
-                    color = Color(0xFF4CAF50), modifier = Modifier.align(Alignment.BottomStart).padding(3.dp))
+                Text("$wrtCount", fontSize = 12.sp, fontWeight = FontWeight.Bold,
+                    color = StateColors.Correct, modifier = Modifier.align(Alignment.BottomStart).padding(3.dp))
             }
             if (camCount > 0) {
-                Text("$camCount", fontSize = 7.sp, fontWeight = FontWeight.Bold,
-                    color = Color(0xFF9C27B0), modifier = Modifier.align(Alignment.BottomEnd).padding(3.dp))
+                Text("$camCount", fontSize = 12.sp, fontWeight = FontWeight.Bold,
+                    color = GameColors.Camera, modifier = Modifier.align(Alignment.BottomEnd).padding(3.dp))
             }
         }
     }
@@ -550,7 +553,7 @@ private fun RadicalGridItem(
                 if (!radical.meaningJp.isNullOrBlank()) {
                     Text(
                         text = radical.meaningJp!!,
-                        fontSize = 9.sp,
+                        fontSize = 12.sp,
                         color = GlassTextPrimary,
                         textAlign = TextAlign.Center,
                         maxLines = 1
@@ -605,7 +608,7 @@ private fun KanaGridItem(
             )
             Text(
                 text = kana.romanization,
-                fontSize = 8.sp,
+                fontSize = 12.sp,
                 color = GlassTextSecondary,
                 modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 2.dp)
             )

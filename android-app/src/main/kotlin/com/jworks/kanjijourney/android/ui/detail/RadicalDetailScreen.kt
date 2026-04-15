@@ -37,8 +37,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jworks.kanjijourney.android.ui.components.RadicalImage
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
+import com.jworks.kanjijourney.android.ui.theme.GameColors
 
-private val RadicalColor = Color(0xFF795548)
+private val RadicalColor = GameColors.Radical
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -55,7 +57,7 @@ fun RadicalDetailScreen(
             TopAppBar(
                 title = { Text(uiState.radical?.let { "${it.literal} ${it.meaningJp ?: ""}" } ?: "Radical") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) { Text("\u2190", fontSize = 24.sp) }
+                    IconButton(onClick = onBack, modifier = Modifier.focusRingCircle()) { Text("\u2190", fontSize = 24.sp) }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = RadicalColor,
@@ -175,7 +177,7 @@ fun RadicalDetailScreen(
                                 if (gradeText.isNotEmpty()) {
                                     Text(
                                         text = gradeText,
-                                        fontSize = 10.sp,
+                                        fontSize = 12.sp,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }

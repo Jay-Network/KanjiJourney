@@ -57,6 +57,7 @@ import androidx.compose.ui.layout.ContentScale
 import com.jworks.kanjijourney.android.ui.components.AssetImage
 import com.jworks.kanjijourney.android.ui.theme.focusRing
 import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
+import com.jworks.kanjijourney.android.ui.theme.ShopColors
 import com.jworks.kanjijourney.android.ui.theme.StateColors
 import com.jworks.kanjijourney.core.domain.model.PurchaseResult
 import com.jworks.kanjijourney.core.domain.model.ShopCategory
@@ -309,7 +310,7 @@ private fun PurchaseDialog(
                             Text(
                                 text = "Book your lesson at portal.tutoringjay.com",
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFFE65100)
+                                color = ShopColors.Accent
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
@@ -378,7 +379,7 @@ private fun PurchaseDialog(
                                 },
                                 modifier = Modifier.focusRing(),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFFE65100)
+                                    containerColor = ShopColors.Accent
                                 )
                             ) {
                                 Text("Book Now")
@@ -423,7 +424,7 @@ private fun FeaturedBanner(
                 .fillMaxWidth()
                 .background(
                     brush = Brush.horizontalGradient(
-                        colors = listOf(Color(0xFFE65100), Color(0xFFFF8F00))
+                        colors = listOf(ShopColors.GradientStart, ShopColors.GradientEnd)
                     ),
                     shape = RoundedCornerShape(16.dp)
                 )
@@ -489,7 +490,7 @@ private fun FeaturedBanner(
                         ) {
                             Text(
                                 text = "Book Now",
-                                color = Color(0xFFBF360C),
+                                color = ShopColors.AccentDark,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 12.sp
                             )
@@ -505,7 +506,7 @@ private fun FeaturedBanner(
                         ) {
                             Text(
                                 text = "${item.cost}",
-                                color = if (canAfford) StateColors.Gold else Color(0xFFFF8A80),
+                                color = if (canAfford) StateColors.Gold else ShopColors.Unaffordable,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp
                             )
@@ -523,7 +524,7 @@ private fun FeaturedBanner(
                         ) {
                             Text(
                                 text = "Redeem",
-                                color = if (canAfford) Color(0xFFE65100) else Color.White.copy(alpha = 0.7f),
+                                color = if (canAfford) ShopColors.Accent else Color.White.copy(alpha = 0.7f),
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 12.sp
                             )

@@ -39,6 +39,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.jworks.kanjijourney.android.ui.theme.focusRing
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
+import com.jworks.kanjijourney.android.ui.theme.focusRingTextField
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -127,7 +130,8 @@ fun FeedbackDialog(
                 placeholder = { Text("Tell us what you think...") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp),
+                    .height(150.dp)
+                    .focusRingTextField(),
                 maxLines = 8,
                 supportingText = {
                     Text("${uiState.feedbackText.length}/1000")
@@ -158,7 +162,7 @@ fun FeedbackDialog(
             // Submit button
             Button(
                 onClick = { viewModel.submitFeedback() },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().focusRing(),
                 enabled = !uiState.isSubmitting && uiState.feedbackText.length >= 10
             ) {
                 if (uiState.isSubmitting) {

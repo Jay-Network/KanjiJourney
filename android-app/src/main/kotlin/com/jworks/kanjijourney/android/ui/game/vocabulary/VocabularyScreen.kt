@@ -51,6 +51,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jworks.kanjijourney.android.ui.game.DiscoveryOverlay
+import com.jworks.kanjijourney.android.ui.theme.DiscoveryColors
+import com.jworks.kanjijourney.android.ui.theme.StateColors
+import com.jworks.kanjijourney.android.ui.theme.focusRing
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
 import com.jworks.kanjijourney.core.engine.GameState
 import com.jworks.kanjijourney.core.engine.Question
 
@@ -84,7 +88,7 @@ fun VocabularyScreen(
             TopAppBar(
                 title = { Text("Vocabulary") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = onBack, modifier = Modifier.focusRingCircle()) {
                         Text("\u2190", fontSize = 24.sp)
                     }
                 },
@@ -243,7 +247,7 @@ private fun VocabQuestionContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
-                .clip(RoundedCornerShape(4.dp)),
+                .clip(RoundedCornerShape(8.dp)),
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -352,7 +356,7 @@ private fun VocabQuestionContent(
                     for (choice in row) {
                         val buttonColor = when {
                             selectedAnswer == null -> MaterialTheme.colorScheme.primary
-                            choice == correctAnswer -> Color(0xFF4CAF50)
+                            choice == correctAnswer -> StateColors.Correct
                             choice == selectedAnswer -> MaterialTheme.colorScheme.error
                             else -> MaterialTheme.colorScheme.surfaceVariant
                         }
@@ -362,7 +366,8 @@ private fun VocabQuestionContent(
                             enabled = selectedAnswer == null,
                             modifier = Modifier
                                 .weight(1f)
-                                .height(56.dp),
+                                .height(56.dp)
+                                .focusRing(),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = buttonColor,
                                 disabledContainerColor = buttonColor.copy(alpha = 0.8f)
@@ -428,7 +433,8 @@ private fun VocabQuestionContent(
                 onClick = onNext,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp),
+                    .height(48.dp)
+                    .focusRing(),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Next", fontSize = 18.sp)
@@ -480,7 +486,7 @@ private fun VocabSessionCompleteContent(
                             text = "+${sessionResult.coinsEarned} J Coins",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFFFFD700)
+                            color = StateColors.Gold
                         )
                     }
                     if (sessionResult.leveledUp) {
@@ -516,7 +522,7 @@ private fun VocabSessionCompleteContent(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFF00BFA5).copy(alpha = 0.1f)
+                    containerColor = DiscoveryColors.CardBackground.copy(alpha = 0.1f)
                 )
             ) {
                 Column(
@@ -526,7 +532,7 @@ private fun VocabSessionCompleteContent(
                         text = "New Discoveries",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF00BFA5)
+                        color = DiscoveryColors.CardBackground
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
@@ -563,7 +569,8 @@ private fun VocabSessionCompleteContent(
             onClick = onDone,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .height(56.dp)
+                .focusRing(),
             shape = RoundedCornerShape(12.dp)
         ) {
             Text("Done", fontSize = 18.sp)
@@ -605,7 +612,7 @@ private fun ErrorContent(message: String, onBack: () -> Unit) {
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedButton(onClick = onBack) {
+        OutlinedButton(onClick = onBack, modifier = Modifier.focusRing()) {
             Text("Go Back")
         }
     }
@@ -691,7 +698,7 @@ private fun VocabularyDecompositionCard(breakdown: List<String>) {
                                 .align(Alignment.TopEnd)
                                 .offset(x = 4.dp, y = (-4).dp)
                                 .size(20.dp)
-                                .background(Color(0xFF4CAF50), CircleShape)
+                                .background(StateColors.Correct, CircleShape)
                                 .border(1.dp, MaterialTheme.colorScheme.surface, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {

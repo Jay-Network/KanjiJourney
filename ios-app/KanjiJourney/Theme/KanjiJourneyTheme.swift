@@ -7,9 +7,9 @@ enum KanjiJourneyTheme {
     /// True on iPhone, false on iPad
     static let isPhone = UIDevice.current.userInterfaceIdiom == .phone
 
-    // MARK: - Light palette (matches Android LightColors)
-    static let primary = Color(hex: 0xFF8C42)           // Orange
-    static let primaryDark = Color(hex: 0xE07030)        // OrangeDark
+    // MARK: - Glass palette (matches Android GlassTheme)
+    static let primary = Color(hex: 0xFF6B35)           // Glass brand orange
+    static let primaryDark = Color(hex: 0xE05A2A)        // OrangeDark
     static let onPrimary = Color.white
 
     static let secondary = Color(hex: 0x26A69A)          // Teal
@@ -20,15 +20,16 @@ enum KanjiJourneyTheme {
     static let tertiaryDark = Color(hex: 0xFFC107)        // GoldDark
     static let onTertiary = Color.black
 
-    static let background = Color(hex: 0xFFF8E1)          // Cream
-    static let backgroundDark = Color(hex: 0x2C2C2C)      // CreamDark
-    static let onBackground = Color(hex: 0x1C1B1F)
+    // Glass-themed dark background (matching Android GlassTheme)
+    static let background = Color(hex: 0x050508)           // Glass dark
+    static let backgroundDark = Color(hex: 0x050508)       // Glass dark
+    static let onBackground = Color.white
 
-    static let surface = Color.white
-    static let surfaceDark = Color(hex: 0x1C1B1F)
-    static let surfaceVariant = Color(hex: 0xF5F5F5)
-    static let onSurface = Color(hex: 0x1C1B1F)
-    static let onSurfaceVariant = Color(hex: 0x49454F)
+    static let surface = Color(hex: 0x12121E)              // Glass surface light
+    static let surfaceDark = Color(hex: 0x08080F)          // Glass surface dark
+    static let surfaceVariant = Color(hex: 0x12121E)       // Glass surface
+    static let onSurface = Color.white
+    static let onSurfaceVariant = Color.white.opacity(0.65)
 
     // MARK: - Container colors (Material3)
     static let primaryContainer = Color(hex: 0xFFDDB8)

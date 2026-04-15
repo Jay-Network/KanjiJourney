@@ -45,6 +45,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.layout.ContentScale
 import com.jworks.kanjijourney.android.ui.components.AssetImage
+import com.jworks.kanjijourney.android.ui.theme.focusRing
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
 import com.jworks.kanjijourney.core.domain.model.FieldJournalEntry
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -65,7 +67,7 @@ fun FieldJournalScreen(
                     Text("Field Journal")
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = onBack, modifier = Modifier.focusRingCircle()) {
                         Text("\u2190", fontSize = 24.sp)
                     }
                 },
@@ -280,7 +282,7 @@ private fun EntryDetailContent(
             .padding(16.dp)
     ) {
         // Back button
-        TextButton(onClick = onBack) {
+        TextButton(onClick = onBack, modifier = Modifier.focusRing()) {
             Text("\u2190 Back to Gallery")
         }
 
@@ -360,7 +362,7 @@ private fun EntryDetailContent(
         // Delete button
         TextButton(
             onClick = { onDelete(entry.id) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().focusRing()
         ) {
             Text(
                 text = "Delete Entry",

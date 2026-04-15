@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import com.jworks.kanjijourney.android.ui.theme.GameColors
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
@@ -78,7 +79,7 @@ fun DrawingCanvas(
 
             // Draw active stroke (blue)
             if (activeStroke.isNotEmpty()) {
-                drawUserStroke(activeStroke, Color(0xFF2196F3))
+                drawUserStroke(activeStroke, GameColors.Recognition)
             }
         }
     }

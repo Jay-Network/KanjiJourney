@@ -3,7 +3,7 @@
 ## Active Tasks
 - [x] Contrast audit — 6 violations fixed across ShopScreen, RecognitionScreen, WritingScreen (v1.2.2, 2026-04-14)
 - [ ] IDEA-003: Add Kanken level as secondary taxonomy axis
-- [ ] Remaining 21 hardcoded hex colors → design tokens
+- [x] Remaining 21 hardcoded hex colors → design tokens (v1.2.3, 2026-04-13)
 
 ## Backlog
 - IDEA-001 iOS port: cross guide lines on iOS writing canvas

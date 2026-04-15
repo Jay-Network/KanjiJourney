@@ -45,11 +45,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.jworks.kanjijourney.android.ui.theme.focusRing
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
+import com.jworks.kanjijourney.android.ui.theme.StateColors
 
-private val TestBlue = Color(0xFF2196F3)
-private val TestBlueDark = Color(0xFF1976D2)
-private val CorrectGreen = Color(0xFF4CAF50)
-private val IncorrectRed = Color(0xFFF44336)
+private val TestBlue = StateColors.Info
+private val TestBlueDark = StateColors.InfoDark
+private val CorrectGreen = StateColors.Correct
+private val IncorrectRed = StateColors.Incorrect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,13 +67,16 @@ fun TestModeScreen(
             TopAppBar(
                 title = { Text("Test Mode") },
                 navigationIcon = {
-                    IconButton(onClick = {
-                        if (uiState.phase == TestPhase.SCOPE_SELECTION) {
-                            onBack()
-                        } else {
-                            viewModel.resetToScopeSelection()
-                        }
-                    }) {
+                    IconButton(
+                        onClick = {
+                            if (uiState.phase == TestPhase.SCOPE_SELECTION) {
+                                onBack()
+                            } else {
+                                viewModel.resetToScopeSelection()
+                            }
+                        },
+                        modifier = Modifier.focusRingCircle()
+                    ) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
@@ -203,7 +209,7 @@ private fun QuizContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(8.dp)
-                .clip(RoundedCornerShape(4.dp)),
+                .clip(RoundedCornerShape(8.dp)),
             color = TestBlue,
             trackColor = TestBlue.copy(alpha = 0.2f)
         )
@@ -283,7 +289,8 @@ private fun QuizContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp)
-                    .height(52.dp),
+                    .height(52.dp)
+                    .focusRing(),
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = bgColor
@@ -313,7 +320,8 @@ private fun QuizContent(
                 onClick = onNext,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp),
+                    .height(52.dp)
+                    .focusRing(),
                 colors = ButtonDefaults.buttonColors(containerColor = TestBlue),
                 shape = RoundedCornerShape(12.dp)
             ) {
@@ -337,7 +345,7 @@ private fun ResultsContent(
     val accuracyPct = (uiState.accuracy * 100).toInt()
     val resultColor = when {
         accuracyPct >= 80 -> CorrectGreen
-        accuracyPct >= 50 -> Color(0xFFFFA726)
+        accuracyPct >= 50 -> StateColors.WarningLight
         else -> IncorrectRed
     }
 
@@ -428,7 +436,8 @@ private fun ResultsContent(
             onClick = onTestAgain,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(52.dp),
+                .height(52.dp)
+                .focusRing(),
             colors = ButtonDefaults.buttonColors(containerColor = TestBlue),
             shape = RoundedCornerShape(12.dp)
         ) {
@@ -441,7 +450,8 @@ private fun ResultsContent(
             onClick = onDone,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(52.dp),
+                .height(52.dp)
+                .focusRing(),
             shape = RoundedCornerShape(12.dp)
         ) {
             Text("Done", fontSize = 16.sp)

@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jworks.kanjijourney.android.ui.theme.KanjiText
+import com.jworks.kanjijourney.android.ui.theme.StateColors
+import com.jworks.kanjijourney.android.ui.theme.focusRing
 
 private fun formatTime(seconds: Int): String {
     val min = seconds / 60
@@ -131,7 +133,7 @@ private fun QuestionContent(
                 text = formatTime(uiState.remainingSeconds),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = if (uiState.remainingSeconds <= 30) Color(0xFFF44336) else MaterialTheme.colorScheme.onSurfaceVariant
+                color = if (uiState.remainingSeconds <= 30) StateColors.Incorrect else MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
                 text = "${uiState.questionIndex + 1} / 5",
@@ -188,8 +190,8 @@ private fun QuestionContent(
             val borderColor by animateColorAsState(
                 targetValue = when {
                     !hasAnswered -> MaterialTheme.colorScheme.outline
-                    isCorrectOption -> Color(0xFF4CAF50)
-                    isSelected -> Color(0xFFF44336)
+                    isCorrectOption -> StateColors.Correct
+                    isSelected -> StateColors.Incorrect
                     else -> MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                 },
                 label = "border"
@@ -198,8 +200,8 @@ private fun QuestionContent(
             val containerColor by animateColorAsState(
                 targetValue = when {
                     !hasAnswered && isSelected -> MaterialTheme.colorScheme.primaryContainer
-                    hasAnswered && isCorrectOption -> Color(0xFF4CAF50).copy(alpha = 0.1f)
-                    hasAnswered && isSelected -> Color(0xFFF44336).copy(alpha = 0.1f)
+                    hasAnswered && isCorrectOption -> StateColors.Correct.copy(alpha = 0.1f)
+                    hasAnswered && isSelected -> StateColors.Incorrect.copy(alpha = 0.1f)
                     else -> MaterialTheme.colorScheme.surface
                 },
                 label = "container"
@@ -209,7 +211,8 @@ private fun QuestionContent(
                 onClick = { if (!hasAnswered) viewModel.selectAnswer(index) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(56.dp)
+                    .focusRing(),
                 shape = RoundedCornerShape(12.dp),
                 border = BorderStroke(2.dp, borderColor),
                 colors = ButtonDefaults.outlinedButtonColors(
@@ -221,8 +224,8 @@ private fun QuestionContent(
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = if (hasAnswered && isCorrectOption) FontWeight.Bold else FontWeight.Normal,
                     color = when {
-                        hasAnswered && isCorrectOption -> Color(0xFF4CAF50)
-                        hasAnswered && isSelected -> Color(0xFFF44336)
+                        hasAnswered && isCorrectOption -> StateColors.Correct
+                        hasAnswered && isSelected -> StateColors.Incorrect
                         else -> MaterialTheme.colorScheme.onSurface
                     }
                 )
@@ -239,7 +242,8 @@ private fun QuestionContent(
                 onClick = { viewModel.nextQuestion() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
+                    .height(50.dp)
+                    .focusRing(),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
@@ -328,7 +332,8 @@ private fun IntroContent(
             enabled = !isLoading,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .height(56.dp)
+                .focusRing(),
             shape = RoundedCornerShape(12.dp)
         ) {
             if (isLoading) {
@@ -461,13 +466,13 @@ private fun ResultContent(
                                 text = "$correct/$total",
                                 style = MaterialTheme.typography.bodyLarge,
                                 fontWeight = FontWeight.Bold,
-                                color = if (passed) Color(0xFF4CAF50) else Color(0xFFF44336)
+                                color = if (passed) StateColors.Correct else StateColors.Incorrect
                             )
                             Text(
                                 text = if (passed) " PASS" else " FAIL",
                                 style = MaterialTheme.typography.labelSmall,
                                 fontWeight = FontWeight.Bold,
-                                color = if (passed) Color(0xFF4CAF50) else Color(0xFFF44336)
+                                color = if (passed) StateColors.Correct else StateColors.Incorrect
                             )
                         }
                     }
@@ -481,7 +486,8 @@ private fun ResultContent(
             onClick = onComplete,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp),
+                .height(50.dp)
+                .focusRing(),
             shape = RoundedCornerShape(12.dp)
         ) {
             Text(

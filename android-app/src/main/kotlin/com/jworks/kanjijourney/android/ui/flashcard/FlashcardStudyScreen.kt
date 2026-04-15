@@ -36,6 +36,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.jworks.kanjijourney.android.ui.theme.focusRing
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
+import com.jworks.kanjijourney.android.ui.theme.StateColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +53,7 @@ fun FlashcardStudyScreen(
             TopAppBar(
                 title = { Text("Study") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = onBack, modifier = Modifier.focusRingCircle()) {
                         Text("\u2190", fontSize = 24.sp)
                     }
                 },
@@ -227,14 +230,14 @@ private fun StudyCardContent(
                 StudyGrade.entries.forEach { grade ->
                     Button(
                         onClick = { onGrade(grade) },
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f).focusRing(),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = when (grade) {
-                                StudyGrade.AGAIN -> Color(0xFFF44336)
-                                StudyGrade.HARD -> Color(0xFFFF9800)
-                                StudyGrade.GOOD -> Color(0xFF4CAF50)
-                                StudyGrade.EASY -> Color(0xFF2196F3)
+                                StudyGrade.AGAIN -> StateColors.Incorrect
+                                StudyGrade.HARD -> StateColors.Warning
+                                StudyGrade.GOOD -> StateColors.Correct
+                                StudyGrade.EASY -> StateColors.Info
                             }
                         )
                     ) {
@@ -287,10 +290,10 @@ private fun StudyCompleteContent(
                 val good = gradeResults.count { it.value in 3..4 }
                 val easy = gradeResults.count { it.value >= 5 }
 
-                if (again > 0) GradeRow("Again", again, Color(0xFFF44336))
-                if (hard > 0) GradeRow("Hard", hard, Color(0xFFFF9800))
-                if (good > 0) GradeRow("Good", good, Color(0xFF4CAF50))
-                if (easy > 0) GradeRow("Easy", easy, Color(0xFF2196F3))
+                if (again > 0) GradeRow("Again", again, StateColors.Incorrect)
+                if (hard > 0) GradeRow("Hard", hard, StateColors.Warning)
+                if (good > 0) GradeRow("Good", good, StateColors.Correct)
+                if (easy > 0) GradeRow("Easy", easy, StateColors.Info)
             }
         }
 
@@ -300,7 +303,8 @@ private fun StudyCompleteContent(
             onClick = onDone,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp),
+                .height(48.dp)
+                .focusRing(),
             shape = RoundedCornerShape(12.dp)
         ) {
             Text("Done", fontSize = 16.sp)

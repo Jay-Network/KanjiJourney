@@ -43,10 +43,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jworks.kanjijourney.android.ui.components.RadicalImage
+import com.jworks.kanjijourney.android.ui.theme.GameColors
+import com.jworks.kanjijourney.android.ui.theme.StateColors
+import com.jworks.kanjijourney.android.ui.theme.focusRing
+import com.jworks.kanjijourney.android.ui.theme.focusRingCircle
 import com.jworks.kanjijourney.android.ui.components.XpPopup
 import com.jworks.kanjijourney.core.engine.GameState
 
-val RadicalColor = Color(0xFF795548)
+val RadicalColor = GameColors.Radical
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,7 +74,7 @@ fun RadicalRecognitionScreen(
             TopAppBar(
                 title = { Text("Radical Recognition") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) { Text("\u2190", fontSize = 24.sp) }
+                    IconButton(onClick = onBack, modifier = Modifier.focusRingCircle()) { Text("\u2190", fontSize = 24.sp) }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = RadicalColor,
@@ -169,7 +173,7 @@ private fun QuestionContent(
 
         LinearProgressIndicator(
             progress = { questionNumber.toFloat() / totalQuestions },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).clip(RoundedCornerShape(4.dp)),
+            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).clip(RoundedCornerShape(8.dp)),
             color = RadicalColor
         )
 
@@ -225,14 +229,14 @@ private fun QuestionContent(
                     for (choice in row) {
                         val buttonColor = when {
                             selectedAnswer == null -> RadicalColor
-                            choice == correctAnswer -> Color(0xFF4CAF50)
+                            choice == correctAnswer -> StateColors.Correct
                             choice == selectedAnswer -> MaterialTheme.colorScheme.error
                             else -> MaterialTheme.colorScheme.surfaceVariant
                         }
                         Button(
                             onClick = { onAnswerClick(choice) },
                             enabled = selectedAnswer == null,
-                            modifier = Modifier.weight(1f).height(56.dp),
+                            modifier = Modifier.weight(1f).height(56.dp).focusRing(),
                             colors = ButtonDefaults.buttonColors(containerColor = buttonColor,
                                 disabledContainerColor = buttonColor.copy(alpha = 0.8f)),
                             shape = RoundedCornerShape(12.dp)
@@ -244,7 +248,7 @@ private fun QuestionContent(
 
         if (onNext != null) {
             Spacer(modifier = Modifier.height(24.dp))
-            Button(onClick = onNext, modifier = Modifier.fillMaxWidth().height(48.dp),
+            Button(onClick = onNext, modifier = Modifier.fillMaxWidth().height(48.dp).focusRing(),
                 colors = ButtonDefaults.buttonColors(containerColor = RadicalColor),
                 shape = RoundedCornerShape(12.dp)) { Text("Next", fontSize = 18.sp) }
         }
@@ -275,7 +279,7 @@ private fun SessionCompleteContent(
             }
         }
         Spacer(modifier = Modifier.height(32.dp))
-        Button(onClick = onDone, modifier = Modifier.fillMaxWidth().height(56.dp),
+        Button(onClick = onDone, modifier = Modifier.fillMaxWidth().height(56.dp).focusRing(),
             colors = ButtonDefaults.buttonColors(containerColor = RadicalColor),
             shape = RoundedCornerShape(12.dp)) { Text("Done", fontSize = 18.sp) }
     }
@@ -287,6 +291,6 @@ private fun ErrorContent(message: String, onBack: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         Text(message, style = MaterialTheme.typography.bodyLarge, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedButton(onClick = onBack) { Text("Go Back") }
+        OutlinedButton(onClick = onBack, modifier = Modifier.focusRing()) { Text("Go Back") }
     }
 }
