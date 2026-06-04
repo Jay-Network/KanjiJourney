@@ -57,8 +57,6 @@ enum NavRoute: Hashable {
     case devChat
     case fieldJournal
 
-    // iPad-only calligraphy
-    #if IPAD_TARGET
+    // Calligraphy (iPad: Apple Pencil, iPhone: finger drawing)
     case calligraphySession(kanjiLiteral: String, strokePaths: [String])
-    #endif
 }

@@ -57,4 +57,5 @@ sealed class NavRoute(val route: String) {
     data object Games : NavRoute("games")
     data object CollectionHub : NavRoute("collection_hub")
     data object TestMode : NavRoute("game/test_mode")
+    data object Leaderboard : NavRoute("leaderboard")
 }

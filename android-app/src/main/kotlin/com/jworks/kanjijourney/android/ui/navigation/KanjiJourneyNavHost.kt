@@ -18,6 +18,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.jworks.kanjijourney.android.ui.achievements.AchievementsScreen
+import com.jworks.kanjijourney.android.ui.leaderboard.LeaderboardScreen
 import com.jworks.kanjijourney.android.ui.auth.LoginScreen
 import com.jworks.kanjijourney.android.ui.detail.KanjiDetailScreen
 import com.jworks.kanjijourney.android.ui.detail.RadicalDetailScreen
@@ -229,6 +230,9 @@ fun KanjiJourneyNavHost(
                 },
                 onAchievementsClick = {
                     navController.navigate(NavRoute.Achievements.route)
+                },
+                onLeaderboardClick = {
+                    navController.navigate(NavRoute.Leaderboard.route)
                 },
                 onFlashcardStudy = { deckId ->
                     navController.navigate(NavRoute.FlashcardStudy.createRoute(deckId))
@@ -476,6 +480,12 @@ fun KanjiJourneyNavHost(
 
         composable(NavRoute.Achievements.route) {
             AchievementsScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(NavRoute.Leaderboard.route) {
+            LeaderboardScreen(
                 onBack = { navController.popBackStack() }
             )
         }

@@ -1,7 +1,5 @@
 import SwiftUI
 
-#if IPAD_TARGET
-
 /// Standalone calligraphy practice — works WITHOUT KMP/AppContainer.
 /// Uses the full brush engine canvas + Gemini AI feedback.
 /// Hardcoded kanji set for practice until KMP init works.
@@ -264,5 +262,3 @@ struct MockCalligraphyView: View {
         }
     }
 }
-
-#endif

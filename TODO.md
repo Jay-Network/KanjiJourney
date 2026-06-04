@@ -1,10 +1,16 @@
 # KanjiJourney TODO
 
 ## Active Tasks
-(none)
+- [ ] [P0] S2-KJ-1: Leaderboards + achievements (J Coin integration) — target v1.3.0
+  - [ ] Design: leaderboard architecture (Supabase Edge Function + local UI)
+  - [ ] Design: wire 5 achievements to earn triggers in CompleteSessionUseCase
+  - [ ] Implement: leaderboard Supabase Edge Function (top 10 by J Coin balance)
+  - [ ] Implement: LeaderboardScreen (Glass UI, top 10 list)
+  - [ ] Implement: achievement trigger logic in CompleteSessionUseCase
+  - [ ] Build verification + commit as v1.3.0
 
 ## Backlog
-- Release APK size measurement — confirm under 50MB after R8+ABI filter (BUG-001)
+- Release APK size measurement — estimated ~40-45MB, blocked on keystore password (BUG-001)
 - Supabase pull sync for word transfer (cloud complement to deep link)
 - Supabase DB migration (CHECK constraints for new app names)
 - Repo directory rename (KanjiQuest → KanjiJourney on GitHub, blocked: Jay)

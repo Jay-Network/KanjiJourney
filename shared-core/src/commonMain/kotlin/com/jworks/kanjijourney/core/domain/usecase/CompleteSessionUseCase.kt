@@ -1,6 +1,7 @@
 package com.jworks.kanjijourney.core.domain.usecase
 
 import com.jworks.kanjijourney.core.domain.UserSessionProvider
+import com.jworks.kanjijourney.core.domain.model.Achievement
 import com.jworks.kanjijourney.core.domain.model.DailyStatsData
 import com.jworks.kanjijourney.core.domain.model.LOCAL_USER_ID
 import com.jworks.kanjijourney.core.domain.model.LevelProgression
@@ -109,7 +110,10 @@ class CompleteSessionUseCase(
             0
         }
 
-        // 6. Push learning data sync (for logged-in users)
+        // 6. Update achievement progress
+        updateAchievements(stats, streakResult)
+
+        // 7. Push learning data sync (for logged-in users)
         val userId = userSessionProvider?.getUserId()
         if (userId != null && userId != LOCAL_USER_ID) {
             try {
@@ -222,6 +226,44 @@ class CompleteSessionUseCase(
 
         val prevTier = LevelProgression.tiers[tierIndex - 1]
         return DemotionResult(prevTier.levelRange.first, highestGrade, accuracy)
+    }
+
+    private suspend fun updateAchievements(stats: SessionStats, streakResult: StreakResult) {
+        val repo = achievementRepository ?: return
+        val now = Clock.System.now().toEpochMilliseconds()
+
+        // Helper: preserve existing unlockedAt if already unlocked
+        suspend fun progressAchievement(id: String, progress: Int, target: Int) {
+            val existing = repo.getAchievement(id)
+            val alreadyUnlocked = existing?.unlockedAt
+            val unlockTime = when {
+                alreadyUnlocked != null -> alreadyUnlocked
+                progress >= target -> now
+                else -> null
+            }
+            repo.upsertAchievement(
+                Achievement(id = id, progress = minOf(progress, target), target = target, unlockedAt = unlockTime)
+            )
+        }
+
+        val streak = streakResult.currentStreak
+        progressAchievement("streak_7", streak, 7)
+        progressAchievement("streak_30", streak, 30)
+
+        val isPerfect = stats.correctCount == stats.cardsStudied && stats.cardsStudied >= 10
+        if (isPerfect) {
+            progressAchievement("perfect_score", 1, 1)
+        }
+
+        val coinRepo = jCoinRepository
+        val userId = userSessionProvider?.getUserId() ?: LOCAL_USER_ID
+        if (coinRepo != null) {
+            val balance = coinRepo.getBalance(userId)
+            progressAchievement("coins_100", balance.lifetimeEarned.toInt(), 100)
+        }
+
+        val totalSessions = sessionRepository.getTotalSessionCount().toInt()
+        progressAchievement("games_10", totalSessions, 10)
     }
 
     private fun calculateStreak(profile: UserProfile, today: String): StreakResult {

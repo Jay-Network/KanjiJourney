@@ -5,6 +5,42 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.3.0 (2026-05-31) — Force-Upgrade Gate for Cloud Decommission
+
+### Added
+- **Force-upgrade version check**: On launch, queries `app_config` table on self-hosted Supabase for minimum required version. If current version is below minimum, a blocking "Update Required" screen prevents app usage and directs users to the Play Store.
+- **ForceUpgradeChecker**: Postgrest query against `app_config` table with graceful fallback (network errors allow app to continue).
+- **ForceUpgradeScreen**: Full-screen blocking UI with branded design (dark slate background, teal accent, store link button).
+- kotlinx-serialization plugin added to android-app module for Supabase response decoding.
+
+### Changed
+- Android system splash screen stays on-screen during version check (seamless transition).
+- versionCode: 14 → 15, versionName: 1.0.0 → 1.3.0 (aligned with VERSION file).
+
+---
+
+## v1.2.8 (2026-05-19) — J Coin Supabase URL Migration + Build Fix
+
+### Changed
+- **J Coin backend URL** migrated from cloud Supabase (`inygcrdhfmoerborxehq.supabase.co`) to self-hosted (`jcoin.jworks-ai.com`) per jworks:35 migration notice
+- Keys unchanged (same JWT secret, anon key, service role key)
+
+### Fixed
+- **LeaderboardRepositoryImpl build error**: Added missing `import io.ktor.client.call.body` and reverted `bodyAsText()` → `body<String>()` to match codebase pattern (DevChatRepositoryImpl, FeedbackRepositoryImpl)
+
+---
+
+## v1.2.7 (2026-04-16) — Housekeeping: MISTAKES.md + Release APK Estimate
+
+### Added
+- **MISTAKES.md** — required by version control standards, was missing
+
+### Changed
+- Updated BUG-001 with release APK size estimate (~40-45MB) from intermediate build artifacts
+- Release build blocked on keystore password in local.properties — needs Jay to fix
+
+---
+
 ## v1.2.6 (2026-04-15) — Accessibility: Back Button Content Descriptions
 
 ### Fixed

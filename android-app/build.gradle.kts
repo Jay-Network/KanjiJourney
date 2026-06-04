@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
@@ -17,8 +18,8 @@ android {
         applicationId = "com.jworks.kanjijourney"
         minSdk = 26
         targetSdk = 35
-        versionCode = 14
-        versionName = "1.0.0"
+        versionCode = 15
+        versionName = "1.3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -156,6 +157,12 @@ dependencies {
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
+
+    // Serialization (for Supabase Postgrest response decoding)
+    implementation(libs.kotlinx.serialization.json)
+
+    // Supabase Postgrest (direct dep for force-upgrade version check)
+    implementation(libs.supabase.postgrest.kt)
 
     // kotlinx-datetime (needed for JCoin default parameters)
     implementation(libs.kotlinx.datetime)

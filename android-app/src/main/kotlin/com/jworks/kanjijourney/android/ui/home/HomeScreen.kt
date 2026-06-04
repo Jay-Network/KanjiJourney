@@ -71,6 +71,7 @@ fun HomeScreen(
     onSubscriptionClick: () -> Unit = {},
     onProgressClick: () -> Unit = {},
     onAchievementsClick: () -> Unit = {},
+    onLeaderboardClick: () -> Unit = {},
     onFeedbackClick: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -318,6 +319,58 @@ fun HomeScreen(
                             text = "Decks",
                             style = MaterialTheme.typography.labelSmall,
                             color = GlassTextSecondary
+                        )
+                    }
+                }
+            }
+
+            // Leaderboard & Achievements quick actions
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                GlassCard(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable(onClick = onLeaderboardClick)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "🏆", fontSize = 20.sp)
+                        Spacer(modifier = Modifier.padding(start = 8.dp))
+                        Text(
+                            text = "Leaderboard",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = GlassTextPrimary
+                        )
+                    }
+                }
+                GlassCard(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable(onClick = onAchievementsClick)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "⭐", fontSize = 20.sp)
+                        Spacer(modifier = Modifier.padding(start = 8.dp))
+                        Text(
+                            text = "Achievements",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = GlassTextPrimary
                         )
                     }
                 }

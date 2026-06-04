@@ -22,6 +22,10 @@ class SessionRepositoryImpl(
         return db.studySessionQueries.getTotalXp().executeAsOne()
     }
 
+    override suspend fun getTotalSessionCount(): Long {
+        return db.studySessionQueries.getTotalCount().executeAsOne()
+    }
+
     override suspend fun getRecentSessions(limit: Int): List<StudySession> {
         return db.studySessionQueries.getRecent(limit.toLong()).executeAsList().map {
             StudySession(

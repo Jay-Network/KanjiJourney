@@ -297,30 +297,124 @@ struct CameraChallengeView: View {
     }
 }
 
-// MARK: - Camera Preview Placeholder
-// TODO: Implement actual AVCaptureSession with Vision framework OCR
+// MARK: - Live Camera Preview with Vision OCR
 
 struct CameraPreviewPlaceholder: UIViewRepresentable {
     var onTextRecognized: (String) -> Void
 
-    func makeUIView(context: Context) -> UIView {
-        let view = UIView()
-        view.backgroundColor = .black
+    func makeCoordinator() -> CameraCoordinator {
+        CameraCoordinator(onTextRecognized: onTextRecognized)
+    }
 
-        let label = UILabel()
-        label.text = "Camera Preview\n(AVFoundation + Vision OCR)"
-        label.textColor = .white
-        label.textAlignment = .center
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(label)
-        NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
-
+    func makeUIView(context: Context) -> CameraPreviewUIView {
+        let view = CameraPreviewUIView()
+        view.coordinator = context.coordinator
+        view.startSession()
         return view
     }
 
-    func updateUIView(_ uiView: UIView, context: Context) {}
+    func updateUIView(_ uiView: CameraPreviewUIView, context: Context) {}
+
+    static func dismantleUIView(_ uiView: CameraPreviewUIView, coordinator: CameraCoordinator) {
+        uiView.stopSession()
+    }
+}
+
+final class CameraPreviewUIView: UIView {
+    var coordinator: CameraCoordinator?
+
+    private let captureSession = AVCaptureSession()
+    private var previewLayer: AVCaptureVideoPreviewLayer?
+
+    override class var layerClass: AnyClass { AVCaptureVideoPreviewLayer.self }
+
+    func startSession() {
+        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
+              let input = try? AVCaptureDeviceInput(device: device) else {
+            showFallbackLabel("Camera unavailable")
+            return
+        }
+
+        captureSession.beginConfiguration()
+        captureSession.sessionPreset = .high
+
+        if captureSession.canAddInput(input) {
+            captureSession.addInput(input)
+        }
+
+        let videoOutput = AVCaptureVideoDataOutput()
+        videoOutput.setSampleBufferDelegate(coordinator, queue: DispatchQueue(label: "com.jworks.kanjijourney.camera"))
+        videoOutput.alwaysDiscardsLateVideoFrames = true
+        if captureSession.canAddOutput(videoOutput) {
+            captureSession.addOutput(videoOutput)
+        }
+
+        captureSession.commitConfiguration()
+
+        let preview = AVCaptureVideoPreviewLayer(session: captureSession)
+        preview.videoGravity = .resizeAspectFill
+        preview.frame = bounds
+        layer.insertSublayer(preview, at: 0)
+        previewLayer = preview
+
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            self?.captureSession.startRunning()
+        }
+    }
+
+    func stopSession() {
+        captureSession.stopRunning()
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        previewLayer?.frame = bounds
+    }
+
+    private func showFallbackLabel(_ text: String) {
+        backgroundColor = .black
+        let label = UILabel()
+        label.text = text
+        label.textColor = .white
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(label)
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: centerXAnchor),
+            label.centerYAnchor.constraint(equalTo: centerYAnchor)
+        ])
+    }
+}
+
+import Vision
+
+final class CameraCoordinator: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
+    let onTextRecognized: (String) -> Void
+    private var lastProcessTime: TimeInterval = 0
+
+    init(onTextRecognized: @escaping (String) -> Void) {
+        self.onTextRecognized = onTextRecognized
+    }
+
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        let now = CACurrentMediaTime()
+        guard now - lastProcessTime > 0.5 else { return }
+        lastProcessTime = now
+
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+
+        let request = VNRecognizeTextRequest { [weak self] request, _ in
+            guard let observations = request.results as? [VNRecognizedTextObservation] else { return }
+            let recognized = observations.compactMap { $0.topCandidates(1).first?.string }.joined()
+            if !recognized.isEmpty {
+                DispatchQueue.main.async {
+                    self?.onTextRecognized(recognized)
+                }
+            }
+        }
+        request.recognitionLanguages = ["ja", "en"]
+        request.recognitionLevel = .accurate
+
+        try? VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:]).perform([request])
+    }
 }

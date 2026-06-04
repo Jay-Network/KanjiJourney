@@ -16,6 +16,7 @@ import com.jworks.kanjijourney.core.data.FieldJournalRepositoryImpl
 import com.jworks.kanjijourney.core.data.FlashcardRepositoryImpl
 import com.jworks.kanjijourney.core.data.DatabaseDriverFactory
 import com.jworks.kanjijourney.core.data.JCoinRepositoryImpl
+import com.jworks.kanjijourney.core.data.LeaderboardRepositoryImpl
 import com.jworks.kanjijourney.core.data.KanaRepositoryImpl
 import com.jworks.kanjijourney.core.data.KanaSrsRepositoryImpl
 import com.jworks.kanjijourney.core.data.KanjiRepositoryImpl
@@ -40,6 +41,7 @@ import com.jworks.kanjijourney.core.domain.repository.KanaRepository
 import com.jworks.kanjijourney.core.domain.repository.KanaSrsRepository
 import com.jworks.kanjijourney.core.domain.repository.KanjiRepository
 import com.jworks.kanjijourney.core.domain.repository.ReceivedKanjiRepository
+import com.jworks.kanjijourney.core.domain.repository.LeaderboardRepository
 import com.jworks.kanjijourney.core.domain.repository.LearningSyncRepository
 import com.jworks.kanjijourney.core.domain.repository.RadicalRepository
 import com.jworks.kanjijourney.core.domain.repository.RadicalSrsRepository
@@ -135,6 +137,15 @@ object AppModule {
     @Singleton
     fun provideAchievementRepository(db: KanjiJourneyDatabase): AchievementRepository {
         return AchievementRepositoryImpl(db)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLeaderboardRepository(
+        jCoinRepository: JCoinRepository,
+        userSessionProvider: UserSessionProvider
+    ): LeaderboardRepository {
+        return LeaderboardRepositoryImpl(jCoinRepository, userSessionProvider)
     }
 
     @Provides

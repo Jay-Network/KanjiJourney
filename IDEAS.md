@@ -22,7 +22,7 @@ Track improvement ideas. Version at log time from `VERSION` file.
 - **Severity**: minor
 - **Source**: Jay via jworks:9 (2026-03-06) — reference tweet by @kenichiota0711
 - **Description**: Add cross guide lines (十字) to the writing canvas for stroke positioning. Simple cross dividing the square into 4 quadrants.
-- **Implementation**: `drawCrossGuides()` in DrawingCanvas.kt — dashed gray at 25% alpha, under ghost strokes. iOS port still pending.
+- **Implementation**: `drawCrossGuides()` in DrawingCanvas.kt — dashed gray at 25% alpha, under ghost strokes. iOS port: v0.2.0 — dashed guides in WritingDrawingCanvas (SwiftUI) + CalligraphyCanvasUIView (UIKit).
 
 ## IDEA-002: Dakuten/Handakuten Kana Variants in Kana Writing Mode
 - **Version at log**: 1.0.0

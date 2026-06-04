@@ -28,3 +28,6 @@ VALUES (?, ?, ?, ?, ?, ?);
 insertOrIgnore:
 INSERT OR IGNORE INTO study_session(game_mode, started_at, cards_studied, correct_count, xp_earned, duration_sec)
 VALUES (?, ?, ?, ?, ?, ?);
+
+getTotalCount:
+SELECT COUNT(*) FROM study_session;

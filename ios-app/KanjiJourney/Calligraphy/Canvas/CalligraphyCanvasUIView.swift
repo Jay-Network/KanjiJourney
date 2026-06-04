@@ -39,6 +39,13 @@ final class CalligraphyCanvasUIView: UIView {
 
     private let brushEngine: BrushEngine = FudeBrushEngine()
 
+    /// Whether current input is finger (no pressure data) vs Apple Pencil
+    private var isFingerInput = false
+
+    /// Previous touch location for velocity-based pressure simulation
+    private var previousTouchLocation: CGPoint?
+    private var previousTouchTimestamp: TimeInterval = 0
+
     // Offscreen buffer for completed strokes (avoids re-rendering)
     private var completedImage: UIImage?
 
@@ -88,6 +95,9 @@ final class CalligraphyCanvasUIView: UIView {
         guard let touch = touches.first else { return }
         strokeStartTime = touch.timestamp
         activePoints = []
+        isFingerInput = touch.type != .pencil
+        previousTouchLocation = touch.location(in: self)
+        previousTouchTimestamp = touch.timestamp
 
         // Process coalesced touches for higher resolution
         let coalesced = event?.coalescedTouches(for: touch) ?? [touch]
@@ -149,13 +159,16 @@ final class CalligraphyCanvasUIView: UIView {
             context.restoreGState()
         }
 
-        // 3. Draw ghost reference strokes
+        // 3. Cross guide lines (十字)
+        drawCrossGuides(in: context)
+
+        // 4. Draw ghost reference strokes
         drawReferenceStrokes(in: context)
 
-        // 4. Draw completed strokes (from cached image)
+        // 5. Draw completed strokes (from cached image)
         completedImage?.draw(in: bounds)
 
-        // 5. Draw active stroke
+        // 6. Draw active stroke
         if !activePoints.isEmpty {
             brushEngine.render(points: activePoints, in: context, bounds: bounds)
             // Render ink pooling at start of active stroke
@@ -300,6 +313,27 @@ final class CalligraphyCanvasUIView: UIView {
         return dt > 0.0001 ? dist / CGFloat(dt) : 0
     }
 
+    // MARK: - Cross Guides
+
+    private func drawCrossGuides(in context: CGContext) {
+        let midX = bounds.midX
+        let midY = bounds.midY
+
+        context.saveGState()
+        context.setStrokeColor(UIColor.gray.withAlphaComponent(0.25).cgColor)
+        context.setLineWidth(1.5)
+        context.setLineDash(phase: 0, lengths: [8, 8])
+
+        context.beginPath()
+        context.move(to: CGPoint(x: midX, y: bounds.minY))
+        context.addLine(to: CGPoint(x: midX, y: bounds.maxY))
+        context.move(to: CGPoint(x: bounds.minX, y: midY))
+        context.addLine(to: CGPoint(x: bounds.maxX, y: midY))
+        context.strokePath()
+
+        context.restoreGState()
+    }
+
     // MARK: - Reference Strokes
 
     private func drawReferenceStrokes(in context: CGContext) {
@@ -437,13 +471,40 @@ final class CalligraphyCanvasUIView: UIView {
 
     private func pointData(from touch: UITouch) -> CalligraphyPointData {
         let location = touch.location(in: self)
-        let maxForce = touch.maximumPossibleForce > 0 ? touch.maximumPossibleForce : 1.0
+
+        let force: CGFloat
+        let altitude: CGFloat
+        let azimuth: CGFloat
+
+        if isFingerInput {
+            // Simulate pressure from velocity: slow = heavy (thick), fast = light (thin)
+            let dt = touch.timestamp - previousTouchTimestamp
+            let dx = location.x - (previousTouchLocation?.x ?? location.x)
+            let dy = location.y - (previousTouchLocation?.y ?? location.y)
+            let velocity = dt > 0.0001 ? sqrt(dx * dx + dy * dy) / CGFloat(dt) : 0
+
+            // Map velocity to pressure: 0 px/s → 0.7 force, 1500+ px/s → 0.2 force
+            let velocityNorm = min(1.0, velocity / 1500.0)
+            force = 0.7 - 0.5 * velocityNorm
+
+            altitude = .pi / 2  // perpendicular (round stamps)
+            azimuth = 0
+
+            previousTouchLocation = location
+            previousTouchTimestamp = touch.timestamp
+        } else {
+            let maxForce = touch.maximumPossibleForce > 0 ? touch.maximumPossibleForce : 1.0
+            force = touch.force / maxForce
+            altitude = touch.altitudeAngle
+            azimuth = touch.azimuthAngle(in: self)
+        }
+
         return CalligraphyPointData(
             x: location.x,
             y: location.y,
-            force: touch.force / maxForce,
-            altitude: touch.altitudeAngle,
-            azimuth: touch.azimuthAngle(in: self),
+            force: force,
+            altitude: altitude,
+            azimuth: azimuth,
             timestamp: touch.timestamp - strokeStartTime
         )
     }

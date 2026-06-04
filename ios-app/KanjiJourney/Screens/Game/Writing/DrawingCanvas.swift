@@ -27,14 +27,14 @@ struct WritingDrawingCanvas: View {
                             .stroke(Color.gray.opacity(0.3), lineWidth: 1)
                     )
 
-                // Grid lines (light gray cross)
+                // Cross guide lines (十字) — dashed, matches Android DrawingCanvas.kt
                 Path { path in
                     path.move(to: CGPoint(x: size / 2, y: 0))
                     path.addLine(to: CGPoint(x: size / 2, y: size))
                     path.move(to: CGPoint(x: 0, y: size / 2))
                     path.addLine(to: CGPoint(x: size, y: size / 2))
                 }
-                .stroke(Color.gray.opacity(0.15), lineWidth: 1)
+                .stroke(Color.gray.opacity(0.25), style: StrokeStyle(lineWidth: 1.5, dash: [8, 8]))
 
                 // Reference strokes (guides)
                 if writingDifficulty != .blank {

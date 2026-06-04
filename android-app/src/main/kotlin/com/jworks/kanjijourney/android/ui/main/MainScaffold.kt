@@ -50,6 +50,7 @@ fun MainScaffold(
     onCollectionClick: () -> Unit,
     onProgressClick: () -> Unit,
     onAchievementsClick: () -> Unit,
+    onLeaderboardClick: () -> Unit = {},
     onFlashcardStudy: (Long) -> Unit,
     onTestMode: () -> Unit = {}
 ) {
@@ -115,6 +116,7 @@ fun MainScaffold(
                     onSubscriptionClick = onSubscriptionClick,
                     onProgressClick = onProgressClick,
                     onAchievementsClick = onAchievementsClick,
+                    onLeaderboardClick = onLeaderboardClick,
                     onFeedbackClick = onFeedbackClick
                 )
             }
