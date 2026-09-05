@@ -174,7 +174,7 @@ private class WritingTestKanjiRepository(private val kanjiList: List<Kanji>) : K
     override suspend fun getCommonVocabularyAtOffset(offset: Long): Vocabulary? = null
     override suspend fun getCommonVocabularyCount() = 0L
     override suspend fun getKanjiIdsForVocab(vocabId: Long) = emptyList<Long>()
-    override suspend fun getUnseenKanjiByGrade(grade: Int, limit: Int) = emptyList<Kanji>()
+    override suspend fun getUnseenKanjiByGrade(grade: Int, limit: Int) = kanjiList.filter { it.grade == grade }.take(limit)
     override suspend fun searchKanji(query: String, limit: Int) = emptyList<Kanji>()
     override suspend fun getKanjiCount() = kanjiList.size.toLong()
     override suspend fun getKanjiCountByGrade(grade: Int) = kanjiList.count { it.grade == grade }.toLong()
