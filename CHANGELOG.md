@@ -5,6 +5,18 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.3.1 (2026-07-30) — J-Coin Double-Mint Fix + Test Suite Compile Repair
+
+### Fixed
+- **BUG-006 (double-mint risk in guest→auth migration)**: `MigrateLocalDataUseCase` no longer re-stamps the guest's queued earn-events onto the auth user id (would have double-credited on next sync, since `jcoin-unified-earn` has no idempotency). Added `JCoinRepository.reconcileMigratedBalance(userId, amount, eventId)` — sends one aggregate earn event with a deterministic `client_event_id` before the local sync queue is deleted; the use case is now `suspend` and aborts the whole migration (touching no local data) if the reconcile call fails, so a failure retries cleanly on next sign-in instead of losing or duplicating coins.
+- **BUG-005 (shared-core unit test suite failed to compile)**: `CompleteSessionCoinTest` and `JCoinRepositoryTest` used `JdbcSqliteDriver` (JVM-only) from `commonTest`, which also compiles for iOS — moved both to `androidUnitTest` with the driver dependency added there. `GameEngineTest`/`WritingModeEngineTest`'s fake repositories were missing ~15-20 newer `KanjiRepository`/`SrsRepository` interface methods — implemented on all 4 fakes. `:shared-core:testDebugUnitTest` now compiles and runs (94 tests, previously 0 could compile); `JCoinRepositoryTest` (covering the BUG-006 change) passes 10/10.
+- **Auth/J-Coin backend URLs** (`local.properties`, not committed — see STATUS.md): repointed off two decommissioned hosts (cloud Supabase auth project, unhyphenated jcoin hostname) to the live self-hosted endpoints, with rotated anon keys.
+
+### Known issue
+- **BUG-007**: 27 of the 94 shared-core tests fail — pre-existing, confirmed unrelated to this changeset via `git diff --stat`, previously masked because the suite couldn't compile at all. Not yet triaged. See BUGS.md for the individual failures.
+
+---
+
 ## v1.3.0 (2026-05-31) — Force-Upgrade Gate for Cloud Decommission
 
 ### Added

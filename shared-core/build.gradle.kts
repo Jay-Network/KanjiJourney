@@ -78,6 +78,13 @@ kotlin {
         jvmTest.dependencies {
             implementation(libs.sqldelight.sqlite.driver)
         }
+
+        // JdbcSqliteDriver (used by tests that exercise SQLDelight against an in-memory DB) is
+        // JVM-only, so those tests live here rather than commonTest — commonTest also compiles
+        // for the iOS targets, where JdbcSqliteDriver doesn't exist (BUG-005, 2026-07-30).
+        androidUnitTest.dependencies {
+            implementation(libs.sqldelight.sqlite.driver)
+        }
     }
 }
 

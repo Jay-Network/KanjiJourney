@@ -361,8 +361,11 @@ object AppModule {
     }
 
     @Provides
-    fun provideMigrateLocalDataUseCase(db: KanjiJourneyDatabase): MigrateLocalDataUseCase {
-        return MigrateLocalDataUseCase(db)
+    fun provideMigrateLocalDataUseCase(
+        db: KanjiJourneyDatabase,
+        jCoinRepository: JCoinRepository
+    ): MigrateLocalDataUseCase {
+        return MigrateLocalDataUseCase(db, jCoinRepository)
     }
 
     @Provides

@@ -30,6 +30,15 @@ interface JCoinRepository {
      */
     suspend fun syncPendingEvents(): Int
 
+    /**
+     * Send ONE reconciling earn event carrying an aggregate amount, tagged with a
+     * deterministic [eventId] so a retry is (eventually) safe to dedupe server-side.
+     * Used by guest-to-auth migration to move an unsynced local balance to the server
+     * exactly once, instead of replaying every underlying local event individually.
+     * Returns true only if the server confirmed the event (2xx).
+     */
+    suspend fun reconcileMigratedBalance(userId: String, amount: Long, eventId: String): Boolean
+
     // Premium content
     suspend fun isPremiumUnlocked(userId: String, contentType: String, contentId: String): Boolean
 

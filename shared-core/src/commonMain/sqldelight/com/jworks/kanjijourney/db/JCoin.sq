@@ -135,8 +135,13 @@ DELETE FROM active_boosters WHERE expires_at <= ?;
 migrateBalanceUserId:
 UPDATE coin_balance SET user_id = ? WHERE user_id = ?;
 
-migrateSyncQueueUserId:
-UPDATE coin_sync_queue SET user_id = ? WHERE user_id = ?;
+-- Deliberately DELETE, not re-stamp: the local balance transferred via migrateBalanceUserId
+-- already reflects every earn event queued here. Re-stamping them onto the auth user id would
+-- let CoinSyncWorker drain them a second time against jcoin-unified-earn (which has no
+-- idempotency/dedupe), double-crediting the same activity. Client balance is the single source
+-- of truth for the pre-login window.
+deleteSyncQueueForUser:
+DELETE FROM coin_sync_queue WHERE user_id = ?;
 
 migrateUnlocksUserId:
 UPDATE premium_content_unlocks SET user_id = ? WHERE user_id = ?;

@@ -1,6 +1,8 @@
 package com.jworks.kanjijourney.core
 
+import com.jworks.kanjijourney.core.domain.model.ExampleSentence
 import com.jworks.kanjijourney.core.domain.model.GameMode
+import com.jworks.kanjijourney.core.domain.model.GradeMastery
 import com.jworks.kanjijourney.core.domain.model.Kanji
 import com.jworks.kanjijourney.core.domain.model.SrsCard
 import com.jworks.kanjijourney.core.domain.model.SrsState
@@ -231,8 +233,26 @@ private class FakeKanjiRepository(private val kanjiList: List<Kanji>) : KanjiRep
     override suspend fun getKanjiByGrade(grade: Int) = kanjiList.filter { it.grade == grade }
     override suspend fun getKanjiByJlptLevel(level: Int) = kanjiList.filter { it.jlptLevel == level }
     override suspend fun getVocabularyForKanji(kanjiId: Int) = emptyList<Vocabulary>()
+    override suspend fun getVocabularyByIds(ids: List<Long>) = emptyList<Vocabulary>()
+    override suspend fun getStudiedKanjiVocabulary() = emptyList<Vocabulary>()
+    override suspend fun getRandomStudiedVocabulary(): Vocabulary? = null
+    override suspend fun getVocabularyById(id: Long): Vocabulary? = null
+    override suspend fun getExampleSentence(vocabId: Long): ExampleSentence? = null
+    override suspend fun getVocabularyAtOffset(offset: Long): Vocabulary? = null
+    override suspend fun getVocabularyCount() = 0L
+    override suspend fun getCommonVocabularyAtOffset(offset: Long): Vocabulary? = null
+    override suspend fun getCommonVocabularyCount() = 0L
+    override suspend fun getKanjiIdsForVocab(vocabId: Long) = emptyList<Long>()
+    override suspend fun getUnseenKanjiByGrade(grade: Int, limit: Int) = emptyList<Kanji>()
     override suspend fun searchKanji(query: String, limit: Int) = emptyList<Kanji>()
     override suspend fun getKanjiCount() = kanjiList.size.toLong()
+    override suspend fun getKanjiCountByGrade(grade: Int) = kanjiList.count { it.grade == grade }.toLong()
+    override suspend fun getKanjiCountByJlptLevel(level: Int) = kanjiList.count { it.jlptLevel == level }.toLong()
+    override suspend fun getKanjiByStrokeCount(strokeCount: Int) = emptyList<Kanji>()
+    override suspend fun getDistinctStrokeCounts() = emptyList<Int>()
+    override suspend fun getKanjiByFrequencyRange(from: Int, to: Int) = emptyList<Kanji>()
+    override suspend fun getKanjiByKankenLevel(kankenLevel: Int) = emptyList<Kanji>()
+    override suspend fun getKanjiCountByKankenLevel(kankenLevel: Int) = 0L
 }
 
 private class FakeSrsRepository : SrsRepository {
@@ -247,6 +267,8 @@ private class FakeSrsRepository : SrsRepository {
         cards.values.count { it.nextReview <= currentTime && it.state != SrsState.GRADUATED }.toLong()
     override suspend fun getNewCount() =
         cards.values.count { it.state == SrsState.NEW }.toLong()
+    override suspend fun getLearningCards(limit: Int) =
+        cards.values.filter { it.state != SrsState.NEW && it.state != SrsState.GRADUATED }.take(limit).toList()
     override suspend fun getMasteredCount() =
         cards.values.count { it.state == SrsState.GRADUATED }.toLong()
     override suspend fun saveCard(card: SrsCard) {
@@ -257,4 +279,20 @@ private class FakeSrsRepository : SrsRepository {
             cards[kanjiId] = SrsCard(kanjiId = kanjiId)
         }
     }
+    override suspend fun getGradeMastery(grade: Int, totalKanjiInGrade: Long) = GradeMastery(
+        grade = grade,
+        totalKanjiInGrade = totalKanjiInGrade,
+        studiedCount = 0,
+        masteredCount = cards.values.count { it.state == SrsState.GRADUATED }.toLong(),
+        averageAccuracy = 0f,
+        coverage = 0f
+    )
+    override suspend fun getCardsByIds(kanjiIds: List<Long>) =
+        cards.values.filter { it.kanjiId.toLong() in kanjiIds }.toList()
+    override suspend fun getNonNewCardCount() =
+        cards.values.count { it.state != SrsState.NEW }.toLong()
+    override suspend fun incrementModeStats(kanjiId: Int, gameMode: String, correct: Boolean) {
+        // No-op: mode stats aren't exercised by these tests
+    }
+    override suspend fun getModeStatsByIds(kanjiIds: List<Long>) = emptyMap<Int, Map<String, Int>>()
 }

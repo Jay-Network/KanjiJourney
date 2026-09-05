@@ -158,6 +158,34 @@ class JCoinRepositoryImpl(
         return@withContext syncedCount
     }
 
+    override suspend fun reconcileMigratedBalance(
+        userId: String,
+        amount: Long,
+        eventId: String
+    ): Boolean = withContext(Dispatchers.Default) {
+        if (!SupabaseClientFactory.isInitialized()) return@withContext false
+        try {
+            val supabase = SupabaseClientFactory.getInstance()
+            val response = supabase.functions.invoke(
+                function = "jcoin-unified-earn",
+                body = buildJsonObject {
+                    put("customer_id", userId)
+                    put("source_business", "kanjijourney")
+                    put("source_type", "guest_migration")
+                    put("base_amount", amount)
+                    put("description", "Guest balance migrated on sign-in")
+                    // Not yet enforced server-side (jworks:35, 2026-07-30) — sent so a future
+                    // unique constraint on this key can dedupe a retried migration for free.
+                    put("client_event_id", eventId)
+                    putJsonObject("metadata") { put("migration", true) }
+                }
+            )
+            response.status.value in 200..299
+        } catch (_: Exception) {
+            false
+        }
+    }
+
     override suspend fun isPremiumUnlocked(
         userId: String,
         contentType: String,
