@@ -24,6 +24,8 @@ import kotlinx.datetime.Clock
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonObject
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 class JCoinRepositoryImpl(
     private val database: KanjiJourneyDatabase,
@@ -47,6 +49,7 @@ class JCoinRepositoryImpl(
             .map { it?.toDomain() ?: CoinBalance.empty(userId) }
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     override suspend fun earnCoins(
         userId: String,
         sourceType: String,
@@ -66,7 +69,10 @@ class JCoinRepositoryImpl(
             user_id = userId
         )
 
-        // Queue for future sync
+        // Queue for future sync. client_event_id is generated ONCE here and persisted with the
+        // row, not regenerated at send time — every retry of this same queued event must send the
+        // same key so the server's dedup (jworks:35, 2026-09-27) can recognize a retry instead of
+        // treating it as a new earn.
         queries.insertSyncEvent(
             user_id = userId,
             event_type = "earn",
@@ -74,7 +80,8 @@ class JCoinRepositoryImpl(
             base_amount = amount,
             description = description,
             metadata = metadata,
-            created_at = clock.now().epochSeconds
+            created_at = clock.now().epochSeconds,
+            client_event_id = Uuid.random().toString()
         )
 
         val updated = queries.getBalance(userId).executeAsOneOrNull()
@@ -122,6 +129,10 @@ class JCoinRepositoryImpl(
                         put("source_type", event.source_type)
                         put("base_amount", event.base_amount)
                         put("description", event.description)
+                        // Persisted at insertSyncEvent time (earnCoins) - same key on every retry
+                        // of this row. Rows queued before this column existed have no value; the
+                        // field is simply omitted for those (server currently ignores it either way).
+                        event.client_event_id?.let { put("client_event_id", it) }
                         putJsonObject("metadata") {
                             // Parse metadata string back to JSON if needed
                             // For now, just include as-is
@@ -285,7 +296,8 @@ class JCoinRepositoryImpl(
                         )
                     }
 
-                    // Queue spend event for backend sync
+                    // Queue spend event for backend sync. Not an earn - no dedup key requested
+                    // for this path (jworks:35's fix is scoped to jcoin-unified-earn credits).
                     queries.insertSyncEvent(
                         user_id = userId,
                         event_type = "spend",
@@ -293,7 +305,8 @@ class JCoinRepositoryImpl(
                         base_amount = item.cost.toLong(),
                         description = "Purchased: ${item.name}",
                         metadata = """{"item_id":"${item.id}","category":"${item.category.name}"}""",
-                        created_at = clock.now().epochSeconds
+                        created_at = clock.now().epochSeconds,
+                        client_event_id = null
                     )
                 }
 
@@ -356,7 +369,7 @@ class JCoinRepositoryImpl(
                     expires_at = expiresAt
                 )
 
-                // Queue spend event
+                // Queue spend event. Not an earn - no dedup key requested for this path.
                 queries.insertSyncEvent(
                     user_id = userId,
                     event_type = "spend",
@@ -364,7 +377,8 @@ class JCoinRepositoryImpl(
                     base_amount = cost.toLong(),
                     description = "Activated ${boosterType.displayName} (${durationHours}h)",
                     metadata = """{"booster_type":"${boosterType.name}","duration_hours":$durationHours}""",
-                    created_at = now
+                    created_at = now,
+                    client_event_id = null
                 )
             }
 

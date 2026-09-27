@@ -80,6 +80,42 @@ class JCoinRepositoryTest {
     }
 
     @Test
+    fun earnCoins_persistsNonBlankClientEventId() = runTest {
+        val db = createTestDb()
+        val repo = createRepo(db)
+        repo.earnCoins(LOCAL_USER_ID, "srs_review_complete", 10, "Session 1")
+
+        val queued = db.jCoinQueries.getPendingEvents().executeAsList().single()
+        assertTrue(queued.client_event_id?.isNotBlank() == true)
+    }
+
+    @Test
+    fun earnCoins_distinctEarns_getDistinctClientEventIds() = runTest {
+        // jworks:35 (2026-09-27): the server dedups on this key, so two DIFFERENT earns must
+        // never collide - only a genuine retry of the SAME queued row may reuse one.
+        val db = createTestDb()
+        val repo = createRepo(db)
+        repo.earnCoins(LOCAL_USER_ID, "srs_review_complete", 10, "Session 1")
+        repo.earnCoins(LOCAL_USER_ID, "perfect_quiz", 25, "Perfect score")
+
+        val ids = db.jCoinQueries.getPendingEvents().executeAsList().map { it.client_event_id }
+        assertEquals(2, ids.toSet().size)
+    }
+
+    @Test
+    fun earnCoins_clientEventIdSurvivesRetry_untilRowIsDeleted() = runTest {
+        // The key must stay stable for as long as the row is queued/retried - it is read back
+        // from the persisted row at sync time, never regenerated per send attempt.
+        val db = createTestDb()
+        val repo = createRepo(db)
+        repo.earnCoins(LOCAL_USER_ID, "srs_review_complete", 10, "Session 1")
+
+        val firstRead = db.jCoinQueries.getPendingEvents().executeAsList().single().client_event_id
+        val secondRead = db.jCoinQueries.getPendingEvents().executeAsList().single().client_event_id
+        assertEquals(firstRead, secondRead)
+    }
+
+    @Test
     fun getSyncStatus_reflectsPendingEvents() = runTest {
         val repo = createRepo()
         repo.earnCoins(LOCAL_USER_ID, "srs_review_complete", 10, "Session 1")

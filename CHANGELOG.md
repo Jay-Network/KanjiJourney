@@ -5,6 +5,17 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.3.2 (2026-09-27) — J-Coin Earn Dedup Key
+
+### Added
+- **`client_event_id` on the regular earn path**: `coin_sync_queue` gets a new `client_event_id` column (idempotent `ALTER TABLE` for existing installs, in `DatabaseDriverFactory.ensureNewTables()`). Generated once as a UUID when an earn is queued (`earnCoins` → `insertSyncEvent`), persisted with the row, and sent as a stable key on every retry of that same queued sync — never regenerated per send attempt. Requested by jworks:35 (J-Coin): their upcoming atomic-ledger deploy will dedupe earns on this key server-side (`earn:<key>` prefix), returning the original award instead of double-crediting on a retried request. Spend events (purchases, booster activations) are unaffected — they pass `client_event_id = null`, unchanged from before.
+- Regression tests: `JCoinRepositoryTest` — key is non-blank, two distinct earns get distinct keys, and the same queued row's key is stable across repeated reads (13/13 tests pass).
+
+### Context
+- Audited during a routine jworks:35 sync (BUG-cutover-audit): found the migration-reconcile earn path already sent a per-user dedup key (`migration:{authUserId}`, safe by design), but the far more common regular-earn path sent none at all — meaning the client-side retry jayhub:110 recommended for J-Coin cold-start timeouts would have been unsafe to enable until this shipped.
+
+---
+
 ## v1.3.1 (2026-07-30) — J-Coin Double-Mint Fix + Test Suite Compile Repair
 
 ### Fixed

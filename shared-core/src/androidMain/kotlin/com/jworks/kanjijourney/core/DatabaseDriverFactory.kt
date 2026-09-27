@@ -221,6 +221,13 @@ actual class DatabaseDriverFactory(private val context: Context) {
                 // Column already exists
             }
 
+            // Add client_event_id column if upgrading from old schema (J Coin earn dedup key, jworks:35 2026-09-27)
+            try {
+                it.execSQL("ALTER TABLE coin_sync_queue ADD COLUMN client_event_id TEXT")
+            } catch (_: Exception) {
+                // Column already exists
+            }
+
             it.execSQL("""
                 CREATE TABLE IF NOT EXISTS kanji_radical (
                     kanji_id INTEGER NOT NULL,
