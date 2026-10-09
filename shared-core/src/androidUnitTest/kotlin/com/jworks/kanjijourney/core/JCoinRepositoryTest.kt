@@ -2,7 +2,10 @@ package com.jworks.kanjijourney.core
 
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import com.jworks.kanjijourney.core.data.JCoinRepositoryImpl
+import com.jworks.kanjijourney.core.data.withOneTransportRetry
 import com.jworks.kanjijourney.core.domain.model.CoinTier
+import io.ktor.client.plugins.HttpRequestTimeoutException
+import kotlin.test.assertFailsWith
 import com.jworks.kanjijourney.core.domain.model.LOCAL_USER_ID
 import com.jworks.kanjijourney.db.KanjiJourneyDatabase
 import kotlinx.coroutines.test.runTest
@@ -113,6 +116,42 @@ class JCoinRepositoryTest {
         val firstRead = db.jCoinQueries.getPendingEvents().executeAsList().single().client_event_id
         val secondRead = db.jCoinQueries.getPendingEvents().executeAsList().single().client_event_id
         assertEquals(firstRead, secondRead)
+    }
+
+    @Test
+    fun transportRetry_timeoutThenSuccess_returnsSecondAttempt() = runTest {
+        var calls = 0
+        val result = withOneTransportRetry {
+            calls++
+            if (calls == 1) throw HttpRequestTimeoutException("https://j-coin.test/earn", 10_000L)
+            "ok"
+        }
+        assertEquals("ok", result)
+        assertEquals(2, calls)
+    }
+
+    @Test
+    fun transportRetry_retriesOnlyOnce() = runTest {
+        var calls = 0
+        assertFailsWith<HttpRequestTimeoutException> {
+            withOneTransportRetry<String> {
+                calls++
+                throw HttpRequestTimeoutException("https://j-coin.test/earn", 10_000L)
+            }
+        }
+        assertEquals(2, calls)
+    }
+
+    @Test
+    fun transportRetry_nonTransportError_notRetried() = runTest {
+        var calls = 0
+        assertFailsWith<IllegalStateException> {
+            withOneTransportRetry<String> {
+                calls++
+                throw IllegalStateException("server answered")
+            }
+        }
+        assertEquals(1, calls)
     }
 
     @Test

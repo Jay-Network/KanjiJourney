@@ -5,6 +5,16 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.3.3 (2026-10-09) — One transport retry on keyed J-Coin earns
+
+### Added
+- **One automatic retry on a transport failure** (timeout or connect failure) for J-Coin earn calls, via `withOneTransportRetry` in `JCoinRepositoryImpl.kt`. The J-Coin backend sleeps when idle and cold-wakes in ~10 s, so the first call after idle can time out while the retry lands on the warm stack. Enabled after jworks:35 confirmed their server-side `client_event_id` dedup is live (2026-10-09 ~05:30Z): a repeated key returns the original award instead of crediting twice.
+- Applied only where a dedup key is present: queued earns carrying the v1.3.2 `client_event_id`, and the guest-migration reconcile (`migration:{authUserId}`). Legacy queued rows without a key, and spend events (purchases, boosters), get no retry — without a key a repeated request would credit twice.
+- Never retries when the server answered (`RestException`); only Ktor `HttpRequestTimeoutException` and supabase-kt `HttpRequestException`, confirmed from the resolved supabase-kt 2.1.5 bytecode.
+- 3 regression tests: timeout-then-success returns the second attempt, retries exactly once, non-transport errors are not retried. `JCoinRepositoryTest` 16/16.
+
+---
+
 ## v1.3.2 (2026-09-27) — J-Coin Earn Dedup Key
 
 ### Added

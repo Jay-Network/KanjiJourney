@@ -24,8 +24,24 @@ import kotlinx.datetime.Clock
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonObject
+import io.github.jan.supabase.exceptions.HttpRequestException
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
+
+/**
+ * Runs [block], and runs it exactly once more if the first attempt failed in transport (timeout or
+ * connect failure). The J Coin backend sleeps when idle and cold-wakes in ~10 s, so the first call
+ * after idle can time out while the second lands on the warm stack. Server errors (RestException:
+ * the server answered) are never retried. Only call this for requests carrying a client_event_id.
+ */
+internal suspend fun <T> withOneTransportRetry(block: suspend () -> T): T = try {
+    block()
+} catch (_: HttpRequestTimeoutException) {
+    block()
+} catch (_: HttpRequestException) {
+    block()
+}
 
 class JCoinRepositoryImpl(
     private val database: KanjiJourneyDatabase,
@@ -120,25 +136,31 @@ class JCoinRepositoryImpl(
 
         for (event in pending) {
             try {
-                // Call Supabase Edge Function: jcoin-unified-earn
-                val response = supabase.functions.invoke(
-                    function = "jcoin-unified-earn",
-                    body = buildJsonObject {
-                        put("customer_id", event.user_id)
-                        put("source_business", event.source_business)
-                        put("source_type", event.source_type)
-                        put("base_amount", event.base_amount)
-                        put("description", event.description)
-                        // Persisted at insertSyncEvent time (earnCoins) - same key on every retry
-                        // of this row. Rows queued before this column existed have no value; the
-                        // field is simply omitted for those (server currently ignores it either way).
-                        event.client_event_id?.let { put("client_event_id", it) }
-                        putJsonObject("metadata") {
-                            // Parse metadata string back to JSON if needed
-                            // For now, just include as-is
+                // Call Supabase Edge Function: jcoin-unified-earn. Only rows carrying a
+                // client_event_id get the transport retry: the server dedups on that key, so a
+                // retry of a request it already processed returns the original award. Null-key
+                // rows (queued before the key existed, and spend events) get no retry - without
+                // a key a repeated request would credit twice.
+                val invoke: suspend () -> io.ktor.client.statement.HttpResponse = {
+                    supabase.functions.invoke(
+                        function = "jcoin-unified-earn",
+                        body = buildJsonObject {
+                            put("customer_id", event.user_id)
+                            put("source_business", event.source_business)
+                            put("source_type", event.source_type)
+                            put("base_amount", event.base_amount)
+                            put("description", event.description)
+                            // Persisted at insertSyncEvent time (earnCoins) - same key on every
+                            // retry of this row. Legacy rows have no value; field omitted for those.
+                            event.client_event_id?.let { put("client_event_id", it) }
+                            putJsonObject("metadata") {
+                                // Parse metadata string back to JSON if needed
+                                // For now, just include as-is
+                            }
                         }
-                    }
-                )
+                    )
+                }
+                val response = if (event.client_event_id != null) withOneTransportRetry(invoke) else invoke()
 
                 if (response.status.value in 200..299) {
                     // Success - delete from queue
@@ -177,20 +199,21 @@ class JCoinRepositoryImpl(
         if (!SupabaseClientFactory.isInitialized()) return@withContext false
         try {
             val supabase = SupabaseClientFactory.getInstance()
-            val response = supabase.functions.invoke(
-                function = "jcoin-unified-earn",
-                body = buildJsonObject {
-                    put("customer_id", userId)
-                    put("source_business", "kanjijourney")
-                    put("source_type", "guest_migration")
-                    put("base_amount", amount)
-                    put("description", "Guest balance migrated on sign-in")
-                    // Not yet enforced server-side (jworks:35, 2026-07-30) — sent so a future
-                    // unique constraint on this key can dedupe a retried migration for free.
-                    put("client_event_id", eventId)
-                    putJsonObject("metadata") { put("migration", true) }
-                }
-            )
+            // Always keyed, so the transport retry is safe here (server dedup live 2026-10-09).
+            val response = withOneTransportRetry {
+                supabase.functions.invoke(
+                    function = "jcoin-unified-earn",
+                    body = buildJsonObject {
+                        put("customer_id", userId)
+                        put("source_business", "kanjijourney")
+                        put("source_type", "guest_migration")
+                        put("base_amount", amount)
+                        put("description", "Guest balance migrated on sign-in")
+                        put("client_event_id", eventId)
+                        putJsonObject("metadata") { put("migration", true) }
+                    }
+                )
+            }
             response.status.value in 200..299
         } catch (_: Exception) {
             false
