@@ -5,6 +5,11 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.4 (2026-10-09) — BUG-008 fix, round 3: remove the SELECT-via-execute() crash (jworks:47)
+
+### Fixed (still UNVERIFIED — needs a Mac rebuild to confirm)
+- v1.4.3's path fix WORKS (confirmed by jworks-mac:90: CI compiles green, DB opens with correct 24.7MB size, no more path-separator error). New crash, same file, next line: `driver.execute(null, "SELECT COUNT(*) FROM kanji", 0)` — sqliter's `execute()` refuses a `SELECT` (`SQLiteException: Queries can be performed using query or rawQuery methods only`). That line was a log-only diagnostic (kanji-count sanity check, not used for control flow) — removed it rather than swap in `executeQuery()`, since nothing downstream depends on its result. `ensureNewTables`'s own `execute()` calls (CREATE TABLE/INDEX, all non-query DDL) are untouched — they're exactly what `execute()` is for.
+
 ## v1.4.3 (2026-10-09) — BUG-008 fix, round 2: compiler-verified parameter name (jworks:47)
 
 ### Fixed (still UNVERIFIED — needs a Mac/CI rebuild to confirm it now compiles)

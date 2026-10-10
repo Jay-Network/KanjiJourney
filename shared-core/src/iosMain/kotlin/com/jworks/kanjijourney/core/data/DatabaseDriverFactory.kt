@@ -44,8 +44,9 @@ actual class DatabaseDriverFactory {
             }
         )
 
-        // Verify kanji count right after opening
-        driver.execute(null, "SELECT COUNT(*) FROM kanji", 0)
+        // (Diagnostic kanji-count check removed: sqliter's execute() refuses
+        // a SELECT -- it's for non-query statements only. Not needed for
+        // correctness, this was log-only.)
         NSLog("KanjiJourney [KN]: DB opened at %s (exists=%s, size=%d)", resolvedDbPath, exists.toString(), size)
 
         ensureNewTables(driver)
