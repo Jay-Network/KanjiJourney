@@ -5,10 +5,15 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.3 (2026-10-09) — BUG-008 fix, round 2: compiler-verified parameter name (jworks:47)
+
+### Fixed (still UNVERIFIED — needs a Mac/CI rebuild to confirm it now compiles)
+- v1.4.2's fix didn't compile: `NativeSqliteDriver`'s configuration-override parameter is named `onConfiguration`, not `onConfigurationChange` (confirmed from the real compiler error via jworks-mac:90's CI run 38018056551, not guessed). Corrected the parameter name and preserved other `DatabaseConfiguration.Extended` fields via `config.extendedConfig.copy(basePath = docsDir)` instead of constructing a fresh `Extended(...)`. Same underlying fix as v1.4.2 (BUG-008): bare filename as `name`, Documents dir as `basePath`.
+
 ## v1.4.2 (2026-10-09) — BUG-008 fix attempt: iOS DB open crash (jworks:47)
 
-### Fixed (UNVERIFIED — needs a Mac rebuild to confirm)
-- `shared-core/.../DatabaseDriverFactory.kt` (iosMain): `NativeSqliteDriver` was being given the full resolved Documents path as `name=`, which the installed sqliter version rejects (`IllegalArgumentException: ... contains a path separator`) — crashed the real app on launch, before reaching any real screen (Shop, Achievements, every game mode go through `AppContainer`, which triggers this). Found by jworks-mac:90 building+running main@1c44ba0 on an iPad simulator. Changed to the bare filename + `DatabaseConfiguration.Extended(basePath = docsDir)` via `onConfigurationChange`. Pre-existing bug (dates to the KanjiQuest→KanjiJourney rename, c8a90c1) — unrelated to v1.4.0/v1.4.1. See BUGS.md BUG-008. Not independently compiled by me (no Xcode on this host); asked jworks-mac:90 to rebuild and confirm.
+### Fixed (UNVERIFIED — needs a Mac rebuild to confirm) — superseded by v1.4.3, did not compile
+- `shared-core/.../DatabaseDriverFactory.kt` (iosMain): `NativeSqliteDriver` was being given the full resolved Documents path as `name=`, which the installed sqliter version rejects (`IllegalArgumentException: ... contains a path separator`) — crashed the real app on launch, before reaching any real screen (Shop, Achievements, every game mode go through `AppContainer`, which triggers this). Found by jworks-mac:90 building+running main@1c44ba0 on an iPad simulator. Changed to the bare filename + `DatabaseConfiguration.Extended(basePath = docsDir)` via `onConfigurationChange`. Pre-existing bug (dates to the KanjiQuest→KanjiJourney rename, c8a90c1) — unrelated to v1.4.0/v1.4.1. See BUGS.md BUG-008. Not independently compiled by me (no Xcode on this host); asked jworks-mac:90 to rebuild and confirm. **Did not compile — wrong parameter name, see v1.4.3.**
 
 ## v1.4.1 (2026-10-09) — WCAG 1.4.1 fix: non-color answer-tile labels (jworks:47)
 

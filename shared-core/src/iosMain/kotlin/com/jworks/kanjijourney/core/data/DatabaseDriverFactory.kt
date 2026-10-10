@@ -39,8 +39,8 @@ actual class DatabaseDriverFactory {
         val driver = NativeSqliteDriver(
             schema = KanjiJourneyDatabase.Schema,
             name = DB_NAME,
-            onConfigurationChange = { config ->
-                config.copy(extendedConfig = DatabaseConfiguration.Extended(basePath = docsDir))
+            onConfiguration = { config: DatabaseConfiguration ->
+                config.copy(extendedConfig = config.extendedConfig.copy(basePath = docsDir))
             }
         )
 
