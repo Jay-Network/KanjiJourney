@@ -29,12 +29,13 @@ class Sm2AlgorithmTest {
         val card = SrsCard(kanjiId = 1)
         val result = algorithm.review(card, quality = 4, currentTime = now)
 
+        // Still LEARNING after one pass: 10-minute learning step, not a 1-day interval
         assertEquals(SrsState.LEARNING, result.state)
         assertEquals(1, result.repetitions)
-        assertEquals(1, result.interval)
+        assertEquals(0, result.interval)
         assertEquals(1, result.totalReviews)
         assertEquals(1, result.correctCount)
-        assertEquals(now + 86400L, result.nextReview)
+        assertEquals(now + 600L, result.nextReview)
     }
 
     @Test

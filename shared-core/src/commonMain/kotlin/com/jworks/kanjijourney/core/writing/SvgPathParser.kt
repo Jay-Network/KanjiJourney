@@ -32,7 +32,9 @@ object SvgPathParser {
 
     /**
      * Parse a single SVG path `d` attribute into a list of points.
-     * Supports M (absolute moveTo) and c (relative cubicBezierTo) commands.
+     * Supports M (absolute moveTo), c/C (cubicBezierTo) and s/S (smooth cubicBezierTo).
+     * KanjiVG uses s/S in ~900 kanji; skipping them drops segments and shifts every later
+     * relative segment of the stroke.
      */
     fun parseSvgPath(pathData: String): List<Point> {
         if (pathData.isBlank()) return emptyList()
@@ -40,6 +42,8 @@ object SvgPathParser {
         val points = mutableListOf<Point>()
         var currentX = 0f
         var currentY = 0f
+        // Second control point of the previous cubic (absolute), for s/S reflection
+        var lastCtrl2: Point? = null
 
         val tokens = tokenize(pathData)
         var i = 0
@@ -54,9 +58,10 @@ object SvgPathParser {
                     currentX = x
                     currentY = y
                     points.add(Point(currentX, currentY))
+                    lastCtrl2 = null
 
                     // Implicit lineTo pairs after M
-                    while (i < tokens.size && tokens[i].firstOrNull()?.let { it.isDigit() || it == '-' || it == '.' } == true) {
+                    while (i < tokens.size && isNumber(tokens[i])) {
                         val (lx, ly) = parseCoordPair(tokens, i)
                         i += 2
                         currentX = lx
@@ -64,38 +69,40 @@ object SvgPathParser {
                         points.add(Point(currentX, currentY))
                     }
                 }
-                "c" -> {
-                    // Relative cubic bezier: c dx1,dy1 dx2,dy2 dx,dy
+                "c", "C" -> {
+                    // Cubic bezier: c dx1,dy1 dx2,dy2 dx,dy (relative) / C x1,y1 x2,y2 x,y (absolute)
+                    val relative = tokens[i] == "c"
                     i++
-                    while (i + 5 < tokens.size && tokens[i].firstOrNull()?.let { it.isDigit() || it == '-' || it == '.' } == true) {
-                        val (dx1, dy1) = parseCoordPair(tokens, i); i += 2
-                        val (dx2, dy2) = parseCoordPair(tokens, i); i += 2
-                        val (dx, dy) = parseCoordPair(tokens, i); i += 2
-                        // Sample along the cubic bezier curve
-                        val x0 = currentX; val y0 = currentY
-                        val cx1 = x0 + dx1; val cy1 = y0 + dy1
-                        val cx2 = x0 + dx2; val cy2 = y0 + dy2
-                        val ex = x0 + dx; val ey = y0 + dy
-                        for (s in 1..BEZIER_SAMPLES) {
-                            val t = s.toFloat() / BEZIER_SAMPLES
-                            points.add(cubicBezierPoint(x0, y0, cx1, cy1, cx2, cy2, ex, ey, t))
-                        }
-                        currentX = ex; currentY = ey
+                    while (i + 5 < tokens.size && isNumber(tokens[i])) {
+                        val ox = if (relative) currentX else 0f
+                        val oy = if (relative) currentY else 0f
+                        val (x1, y1) = parseCoordPair(tokens, i); i += 2
+                        val (x2, y2) = parseCoordPair(tokens, i); i += 2
+                        val (x, y) = parseCoordPair(tokens, i); i += 2
+                        val ctrl2 = Point(ox + x2, oy + y2)
+                        sampleCubic(points, currentX, currentY, ox + x1, oy + y1, ctrl2.x, ctrl2.y, ox + x, oy + y)
+                        currentX = ox + x; currentY = oy + y
+                        lastCtrl2 = ctrl2
                     }
                 }
-                "C" -> {
-                    // Absolute cubic bezier: C x1,y1 x2,y2 x,y
+                "s", "S" -> {
+                    // Smooth cubic: s dx2,dy2 dx,dy (relative) / S x2,y2 x,y (absolute).
+                    // First control point = previous cubic's second control point reflected
+                    // through the current point, or the current point if there was none.
+                    val relative = tokens[i] == "s"
                     i++
-                    while (i + 5 < tokens.size && tokens[i].firstOrNull()?.let { it.isDigit() || it == '-' || it == '.' } == true) {
-                        val (cx1, cy1) = parseCoordPair(tokens, i); i += 2
-                        val (cx2, cy2) = parseCoordPair(tokens, i); i += 2
+                    while (i + 3 < tokens.size && isNumber(tokens[i])) {
+                        val ox = if (relative) currentX else 0f
+                        val oy = if (relative) currentY else 0f
+                        val (x2, y2) = parseCoordPair(tokens, i); i += 2
                         val (x, y) = parseCoordPair(tokens, i); i += 2
-                        val x0 = currentX; val y0 = currentY
-                        for (s in 1..BEZIER_SAMPLES) {
-                            val t = s.toFloat() / BEZIER_SAMPLES
-                            points.add(cubicBezierPoint(x0, y0, cx1, cy1, cx2, cy2, x, y, t))
-                        }
-                        currentX = x; currentY = y
+                        val prev = lastCtrl2
+                        val cx1 = if (prev != null) 2 * currentX - prev.x else currentX
+                        val cy1 = if (prev != null) 2 * currentY - prev.y else currentY
+                        val ctrl2 = Point(ox + x2, oy + y2)
+                        sampleCubic(points, currentX, currentY, cx1, cy1, ctrl2.x, ctrl2.y, ox + x, oy + y)
+                        currentX = ox + x; currentY = oy + y
+                        lastCtrl2 = ctrl2
                     }
                 }
                 else -> i++ // skip unknown commands
@@ -103,6 +110,21 @@ object SvgPathParser {
         }
 
         return points
+    }
+
+    private fun isNumber(token: String): Boolean =
+        token.firstOrNull()?.let { it.isDigit() || it == '-' || it == '.' } == true
+
+    /** Append BEZIER_SAMPLES points along the cubic, excluding the start point. */
+    private fun sampleCubic(
+        points: MutableList<Point>,
+        x0: Float, y0: Float, cx1: Float, cy1: Float,
+        cx2: Float, cy2: Float, x3: Float, y3: Float
+    ) {
+        for (s in 1..BEZIER_SAMPLES) {
+            val t = s.toFloat() / BEZIER_SAMPLES
+            points.add(cubicBezierPoint(x0, y0, cx1, cy1, cx2, cy2, x3, y3, t))
+        }
     }
 
     /**

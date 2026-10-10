@@ -5,6 +5,12 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.7 (2026-10-10) — Writing mode: smooth-curve strokes parsed; BUG-007 clusters 2-4 (jworks:44)
+
+### Fixed
+- **Writing mode graded ~900 kanji against distorted reference strokes**: `SvgPathParser` ignored the SVG `s`/`S` (smooth cubic) commands. In the bundled DB, 816 of 6,413 kanji use `s` and 87 use `S`. Those segments were dropped and every later relative segment in the stroke started from the wrong point. `WritingViewModel.submitDrawing()` grades the drawing against these parsed strokes. `s`/`S` are now parsed per the SVG spec, with regression tests including a real KanjiVG stroke (繦).
+- **BUG-007 clusters 2-4 (9 failing tests) were stale tests, now updated**: the parser samples 8 points per curve (tests expected endpoints only); SM-2 has a 10-minute learning step (test expected 1 day); J Coin earning is premium-only (coin tests ran as a free user), and three identical sessions in one second hit `UNIQUE(started_at, game_mode)`. Added `freeUser_earns0Coins` to pin the premium gate. Details in BUGS.md.
+
 ## v1.4.6 (2026-10-10) — Android CI debug APK gets its config; versionName aligned (jworks:44)
 
 ### Fixed

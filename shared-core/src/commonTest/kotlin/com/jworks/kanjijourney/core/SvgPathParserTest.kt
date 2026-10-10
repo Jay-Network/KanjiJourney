@@ -13,13 +13,14 @@ class SvgPathParserTest {
         val path = "M 50,20 c 1,2 3,4 5,6"
         val points = SvgPathParser.parseSvgPath(path)
 
-        assertEquals(2, points.size)
+        // moveTo + 8 samples along the cubic (SvgPathParser.BEZIER_SAMPLES)
+        assertEquals(1 + 8, points.size)
         // First point is the moveTo
         assertEquals(50f, points[0].x)
         assertEquals(20f, points[0].y)
-        // Second point is offset by the end delta of the cubic (5, 6)
-        assertEquals(55f, points[1].x)
-        assertEquals(26f, points[1].y)
+        // Last sample (t = 1) is the cubic's end point, offset by its end delta (5, 6)
+        assertEquals(55f, points.last().x)
+        assertEquals(26f, points.last().y)
     }
 
     @Test
@@ -32,8 +33,11 @@ class SvgPathParserTest {
         // Starts near (14.5, 50.25)
         assertEquals(14.5f, points[0].x, 0.01f)
         assertEquals(50.25f, points[0].y, 0.01f)
-        // Should have 3 points: M + 2 cubic endpoints
-        assertEquals(3, points.size)
+        // M + 8 samples per cubic, 2 cubics
+        assertEquals(1 + 2 * 8, points.size)
+        // Ends at the second cubic's end point: 14.5 + 26.62 + 24.25, 50.25 + 0.37 - 3
+        assertEquals(65.37f, points.last().x, 0.01f)
+        assertEquals(47.62f, points.last().y, 0.01f)
     }
 
     @Test
@@ -41,9 +45,60 @@ class SvgPathParserTest {
         val path = "M 50,16.5 c 0,1.75 -0.25,3.37 -0.75,4.87 c -0.5,1.5 -1,3 -1.5,4.5"
         val points = SvgPathParser.parseSvgPath(path)
 
-        assertEquals(3, points.size)
+        assertEquals(1 + 2 * 8, points.size)
         assertEquals(50f, points[0].x, 0.01f)
         assertEquals(16.5f, points[0].y, 0.01f)
+    }
+
+    @Test
+    fun parseSvgPath_smoothCubic_reflectsPreviousControlPoint() {
+        // c ends at (10,0) with 2nd control point (10,10); s reflects it to (10,-10)
+        val path = "M 0,0 c 0,10 10,10 10,0 s 10,-10 10,0"
+        val points = SvgPathParser.parseSvgPath(path)
+
+        assertEquals(1 + 2 * 8, points.size)
+        assertEquals(20f, points.last().x, 0.01f)
+        assertEquals(0f, points.last().y, 0.01f)
+        // Midpoint (t = 0.5) of the s segment: control points (10,-10) and (20,-10) pull it to y = -7.5
+        // (without the reflection, the first control point would be (10,0) and y = -3.75)
+        assertEquals(15f, points[8 + 4].x, 0.01f)
+        assertEquals(-7.5f, points[8 + 4].y, 0.01f)
+    }
+
+    @Test
+    fun parseSvgPath_absoluteSmoothCubic_matchesRelative() {
+        val relative = SvgPathParser.parseSvgPath("M 0,0 c 0,10 10,10 10,0 s 10,-10 10,0")
+        val absolute = SvgPathParser.parseSvgPath("M 0,0 C 0,10 10,10 10,0 S 20,-10 20,0")
+
+        assertEquals(relative.size, absolute.size)
+        relative.zip(absolute).forEach { (r, a) ->
+            assertEquals(r.x, a.x, 0.01f)
+            assertEquals(r.y, a.y, 0.01f)
+        }
+    }
+
+    @Test
+    fun parseSvgPath_segmentAfterSmoothCubic_startsFromItsEndPoint() {
+        // s with no preceding cubic uses the current point as its first control point
+        val points = SvgPathParser.parseSvgPath("M 0,0 s 5,5 10,0 c 1,1 2,2 3,3")
+
+        assertEquals(1 + 2 * 8, points.size)
+        assertEquals(10f, points[8].x, 0.01f)
+        assertEquals(0f, points[8].y, 0.01f)
+        assertEquals(13f, points.last().x, 0.01f)
+        assertEquals(3f, points.last().y, 0.01f)
+    }
+
+    @Test
+    fun parseSvgPath_realKanjiVgData_withSmoothCubic() {
+        // Real KanjiVG stroke from 繦 (bundled kanjijourney.db); 816 kanji there use s, 87 use S
+        val path = "M47.5,36c1.75,0,8-1.5,9.25-1.5s2,0,3,0"
+        val points = SvgPathParser.parseSvgPath(path)
+
+        assertEquals(1 + 2 * 8, points.size)
+        // End = start + sum of end deltas: (47.5 + 9.25 + 3, 36 - 1.5 + 0)
+        assertEquals(59.75f, points.last().x, 0.01f)
+        assertEquals(34.5f, points.last().y, 0.01f)
     }
 
     @Test

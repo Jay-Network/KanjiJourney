@@ -4,8 +4,10 @@ import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import com.jworks.kanjijourney.core.data.JCoinRepositoryImpl
 import com.jworks.kanjijourney.core.data.SessionRepositoryImpl
 import com.jworks.kanjijourney.core.data.UserRepositoryImpl
+import com.jworks.kanjijourney.core.domain.UserSessionProvider
 import com.jworks.kanjijourney.core.domain.model.GameMode
 import com.jworks.kanjijourney.core.domain.model.LOCAL_USER_ID
+import com.jworks.kanjijourney.core.domain.model.UserLevel
 import com.jworks.kanjijourney.core.domain.usecase.CompleteSessionUseCase
 import com.jworks.kanjijourney.core.engine.SessionStats
 import com.jworks.kanjijourney.core.scoring.ScoringEngine
@@ -25,14 +27,33 @@ class CompleteSessionCoinTest {
         return KanjiJourneyDatabase(driver)
     }
 
-    private fun createUseCase(db: KanjiJourneyDatabase = createTestDb()): Pair<CompleteSessionUseCase, JCoinRepositoryImpl> {
+    // J Coin earning is premium-only (CompleteSessionUseCase step 5)
+    private class FakeSession(private val premium: Boolean) : UserSessionProvider {
+        override suspend fun getUserId() = LOCAL_USER_ID
+        override fun isPremium() = premium
+        override fun isAdmin() = false
+        override fun getEffectiveLevel() = if (premium) UserLevel.PREMIUM else UserLevel.FREE
+        override fun setAdminOverrideLevel(level: UserLevel?) {}
+        override fun getAdminOverrideLevel(): UserLevel? = null
+        override suspend fun getUserEmail(): String? = null
+        override fun setAdminPlayerLevelOverride(level: Int?) {}
+        override fun getAdminPlayerLevelOverride(): Int? = null
+    }
+
+    private fun createUseCase(
+        db: KanjiJourneyDatabase = createTestDb(),
+        premium: Boolean = true
+    ): Pair<CompleteSessionUseCase, JCoinRepositoryImpl> {
         val fixedClock = object : Clock {
             override fun now() = Instant.fromEpochSeconds(1700000000L)
         }
         val userRepo = UserRepositoryImpl(db)
         val sessionRepo = SessionRepositoryImpl(db)
         val jCoinRepo = JCoinRepositoryImpl(db, fixedClock)
-        val useCase = CompleteSessionUseCase(userRepo, sessionRepo, ScoringEngine(), jCoinRepo)
+        val useCase = CompleteSessionUseCase(
+            userRepo, sessionRepo, ScoringEngine(), jCoinRepo,
+            userSessionProvider = FakeSession(premium)
+        )
         return useCase to jCoinRepo
     }
 
@@ -122,6 +143,23 @@ class CompleteSessionCoinTest {
     }
 
     @Test
+    fun freeUser_earns0Coins() = runTest {
+        val (useCase, jCoinRepo) = createUseCase(premium = false)
+        val stats = SessionStats(
+            gameMode = GameMode.RECOGNITION,
+            cardsStudied = 20,
+            correctCount = 20,
+            comboMax = 20,
+            xpEarned = 200,
+            durationSec = 300
+        )
+
+        val result = useCase.execute(stats)
+        assertEquals(0, result.coinsEarned)
+        assertEquals(0L, jCoinRepo.getBalance(LOCAL_USER_ID).localBalance)
+    }
+
+    @Test
     fun noJCoinRepo_earns0Coins() = runTest {
         val db = createTestDb()
         val useCase = CompleteSessionUseCase(
@@ -147,18 +185,20 @@ class CompleteSessionCoinTest {
     fun multipleSessionsAccumulate() = runTest {
         val db = createTestDb()
         val (useCase, jCoinRepo) = createUseCase(db)
-        val stats = SessionStats(
-            gameMode = GameMode.RECOGNITION,
-            cardsStudied = 20,
-            correctCount = 15,
-            comboMax = 5,
-            xpEarned = 100,
-            durationSec = 300
-        )
-
-        useCase.execute(stats)
-        useCase.execute(stats)
-        useCase.execute(stats)
+        // startedAt = now - durationSec, and study_session is UNIQUE(started_at, game_mode):
+        // three real sessions never share a start second, so give each a different duration
+        for (duration in listOf(300, 400, 500)) {
+            useCase.execute(
+                SessionStats(
+                    gameMode = GameMode.RECOGNITION,
+                    cardsStudied = 20,
+                    correctCount = 15,
+                    comboMax = 5,
+                    xpEarned = 100,
+                    durationSec = duration
+                )
+            )
+        }
 
         val balance = jCoinRepo.getBalance(LOCAL_USER_ID)
         assertEquals(30L, balance.localBalance) // 10 * 3
