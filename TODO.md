@@ -18,7 +18,7 @@
 - IDEA-001 iOS port: cross guide lines on iOS writing canvas
 - iPhone calligraphy mode (finger drawing, no Apple Pencil, IDEA-005 / BUG-003)
 - Camera Challenge: AVFoundation + Vision OCR camera preview (BUG-002, iOS)
-- Apply Glass UI to remaining iOS screens (jworks:47 scope)
+- [UNVERIFIED — build pending] Apply Glass UI to remaining iOS screens (jworks:47 scope) — code landed in v1.4.0 (commit 4116094) but no Swift compiler has run and no screen has been rendered/screenshotted; do not treat as done until a Mac build confirms it (2026-10-09, jworks:0 caught this)
 - KanjiSage deep link integration (iPad)
 - Polish from beta student feedback (4 students testing)
 

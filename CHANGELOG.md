@@ -12,13 +12,13 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ## v1.4.0 (2026-10-09) — iOS Glass UI completion, Dark Mode wiring, WCAG accessibility labels (jworks:47)
 
-### Added
-- **Glass UI applied to remaining iOS screens** (backlog item closed): `GlassTheme.swift` gained a reusable `.glassCard()` ViewModifier; applied across Achievements, Collection (Hub + grid), Settings, Shop, Study, Subscription, and the Recognition game screen, replacing flat `KanjiJourneyTheme.background`/`.cornerRadius` card styling with the glass surface treatment already used elsewhere.
-- **Dark mode ViewModifier wired up** (backlog item closed): `KanjiJourneyApp.swift` now reads the existing `AppTheme` setting via `@AppStorage("theme")` and switches `.preferredColorScheme` between light/dark/system, replacing the previous hardcoded `.preferredColorScheme(.dark)`.
-- **WCAG L1 accessibility fix**: added `.accessibilityLabel()` to the 6 icon-only buttons found by the 2026-10-09 audit (feedback envelope, 2x refresh, flashcard star-toggle, settings gear, back chevron) — see BUGS.md.
+### Added — UNVERIFIED, no build or render has happened (jworks:0 caught this 2026-10-09; see BUGS.md)
+- **Glass UI applied to remaining iOS screens**: `GlassTheme.swift` gained a reusable `.glassCard()` ViewModifier; applied across Achievements, Collection (Hub + grid), Settings, Shop, Study, Subscription, and the Recognition game screen, replacing flat `KanjiJourneyTheme.background`/`.cornerRadius` card styling with the glass surface treatment already used elsewhere. **Not yet build- or screen-verified** — no Xcode build has run and no screen has been looked at.
+- **Dark mode ViewModifier wired up**: `KanjiJourneyApp.swift` now reads the existing `AppTheme` setting via `@AppStorage("theme")` and switches `.preferredColorScheme` between light/dark/system, replacing the previous hardcoded `.preferredColorScheme(.dark)`. **Not yet build- or screen-verified.**
+- **WCAG L1 accessibility fix**: added `.accessibilityLabel()` to the 6 icon-only buttons found by the 2026-10-09 audit (feedback envelope, 2x refresh, flashcard star-toggle, settings gear, back chevron) — see BUGS.md. Lower risk (string-only additions matching an identical pattern already shipped elsewhere in the codebase) but also not compile-verified.
 
 ### Note
-Some of this (Glass UI + Dark Mode) was in-progress, uncommitted work from an earlier session landed together with this pass; re-verified against the current source before committing (no android-app changes included).
+This source tree has been uncommitted, in-progress work (Glass UI + Dark Mode) sitting across several September/October sessions, authorship not git-attributable since it was never committed — almost certainly jworks:47's own prior work given exclusive scope over `ios-app/`, but not confirmed. Landed together with this session's accessibility pass; I read every diff before committing (no android-app changes included) but did NOT compile or render any of it — no macOS/Xcode available on this host. A Mac build + screenshots is the actual verification step, requested from jayhub-mac:110 (2026-10-09).
 
 ## v1.3.3 (2026-10-09) — One transport retry on keyed J-Coin earns
 
