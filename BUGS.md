@@ -43,6 +43,9 @@ History: BUG-001 (APK size)
 
 ## Open
 
+- [ ] [unnumbered — Cat-G, iOS] TestFlight CI (iPad + iPhone) fails at "Install certificate and provisioning profile": `SecKeychainItemImport: MAC verification failed` (wrong p12 password). Confirmed via `gh run view` on Jay-Network/KanjiJourney runs 29994720787 (iPad) / 29994720683 (iPhone) + `gh secret list`: `APPLE_CERTIFICATE_BASE64`/`APPLE_CERTIFICATE_PASSWORD` both stamped 2026-03-09. Re-confirmed independently 2026-09-25 (jworks:22, read-only) plus one new fact: the provisioning-profile secrets predate the cert secret (Feb 21-22 vs Mar 9), so profile/cert may not even match once the password is fixed. **Blocked**: needs Apple Developer portal access (Team 27943BGKL7). Per Jay's 2026-10-09 one-front-door disposition (via jayhub:0/jworks:0): deferred — CI stays broken since nothing is shipping through it; a card goes to jayhub:0 recommending a fresh cert+profile reissue when an iOS release is actually ready to ship (jworks:47 tracking).
+- [ ] [unnumbered — Cat-E, iOS, WCAG 1.4.1] 5 game screens signal correct/wrong answers by tile color alone, no icon, no accessibility label: `Screens/Game/Kana/KanaRecognitionView.swift:165-169`, `Screens/Game/Radical/RadicalBuilderView.swift:177-181`, `Screens/Game/Radical/RadicalRecognitionView.swift:174-178`, `Screens/Game/VocabularyView.swift:202-206`, `Screens/Placement/PlacementTestView.swift:193-210`. `Screens/Game/RecognitionView.swift:238-278` already does this correctly (`answerAccessibilityLabel` helper, line 271) — that's the pattern to copy into the other 5. Found during WCAG L1 audit 2026-10-09 (jworks:47), not yet fixed. Full audit: `/media/takuma/Data_ubuntu/agent-text/jworks-47/wcag-l1-ios-audit-2026-10-09.md`.
+
 - [ ] [BUG-001] APK size — debug 67MB, release estimated ~40-45MB (was 123MB)
   - **Severity**: Low (likely under 50MB target)
   - **Progress**: v1.2.5 — deleted db.bak (24MB), PNG→WebP (49MB→460KB), ABI filter, resource shrinking
@@ -89,6 +92,7 @@ History: BUG-001 (APK size)
 
 ## Resolved
 
+- [x] [unnumbered — Cat-E, iOS, WCAG 4.1.2] 6 icon-only buttons had no `accessibilityLabel` (VoiceOver got silence or the raw SF Symbol name) — found during WCAG L1 audit 2026-10-09 (jworks:47), fixed same day: `Components/FeedbackFAB.swift` ("Send feedback"), `Screens/Achievements/AchievementsView.swift` + `Screens/Progress/ProgressView.swift` ("Refresh"), `Screens/Detail/KanjiDetailView.swift` ("Add/Remove from flashcards", dynamic), `Screens/Home/HomeView.swift` ("Settings"), `Screens/Quiz/TestModeView.swift` ("Back"). Full audit: `/media/takuma/Data_ubuntu/agent-text/jworks-47/wcag-l1-ios-audit-2026-10-09.md`.
 - [x] [BUG-002] Camera Challenge AVFoundation preview — live camera + Vision OCR (v0.2.0, 2026-04-24, jworks:47)
 - [x] [BUG-003] iPhone calligraphy mode excluded (Apple Pencil only) — fixed v0.2.0 (2026-04-24, jworks:47)
   - Velocity-based pressure simulation for finger input

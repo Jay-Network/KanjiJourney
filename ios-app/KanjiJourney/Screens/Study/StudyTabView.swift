@@ -29,21 +29,19 @@ private struct StudyTabViewContent: View {
                 HStack(spacing: 8) {
                     ForEach(ContentTab.allCases, id: \.self) { tab in
                         let isSelected = tab == state.selectedTab
-                        Text(tab.rawValue)
-                            .font(.system(size: 14, weight: isSelected ? .bold : .regular))
-                            .foregroundColor(isSelected ? .white : KanjiJourneyTheme.primary)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(isSelected ? KanjiJourneyTheme.primary : KanjiJourneyTheme.surfaceVariant)
-                            .cornerRadius(8)
+                        GlassChip(selected: isSelected) {
+                            Text(tab.rawValue)
+                                .font(GlassTypography.labelLarge)
+                                .foregroundColor(isSelected ? GlassColors.textPrimary : GlassColors.textSecondary)
+                        }
                             .onTapGesture { viewModel.selectTab(tab) }
                     }
                 }
 
                 // Study Mode selector
                 Text("Study Mode")
-                    .font(KanjiJourneyTheme.titleMedium)
-                    .fontWeight(.bold)
+                    .font(GlassTypography.titleLarge)
+                    .foregroundColor(GlassColors.textPrimary)
 
                 let availableModes = GameModeEnum.modesForTab(state.selectedTab)
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -76,21 +74,23 @@ private struct StudyTabViewContent: View {
                                     }
                                 }
                                 .frame(width: 120, height: 100)
-                                .background(
-                                    isSelected ? Color(hex: UInt(modeInfo.color)) :
-                                    isAccessible ? KanjiJourneyTheme.surfaceVariant :
-                                    KanjiJourneyTheme.surfaceVariant.opacity(0.5)
-                                )
-                                .cornerRadius(12)
+                                .background(isSelected ? Color(hex: UInt(modeInfo.color)).opacity(0.28) : Color.clear)
                             }
+                            .background(GlassColors.cardGradient)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(isSelected ? Color(hex: UInt(modeInfo.color)).opacity(0.75) : GlassColors.border, lineWidth: isSelected ? 2 : 1)
+                            )
+                            .opacity(isAccessible ? 1 : 0.55)
                         }
                     }
                 }
 
                 // Source selector
                 Text("Source")
-                    .font(KanjiJourneyTheme.titleMedium)
-                    .fontWeight(.bold)
+                    .font(GlassTypography.titleLarge)
+                    .foregroundColor(GlassColors.textPrimary)
 
                 HStack(spacing: 8) {
                     SourceChipView(
@@ -133,19 +133,17 @@ private struct StudyTabViewContent: View {
                 // Kana sub-filter (kana tab only)
                 if state.selectedTab == .kana {
                     Text("Kana Type")
-                        .font(KanjiJourneyTheme.titleMedium)
-                        .fontWeight(.bold)
+                        .font(GlassTypography.titleLarge)
+                        .foregroundColor(GlassColors.textPrimary)
 
                     HStack(spacing: 8) {
                         ForEach(KanaFilter.allCases, id: \.self) { filter in
                             let isSelected = filter == state.kanaFilter
-                            Text(filter.rawValue)
-                                .font(.system(size: 13, weight: isSelected ? .bold : .regular))
-                                .foregroundColor(isSelected ? .white : KanjiJourneyTheme.onSurfaceVariant)
-                                .padding(.horizontal, 14)
-                                .padding(.vertical, 8)
-                                .background(isSelected ? Color(hex: 0xE91E63) : KanjiJourneyTheme.surfaceVariant)
-                                .cornerRadius(8)
+                            GlassChip(selected: isSelected, selectedColor: Color(hex: 0xE91E63)) {
+                                Text(filter.rawValue)
+                                    .font(GlassTypography.labelLarge)
+                                    .foregroundColor(isSelected ? GlassColors.textPrimary : GlassColors.textSecondary)
+                            }
                                 .onTapGesture { viewModel.selectKanaFilter(filter) }
                         }
                     }
@@ -189,7 +187,7 @@ private struct StudyTabViewContent: View {
             }
             .padding(16)
         }
-        .background(KanjiJourneyTheme.background)
+        .background(GlassColors.background.ignoresSafeArea())
     }
 
     private func routeForMode(_ mode: GameModeEnum, kanaFilter: KanaFilter) -> NavRoute {
@@ -228,12 +226,10 @@ private struct SourceChipLabel: View {
     let isSelected: Bool
 
     var body: some View {
-        Text(label)
-            .font(.system(size: 12, weight: isSelected ? .bold : .regular))
-            .foregroundColor(isSelected ? .white : KanjiJourneyTheme.primary)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(isSelected ? KanjiJourneyTheme.primary : KanjiJourneyTheme.surfaceVariant)
-            .cornerRadius(8)
+        GlassChip(selected: isSelected) {
+            Text(label)
+                .font(GlassTypography.labelMedium)
+                .foregroundColor(isSelected ? GlassColors.textPrimary : GlassColors.textSecondary)
+        }
     }
 }

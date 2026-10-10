@@ -126,6 +126,38 @@ struct GlassCard<Content: View>: View {
     }
 }
 
+private struct GlassCardModifier: ViewModifier {
+    let cornerRadius: CGFloat
+    let borderColor: Color
+    let borderWidth: CGFloat
+
+    func body(content: Content) -> some View {
+        content
+            .background(GlassColors.cardGradient)
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .stroke(borderColor, lineWidth: borderWidth)
+            )
+    }
+}
+
+extension View {
+    func glassCard(
+        cornerRadius: CGFloat = 12,
+        borderColor: Color = GlassColors.border,
+        borderWidth: CGFloat = 1
+    ) -> some View {
+        modifier(
+            GlassCardModifier(
+                cornerRadius: cornerRadius,
+                borderColor: borderColor,
+                borderWidth: borderWidth
+            )
+        )
+    }
+}
+
 /// Selectable chip with glass styling.
 struct GlassChip<Content: View>: View {
     let selected: Bool

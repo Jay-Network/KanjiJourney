@@ -9,9 +9,14 @@ struct RecognitionView: View {
     var targetKanjiId: Int32? = nil
     var onBack: () -> Void = {}
 
+    // Feedback colors tuned for the dark glass background
+    private let correctColor = Color(hex: 0x4CAF50)
+    private let incorrectColor = Color(hex: 0xFF5252)
+    private let discoveryColor = Color(hex: 0x00BFA5)
+
     var body: some View {
         ZStack {
-            KanjiJourneyTheme.background.ignoresSafeArea()
+            GlassColors.background.ignoresSafeArea()
 
             if let error = viewModel.errorMessage {
                 errorContent(error)
@@ -33,20 +38,23 @@ struct RecognitionView: View {
                 )
             }
         }
+        .foregroundColor(GlassColors.textPrimary)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
-                    Image(systemName: "chevron.left")
-                    Text("Back")
-                }.foregroundColor(.white)
+                    Image(systemName: "chevron.left"); Text("Back")
+                }.foregroundColor(GlassColors.textPrimary)
             }
             ToolbarItem(placement: .principal) {
-                Text("Recognition").font(.headline).foregroundColor(.white)
+                Text("Recognition")
+                    .font(GlassTypography.titleLarge)
+                    .foregroundColor(GlassColors.textPrimary)
             }
         }
-        .toolbarBackground(KanjiJourneyTheme.primary, for: .navigationBar)
+        .toolbarBackground(GlassColors.surfaceDark, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .task {
             if viewModel.currentQuestion == nil && !viewModel.sessionComplete {
                 viewModel.start(container: container, targetKanjiId: targetKanjiId)
@@ -57,10 +65,11 @@ struct RecognitionView: View {
     // MARK: - Loading
 
     private var loadingContent: some View {
-        VStack(spacing: KanjiJourneyTheme.spacingM) {
+        VStack(spacing: 16) {
+            ProgressView().tint(GlassBrand.current)
             Text("Preparing questions...")
-                .font(KanjiJourneyTheme.titleMedium)
-            ProgressView()
+                .font(GlassTypography.bodyLarge)
+                .foregroundColor(GlassColors.textSecondary)
         }
     }
 
@@ -70,28 +79,30 @@ struct RecognitionView: View {
         ScrollView {
             VStack(spacing: 0) {
                 // Progress bar + stats row
-                progressRow
-                    .padding(.horizontal, KanjiJourneyTheme.spacingM)
-                    .padding(.top, KanjiJourneyTheme.spacingS)
+                VStack(spacing: 8) {
+                    progressRow
+                    ProgressView(value: Float(viewModel.questionNumber), total: Float(viewModel.totalQuestions))
+                        .tint(GlassBrand.current)
+                        .accessibilityLabel("Question \(viewModel.questionNumber) of \(viewModel.totalQuestions)")
+                }
+                .padding(12)
+                .glassCard()
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
 
-                ProgressView(value: Float(viewModel.questionNumber), total: Float(viewModel.totalQuestions))
-                    .tint(KanjiJourneyTheme.primary)
-                    .padding(.horizontal, KanjiJourneyTheme.spacingM)
-                    .padding(.vertical, 8)
-
-                Spacer().frame(height: KanjiJourneyTheme.spacingL)
+                Spacer().frame(height: 24)
 
                 // Prompt
                 Text("What is the reading?")
-                    .font(KanjiJourneyTheme.titleMedium)
-                    .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
+                    .font(GlassTypography.titleMedium)
+                    .foregroundColor(GlassColors.textSecondary)
 
-                Spacer().frame(height: KanjiJourneyTheme.spacingM)
+                Spacer().frame(height: 16)
 
                 // Large kanji card with NEW badge
                 kanjiCard(question)
 
-                Spacer().frame(height: KanjiJourneyTheme.spacingM)
+                Spacer().frame(height: 16)
 
                 // XP popup + readings (shown after answer)
                 if viewModel.showResult {
@@ -100,22 +111,16 @@ struct RecognitionView: View {
 
                 // 2x2 answer grid
                 answerGrid(question)
-                    .padding(.horizontal, KanjiJourneyTheme.spacingM)
+                    .padding(.horizontal, 16)
 
                 // Next button
                 if viewModel.showResult {
-                    Spacer().frame(height: KanjiJourneyTheme.spacingL)
-                    Button(action: viewModel.next) {
-                        Text("Next").font(KanjiJourneyTheme.labelLarge).fontWeight(.bold)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity).frame(height: 48)
-                            .background(KanjiJourneyTheme.primary)
-                            .cornerRadius(KanjiJourneyTheme.radiusM)
-                    }
-                    .padding(.horizontal, KanjiJourneyTheme.spacingM)
+                    Spacer().frame(height: 24)
+                    primaryButton("Next", height: 48, action: viewModel.next)
+                        .padding(.horizontal, 16)
                 }
 
-                Spacer().frame(height: KanjiJourneyTheme.spacingL)
+                Spacer().frame(height: 24)
             }
         }
     }
@@ -123,39 +128,41 @@ struct RecognitionView: View {
     private var progressRow: some View {
         HStack {
             Text("\(viewModel.questionNumber) / \(viewModel.totalQuestions)")
-                .font(KanjiJourneyTheme.bodyMedium)
+                .font(GlassTypography.labelLarge)
+                .foregroundColor(GlassColors.textSecondary)
             Spacer()
             if viewModel.currentCombo > 1 {
                 Text("\(viewModel.currentCombo)x combo")
-                    .font(KanjiJourneyTheme.bodyMedium).fontWeight(.bold)
+                    .font(GlassTypography.labelLarge).fontWeight(.bold)
                     .foregroundColor(KanjiJourneyTheme.tertiary)
             }
             Spacer()
             Text("\(viewModel.sessionXp) XP")
-                .font(KanjiJourneyTheme.bodyMedium)
-                .foregroundColor(KanjiJourneyTheme.primary)
+                .font(GlassTypography.labelLarge)
+                .foregroundColor(GlassBrand.current)
         }
     }
 
     private func kanjiCard(_ question: Question) -> some View {
         ZStack(alignment: .topTrailing) {
-            RoundedRectangle(cornerRadius: KanjiJourneyTheme.radiusM)
-                .fill(KanjiJourneyTheme.surface)
-                .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
-                .frame(width: 200, height: 200)
-                .overlay(
-                    KanjiText(text: question.kanjiLiteral, font: .system(size: 96, weight: .regular, design: .serif))
-                )
+            KanjiText(
+                text: question.kanjiLiteral,
+                font: .system(size: 96, weight: .regular, design: .serif),
+                color: GlassColors.textPrimary
+            )
+            .frame(width: 200, height: 200)
+            .glassCard(cornerRadius: 16, borderColor: GlassColors.borderHover, borderWidth: 1.5)
+            .shadow(color: GlassBrand.current.opacity(0.18), radius: 16)
 
             if question.isNewCard {
                 Text("NEW")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundColor(.white)
+                    .font(GlassTypography.labelSmall).fontWeight(.bold)
+                    .foregroundColor(GlassColors.textPrimary)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
-                    .background(Color(hex: 0x00BFA5))
-                    .cornerRadius(4)
-                    .padding(4)
+                    .background(discoveryColor.opacity(0.85))
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .padding(6)
             }
         }
     }
@@ -164,43 +171,52 @@ struct RecognitionView: View {
         VStack(spacing: 4) {
             if let correct = viewModel.isCorrect {
                 Text(correct ? "+\(viewModel.xpGained) XP" : "Incorrect")
-                    .font(KanjiJourneyTheme.titleLarge).fontWeight(.bold)
-                    .foregroundColor(correct ? KanjiJourneyTheme.tertiary : KanjiJourneyTheme.error)
+                    .font(GlassTypography.titleLarge).fontWeight(.bold)
+                    .foregroundColor(correct ? KanjiJourneyTheme.tertiary : incorrectColor)
                     .transition(.scale.combined(with: .opacity))
             }
 
             if let meaning = question.kanjiMeaning, !meaning.isEmpty {
                 Text(meaning)
-                    .font(KanjiJourneyTheme.titleMedium)
-                    .foregroundColor(KanjiJourneyTheme.onSurface)
+                    .font(GlassTypography.titleMedium)
+                    .foregroundColor(GlassColors.textPrimary)
             }
 
             let kunReadings = question.kunReadings as? [String] ?? []
             if !kunReadings.isEmpty {
-                Text("訓: \(kunReadings.joined(separator: "、"))")
-                    .font(KanjiJourneyTheme.bodyLarge).fontWeight(.bold)
-                    .foregroundColor(KanjiJourneyTheme.primary)
+                KanjiText(
+                    text: "訓: \(kunReadings.joined(separator: "、"))",
+                    font: GlassTypography.bodyLarge,
+                    fontWeight: .bold,
+                    color: GlassBrand.current
+                )
             }
 
             let onReadings = question.onReadings as? [String] ?? []
             if !onReadings.isEmpty {
-                Text("音: \(onReadings.joined(separator: "、"))")
-                    .font(KanjiJourneyTheme.bodyMedium)
-                    .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
+                KanjiText(
+                    text: "音: \(onReadings.joined(separator: "、"))",
+                    font: GlassTypography.bodyMedium,
+                    color: GlassColors.textSecondary
+                )
             }
 
             let words = question.exampleWords as? [Vocabulary] ?? []
             if !words.isEmpty {
                 ForEach(Array(words.prefix(3).enumerated()), id: \.offset) { _, vocab in
-                    Text("\(vocab.kanjiForm) (\(vocab.reading)) \(vocab.primaryMeaning)")
-                        .font(KanjiJourneyTheme.bodySmall)
-                        .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
+                    KanjiText(
+                        text: "\(vocab.kanjiForm) (\(vocab.reading)) \(vocab.primaryMeaning)",
+                        font: GlassTypography.bodySmall,
+                        color: GlassColors.textSecondary
+                    )
                 }
             }
-
-            Spacer().frame(height: 8)
         }
-        .padding(.horizontal, KanjiJourneyTheme.spacingM)
+        .frame(maxWidth: .infinity)
+        .padding(12)
+        .glassCard()
+        .padding(.horizontal, 16)
+        .padding(.bottom, 16)
     }
 
     private func answerGrid(_ question: Question) -> some View {
@@ -224,38 +240,53 @@ struct RecognitionView: View {
         let isAnswer = choice == question.correctAnswer
         let showing = viewModel.showResult
 
-        let bgColor: Color = {
-            if !showing { return KanjiJourneyTheme.primary }
-            if isAnswer { return Color(hex: 0x4CAF50) }
-            if isSelected { return KanjiJourneyTheme.error }
-            return KanjiJourneyTheme.surfaceVariant
+        // Before answering: neutral glass with brand border.
+        // After: green = correct answer, red = wrong pick, others dimmed.
+        let tint: Color? = {
+            guard showing else { return nil }
+            if isAnswer { return correctColor }
+            if isSelected { return incorrectColor }
+            return nil
         }()
+        let dimmed = showing && tint == nil
 
         return Button {
             if !viewModel.showResult {
                 viewModel.submitAnswer(choice)
             }
         } label: {
-            Text(choice)
-                .font(.system(size: 20))
-                .foregroundColor(.white)
+            KanjiText(text: choice, font: .system(size: 20), color: GlassColors.textPrimary)
                 .frame(maxWidth: .infinity)
                 .frame(height: 56)
-                .background(bgColor.opacity(showing && !isAnswer && !isSelected ? 0.6 : 1.0))
-                .cornerRadius(KanjiJourneyTheme.radiusM)
+                .background(tint?.opacity(0.30) ?? Color.clear)
+                .glassCard(
+                    borderColor: tint ?? GlassColors.borderHover,
+                    borderWidth: tint == nil ? 1 : 2
+                )
+                .opacity(dimmed ? 0.5 : 1.0)
+                .contentShape(RoundedRectangle(cornerRadius: 12))
         }
+        .buttonStyle(.plain)
         .disabled(viewModel.showResult)
+        .accessibilityLabel(answerAccessibilityLabel(choice, isAnswer: isAnswer, isSelected: isSelected))
+    }
+
+    private func answerAccessibilityLabel(_ choice: String, isAnswer: Bool, isSelected: Bool) -> String {
+        guard viewModel.showResult else { return choice }
+        if isAnswer { return "\(choice), correct answer" }
+        if isSelected { return "\(choice), your answer, incorrect" }
+        return choice
     }
 
     // MARK: - Session Complete
 
     private var sessionCompleteView: some View {
         ScrollView {
-            VStack(spacing: KanjiJourneyTheme.spacingL) {
-                Spacer().frame(height: KanjiJourneyTheme.spacingXL)
+            VStack(spacing: 24) {
+                Spacer().frame(height: 32)
 
                 Text("Session Complete!")
-                    .font(KanjiJourneyTheme.headlineMedium).fontWeight(.bold)
+                    .font(GlassTypography.headlineMedium).fontWeight(.bold)
 
                 // Stats card
                 VStack(spacing: 12) {
@@ -267,47 +298,44 @@ struct RecognitionView: View {
                     statRow("Duration", formatDuration(viewModel.durationSec))
                 }
                 .padding(20)
-                .background(KanjiJourneyTheme.surface)
-                .cornerRadius(KanjiJourneyTheme.radiusM)
-                .shadow(color: .black.opacity(0.05), radius: 2)
-                .padding(.horizontal, KanjiJourneyTheme.spacingM)
+                .glassCard()
+                .padding(.horizontal, 16)
 
                 // New discoveries
                 if !viewModel.newDiscoveries.isEmpty {
                     VStack(spacing: 8) {
                         Text("New Discoveries")
-                            .font(KanjiJourneyTheme.titleMedium).fontWeight(.bold)
-                            .foregroundColor(Color(hex: 0x00BFA5))
+                            .font(GlassTypography.titleMedium).fontWeight(.bold)
+                            .foregroundColor(discoveryColor)
 
                         HStack(spacing: 12) {
                             ForEach(Array(viewModel.newDiscoveries.enumerated()), id: \.offset) { _, discovery in
                                 VStack {
-                                    KanjiText(text: discovery.literal, font: .system(size: 36, design: .serif))
+                                    KanjiText(
+                                        text: discovery.literal,
+                                        font: .system(size: 36, design: .serif),
+                                        color: GlassColors.textPrimary
+                                    )
                                     Text(discovery.meaning)
-                                        .font(KanjiJourneyTheme.bodySmall)
-                                        .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
+                                        .font(GlassTypography.bodySmall)
+                                        .foregroundColor(GlassColors.textSecondary)
                                         .lineLimit(1)
                                 }
                             }
                         }
                     }
+                    .frame(maxWidth: .infinity)
                     .padding(16)
-                    .background(Color(hex: 0x00BFA5).opacity(0.1))
-                    .cornerRadius(KanjiJourneyTheme.radiusM)
-                    .padding(.horizontal, KanjiJourneyTheme.spacingM)
+                    .background(discoveryColor.opacity(0.10))
+                    .glassCard(borderColor: discoveryColor.opacity(0.45))
+                    .padding(.horizontal, 16)
                 }
 
-                Button {
+                primaryButton("Done", height: 56) {
                     viewModel.reset()
                     onBack()
-                } label: {
-                    Text("Done").font(KanjiJourneyTheme.labelLarge).fontWeight(.bold)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity).frame(height: 56)
-                        .background(KanjiJourneyTheme.primary)
-                        .cornerRadius(KanjiJourneyTheme.radiusM)
                 }
-                .padding(.horizontal, KanjiJourneyTheme.spacingM)
+                .padding(.horizontal, 16)
 
                 Spacer()
             }
@@ -317,28 +345,58 @@ struct RecognitionView: View {
     // MARK: - Error
 
     private func errorContent(_ message: String) -> some View {
-        VStack(spacing: KanjiJourneyTheme.spacingM) {
-            Spacer()
+        VStack(spacing: 16) {
+            Image(systemName: "exclamationmark.triangle")
+                .font(.system(size: 40))
+                .foregroundColor(GlassBrand.current)
+                .accessibilityHidden(true)
             Text(message)
-                .font(KanjiJourneyTheme.bodyLarge)
+                .font(GlassTypography.bodyLarge)
                 .multilineTextAlignment(.center)
-            Button("Go Back", action: onBack)
-                .buttonStyle(.bordered)
-            Spacer()
+            Button(action: onBack) {
+                Text("Go Back")
+                    .font(GlassTypography.labelLarge)
+                    .foregroundColor(GlassColors.textPrimary)
+                    .padding(.horizontal, 24)
+                    .frame(minHeight: 44)
+                    .glassCard(borderColor: GlassColors.borderHover)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
         }
-        .padding(KanjiJourneyTheme.spacingL)
+        .padding(24)
+        .glassCard()
+        .padding(24)
     }
 
     // MARK: - Helpers
 
+    private func primaryButton(_ title: String, height: CGFloat, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(GlassTypography.labelLarge).fontWeight(.bold)
+                .foregroundColor(GlassColors.textPrimary)
+                .frame(maxWidth: .infinity).frame(height: height)
+                .background(GlassBrand.current.opacity(0.85))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(GlassBrand.current, lineWidth: 1)
+                )
+                .shadow(color: GlassBrand.current.opacity(0.35), radius: 10)
+                .contentShape(RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
+    }
+
     private func statRow(_ label: String, _ value: String) -> some View {
         HStack {
             Text(label)
-                .font(KanjiJourneyTheme.bodyLarge)
-                .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
+                .font(GlassTypography.bodyLarge)
+                .foregroundColor(GlassColors.textSecondary)
             Spacer()
             Text(value)
-                .font(KanjiJourneyTheme.bodyLarge).fontWeight(.bold)
+                .font(GlassTypography.bodyLarge).fontWeight(.bold)
         }
     }
 

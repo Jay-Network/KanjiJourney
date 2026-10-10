@@ -413,6 +413,7 @@ private struct HomeViewBody: View {
                         Image(systemName: "gearshape.fill")
                             .foregroundColor(GlassColors.textPrimary)
                     }
+                    .accessibilityLabel("Settings")
                 }
             }
         }

@@ -31,12 +31,12 @@ private struct CollectionHubContent: View {
                 // Stats summary
                 HStack {
                     Text("\(state.collectedKanjiCount) Collected")
-                        .font(KanjiJourneyTheme.titleMedium)
-                        .fontWeight(.bold)
+                        .font(GlassTypography.titleLarge)
+                        .foregroundColor(GlassColors.textPrimary)
                     Spacer()
                     Text("\(state.collectedKanjiCount)/\(state.totalKanjiInGrades)")
-                        .font(KanjiJourneyTheme.bodySmall)
-                        .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
+                        .font(GlassTypography.bodySmall)
+                        .foregroundColor(GlassColors.textSecondary)
                 }
                 .padding(.bottom, 4)
 
@@ -79,7 +79,7 @@ private struct CollectionHubContent: View {
             }
             .padding(16)
         }
-        .background(KanjiJourneyTheme.background)
+        .background(GlassColors.background.ignoresSafeArea())
     }
 
     // MARK: - Tab Selectors (same as HomeView)
@@ -89,13 +89,11 @@ private struct CollectionHubContent: View {
             HStack(spacing: 4) {
                 ForEach(MainTab.allCases, id: \.self) { tab in
                     let isSelected = tab == state.selectedMainTab
-                    Text(tab.rawValue)
-                        .font(.system(size: 12, weight: isSelected ? .bold : .regular))
-                        .foregroundColor(isSelected ? .white : KanjiJourneyTheme.primary)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(isSelected ? KanjiJourneyTheme.primary : KanjiJourneyTheme.surfaceVariant)
-                        .cornerRadius(6)
+                    GlassChip(selected: isSelected) {
+                        Text(tab.rawValue)
+                            .font(GlassTypography.labelMedium)
+                            .foregroundColor(isSelected ? GlassColors.textPrimary : GlassColors.textSecondary)
+                    }
                         .onTapGesture { viewModel.selectMainTab(tab) }
                 }
             }
@@ -107,13 +105,11 @@ private struct CollectionHubContent: View {
             HStack(spacing: 4) {
                 ForEach(KanjiSortMode.allCases, id: \.self) { mode in
                     let isSelected = mode == state.kanjiSortMode
-                    Text(mode.rawValue)
-                        .font(.system(size: 11, weight: isSelected ? .bold : .regular))
-                        .foregroundColor(isSelected ? .white : KanjiJourneyTheme.onSurfaceVariant)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(isSelected ? KanjiJourneyTheme.tertiary : KanjiJourneyTheme.surfaceVariant)
-                        .cornerRadius(6)
+                    GlassChip(selected: isSelected, selectedColor: KanjiJourneyTheme.tertiary) {
+                        Text(mode.rawValue)
+                            .font(GlassTypography.labelSmall)
+                            .foregroundColor(isSelected ? KanjiJourneyTheme.onTertiary : GlassColors.textSecondary)
+                    }
                         .onTapGesture { viewModel.selectSortMode(mode) }
                 }
             }
@@ -132,14 +128,13 @@ private struct CollectionHubContent: View {
                         let total = state.perGradeTotalCounts[grade] ?? 0
                         let gradeLabel = grade == 8 ? "G8+" : "G\(grade)"
                         let labelText = total > 0 ? "\(gradeLabel)\n\(collected)/\(total)" : gradeLabel
-                        Text(labelText)
-                            .font(.system(size: 11, weight: isSelected ? .bold : .regular))
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(isSelected ? .white : (hasCollection ? KanjiJourneyTheme.primary : KanjiJourneyTheme.onSurfaceVariant.opacity(0.38)))
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(isSelected ? KanjiJourneyTheme.primary : (hasCollection ? KanjiJourneyTheme.surfaceVariant : KanjiJourneyTheme.surfaceVariant.opacity(0.5)))
-                            .cornerRadius(6)
+                        GlassChip(selected: isSelected) {
+                            Text(labelText)
+                                .font(GlassTypography.labelSmall)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(isSelected ? GlassColors.textPrimary : (hasCollection ? GlassColors.textSecondary : GlassColors.textMuted))
+                        }
+                            .opacity(hasCollection ? 1 : 0.5)
                             .onTapGesture { if hasCollection { viewModel.selectGrade(grade) } }
                     }
                 case .jlptLevel:
@@ -148,38 +143,32 @@ private struct CollectionHubContent: View {
                         let collected = state.perJlptCollectedCounts[level] ?? 0
                         let total = state.perJlptTotalCounts[level] ?? 0
                         let labelText = total > 0 ? "N\(level)\n\(collected)/\(total)" : "N\(level)"
-                        Text(labelText)
-                            .font(.system(size: 11, weight: isSelected ? .bold : .regular))
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(isSelected ? .white : KanjiJourneyTheme.primary)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(isSelected ? KanjiJourneyTheme.primary : KanjiJourneyTheme.surfaceVariant)
-                            .cornerRadius(6)
+                        GlassChip(selected: isSelected) {
+                            Text(labelText)
+                                .font(GlassTypography.labelSmall)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(isSelected ? GlassColors.textPrimary : GlassColors.textSecondary)
+                        }
                             .onTapGesture { viewModel.selectJlptLevel(level) }
                     }
                 case .strokes:
                     ForEach(state.availableStrokeCounts, id: \.self) { count in
                         let isSelected = count == state.selectedStrokeCount
-                        Text("\(count)画")
-                            .font(.system(size: 12, weight: isSelected ? .bold : .regular))
-                            .foregroundColor(isSelected ? .white : KanjiJourneyTheme.primary)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(isSelected ? KanjiJourneyTheme.primary : KanjiJourneyTheme.surfaceVariant)
-                            .cornerRadius(6)
+                        GlassChip(selected: isSelected) {
+                            Text("\(count)画")
+                                .font(GlassTypography.labelMedium)
+                                .foregroundColor(isSelected ? GlassColors.textPrimary : GlassColors.textSecondary)
+                        }
                             .onTapGesture { viewModel.selectStrokeCount(count) }
                     }
                 case .frequency:
                     ForEach(Array(HomeViewModel.frequencyLabels.enumerated()), id: \.offset) { index, label in
                         let isSelected = index == state.selectedFrequencyRange
-                        Text(label)
-                            .font(.system(size: 12, weight: isSelected ? .bold : .regular))
-                            .foregroundColor(isSelected ? .white : KanjiJourneyTheme.primary)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(isSelected ? KanjiJourneyTheme.primary : KanjiJourneyTheme.surfaceVariant)
-                            .cornerRadius(6)
+                        GlassChip(selected: isSelected) {
+                            Text(label)
+                                .font(GlassTypography.labelMedium)
+                                .foregroundColor(isSelected ? GlassColors.textPrimary : GlassColors.textSecondary)
+                        }
                             .onTapGesture { viewModel.selectFrequencyRange(index) }
                     }
                 }
@@ -201,7 +190,9 @@ private struct CollectionHubContent: View {
             case .frequency: title = "\(HomeViewModel.frequencyLabels[state.selectedFrequencyRange]) Kanji"
             }
         }
-        return Text(title).font(KanjiJourneyTheme.titleMedium).fontWeight(.bold)
+        return Text(title)
+            .font(GlassTypography.titleMedium)
+            .foregroundColor(GlassColors.textPrimary)
     }
 
     @ViewBuilder
@@ -256,12 +247,12 @@ private struct CollectionKanjiGridItem: View {
         }
         .frame(height: 64)
         .frame(maxWidth: .infinity)
-        .background(isCollected ? KanjiJourneyTheme.surface : KanjiJourneyTheme.surface.opacity(0.3))
-        .cornerRadius(KanjiJourneyTheme.radiusM)
-        .overlay(
-            RoundedRectangle(cornerRadius: KanjiJourneyTheme.radiusM)
-                .stroke(borderColor ?? .clear, lineWidth: borderColor != nil ? 2 : 0)
+        .glassCard(
+            cornerRadius: KanjiJourneyTheme.radiusM,
+            borderColor: borderColor ?? GlassColors.border,
+            borderWidth: borderColor != nil ? 2 : 1
         )
+        .opacity(isCollected ? 1 : 0.32)
         .onTapGesture { if isCollected { onClick() } }
     }
 }
@@ -288,12 +279,12 @@ private struct CollectionKanaGridItem: View {
         }
         .frame(height: 64)
         .frame(maxWidth: .infinity)
-        .background(isCollected ? KanjiJourneyTheme.surface : KanjiJourneyTheme.surface.opacity(0.3))
-        .cornerRadius(KanjiJourneyTheme.radiusM)
-        .overlay(
-            RoundedRectangle(cornerRadius: KanjiJourneyTheme.radiusM)
-                .stroke(borderColor ?? .clear, lineWidth: borderColor != nil ? 2 : 0)
+        .glassCard(
+            cornerRadius: KanjiJourneyTheme.radiusM,
+            borderColor: borderColor ?? GlassColors.border,
+            borderWidth: borderColor != nil ? 2 : 1
         )
+        .opacity(isCollected ? 1 : 0.32)
         .onTapGesture { if isCollected { onClick() } }
     }
 }
@@ -323,12 +314,12 @@ private struct CollectionRadicalGridItem: View {
         }
         .frame(height: 72)
         .frame(maxWidth: .infinity)
-        .background(isCollected ? KanjiJourneyTheme.surface : KanjiJourneyTheme.surface.opacity(0.3))
-        .cornerRadius(KanjiJourneyTheme.radiusM)
-        .overlay(
-            RoundedRectangle(cornerRadius: KanjiJourneyTheme.radiusM)
-                .stroke(borderColor ?? .clear, lineWidth: borderColor != nil ? 2 : 0)
+        .glassCard(
+            cornerRadius: KanjiJourneyTheme.radiusM,
+            borderColor: borderColor ?? GlassColors.border,
+            borderWidth: borderColor != nil ? 2 : 1
         )
+        .opacity(isCollected ? 1 : 0.32)
         .onTapGesture { if isCollected { onClick() } }
     }
 }

@@ -54,6 +54,7 @@ private struct TestModeContent: View {
                     Image(systemName: "chevron.left")
                         .foregroundColor(.white)
                 }
+                .accessibilityLabel("Back")
             }
             ToolbarItem(placement: .principal) {
                 Text("Test Mode")

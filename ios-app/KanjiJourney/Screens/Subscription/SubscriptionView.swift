@@ -9,7 +9,7 @@ struct SubscriptionView: View {
 
     var body: some View {
         ZStack {
-            KanjiJourneyTheme.background.ignoresSafeArea()
+            GlassColors.background.ignoresSafeArea()
 
             ScrollView {
                 VStack(spacing: 0) {
@@ -57,6 +57,8 @@ struct SubscriptionView: View {
                         featureRow("AI Handwriting", free: false, premium: true)
                         featureRow("Shop Purchases", freeText: "View only", premiumText: "Full")
                     }
+                    .padding(12)
+                    .glassCard()
                     .padding(.horizontal, 16)
 
                     Spacer().frame(height: 24)
@@ -110,8 +112,9 @@ struct SubscriptionView: View {
             }
             ToolbarItem(placement: .principal) { Text("Subscription").font(.headline).foregroundColor(.white) }
         }
-        .toolbarBackground(KanjiJourneyTheme.primary, for: .navigationBar)
+        .toolbarBackground(GlassColors.surfaceDark, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .task { viewModel.load(container: container) }
     }
 

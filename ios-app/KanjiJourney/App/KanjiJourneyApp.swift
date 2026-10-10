@@ -3,6 +3,7 @@ import SwiftUI
 @main
 struct KanjiJourneyApp: App {
     @StateObject private var appState = AppState()
+    @AppStorage("theme") private var selectedTheme = AppTheme.system.rawValue
 
     init() {
         GlassTypography.registerFonts()
@@ -12,7 +13,18 @@ struct KanjiJourneyApp: App {
         WindowGroup {
             AppRootView()
                 .environmentObject(appState)
-                .preferredColorScheme(.dark)
+                .preferredColorScheme(preferredColorScheme)
+        }
+    }
+
+    private var preferredColorScheme: ColorScheme? {
+        switch AppTheme(rawValue: selectedTheme) ?? .system {
+        case .light:
+            return .light
+        case .dark:
+            return .dark
+        case .system:
+            return nil
         }
     }
 }

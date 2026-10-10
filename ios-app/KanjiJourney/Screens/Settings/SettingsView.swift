@@ -17,7 +17,7 @@ struct SettingsView: View {
 
     var body: some View {
         ZStack {
-            KanjiJourneyTheme.background.ignoresSafeArea()
+            GlassColors.background.ignoresSafeArea()
             settingsContent
         }
         .navigationBarBackButtonHidden(true)
@@ -27,8 +27,9 @@ struct SettingsView: View {
             }
             ToolbarItem(placement: .principal) { Text("Settings").font(.headline).foregroundColor(.white) }
         }
-        .toolbarBackground(KanjiJourneyTheme.primary, for: .navigationBar)
+        .toolbarBackground(GlassColors.surfaceDark, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .task { viewModel.load(container: container) }
         .alert("Set Daily XP Goal", isPresented: $showDailyGoalDialog) {
             ForEach([10, 20, 30, 50, 75, 100], id: \.self) { goal in
@@ -183,8 +184,7 @@ struct SettingsView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(KanjiJourneyTheme.surface)
-        .cornerRadius(KanjiJourneyTheme.radiusM)
+        .glassCard()
     }
 
     private func switchSetting(_ title: String, _ subtitle: String, _ isOn: Bool, action: @escaping () -> Void) -> some View {

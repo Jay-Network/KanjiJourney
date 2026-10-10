@@ -10,7 +10,7 @@ struct KQProgressView: View {
 
     var body: some View {
         ZStack {
-            KanjiJourneyTheme.background.ignoresSafeArea()
+            GlassColors.background.ignoresSafeArea()
 
             if viewModel.isLoading {
                 VStack(spacing: 16) {
@@ -45,10 +45,12 @@ struct KQProgressView: View {
                 Button(action: { viewModel.refresh(container: container) }) {
                     Image(systemName: "arrow.clockwise")
                 }.foregroundColor(.white)
+                .accessibilityLabel("Refresh")
             }
         }
-        .toolbarBackground(KanjiJourneyTheme.primary, for: .navigationBar)
+        .toolbarBackground(GlassColors.surfaceDark, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .task { viewModel.load(container: container) }
     }
 
@@ -67,8 +69,7 @@ struct KQProgressView: View {
                 .font(KanjiJourneyTheme.bodySmall)
         }
         .padding(16).frame(maxWidth: .infinity, alignment: .leading)
-        .background(KanjiJourneyTheme.primary.opacity(0.12))
-        .cornerRadius(KanjiJourneyTheme.radiusM)
+        .glassCard(borderColor: GlassBrand.current.opacity(0.55), borderWidth: 1.5)
     }
 
     // MARK: - Streak
@@ -83,8 +84,7 @@ struct KQProgressView: View {
             }
         }
         .padding(16).frame(maxWidth: .infinity, alignment: .leading)
-        .background(KanjiJourneyTheme.secondary.opacity(0.12))
-        .cornerRadius(KanjiJourneyTheme.radiusM)
+        .glassCard(borderColor: KanjiJourneyTheme.secondary.opacity(0.45))
     }
 
     // MARK: - Kanji Mastery
@@ -105,8 +105,7 @@ struct KQProgressView: View {
             }
         }
         .padding(16).frame(maxWidth: .infinity, alignment: .leading)
-        .background(KanjiJourneyTheme.tertiary.opacity(0.12))
-        .cornerRadius(KanjiJourneyTheme.radiusM)
+        .glassCard(borderColor: KanjiJourneyTheme.tertiary.opacity(0.45))
     }
 
     // MARK: - Grade Mastery Breakdown
@@ -119,7 +118,7 @@ struct KQProgressView: View {
             }
         }
         .padding(16).frame(maxWidth: .infinity, alignment: .leading)
-        .background(KanjiJourneyTheme.surface).cornerRadius(KanjiJourneyTheme.radiusM)
+        .glassCard()
     }
 
     private func gradeMasteryRow(_ mastery: GradeMastery) -> some View {
@@ -169,7 +168,7 @@ struct KQProgressView: View {
             }
         }
         .padding(16).frame(maxWidth: .infinity, alignment: .leading)
-        .background(KanjiJourneyTheme.surface).cornerRadius(KanjiJourneyTheme.radiusM)
+        .glassCard()
     }
 
     // MARK: - Recent Sessions
@@ -182,7 +181,7 @@ struct KQProgressView: View {
             }
         }
         .padding(16).frame(maxWidth: .infinity, alignment: .leading)
-        .background(KanjiJourneyTheme.surfaceVariant).cornerRadius(KanjiJourneyTheme.radiusM)
+        .glassCard()
     }
 
     private func sessionRow(_ session: StudySession) -> some View {

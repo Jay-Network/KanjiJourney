@@ -5,6 +5,16 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.0 (2026-10-09) — iOS Glass UI completion, Dark Mode wiring, WCAG accessibility labels (jworks:47)
+
+### Added
+- **Glass UI applied to remaining iOS screens** (backlog item closed): `GlassTheme.swift` gained a reusable `.glassCard()` ViewModifier; applied across Achievements, Collection (Hub + grid), Settings, Shop, Study, Subscription, and the Recognition game screen, replacing flat `KanjiJourneyTheme.background`/`.cornerRadius` card styling with the glass surface treatment already used elsewhere.
+- **Dark mode ViewModifier wired up** (backlog item closed): `KanjiJourneyApp.swift` now reads the existing `AppTheme` setting via `@AppStorage("theme")` and switches `.preferredColorScheme` between light/dark/system, replacing the previous hardcoded `.preferredColorScheme(.dark)`.
+- **WCAG L1 accessibility fix**: added `.accessibilityLabel()` to the 6 icon-only buttons found by the 2026-10-09 audit (feedback envelope, 2x refresh, flashcard star-toggle, settings gear, back chevron) — see BUGS.md.
+
+### Note
+Some of this (Glass UI + Dark Mode) was in-progress, uncommitted work from an earlier session landed together with this pass; re-verified against the current source before committing (no android-app changes included).
+
 ## v1.3.3 (2026-10-09) — One transport retry on keyed J-Coin earns
 
 ### Added

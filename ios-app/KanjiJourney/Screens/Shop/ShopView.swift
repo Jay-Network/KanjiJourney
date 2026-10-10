@@ -10,7 +10,7 @@ struct ShopView: View {
 
     var body: some View {
         ZStack {
-            KanjiJourneyTheme.background.ignoresSafeArea()
+            GlassColors.background.ignoresSafeArea()
 
             if viewModel.isLoading {
                 VStack(spacing: 16) {
@@ -59,8 +59,9 @@ struct ShopView: View {
                 }
             }
         }
-        .toolbarBackground(KanjiJourneyTheme.primary, for: .navigationBar)
+        .toolbarBackground(GlassColors.surfaceDark, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .task { viewModel.load(container: container) }
     }
 
@@ -151,8 +152,12 @@ struct ShopView: View {
                 .fontWeight(isSelected ? .bold : .regular)
                 .foregroundColor(isSelected ? .white : KanjiJourneyTheme.primary)
                 .padding(.horizontal, 12).padding(.vertical, 6)
-                .background(isSelected ? KanjiJourneyTheme.primary : KanjiJourneyTheme.surfaceVariant)
-                .cornerRadius(16)
+                .background(isSelected ? GlassBrand.current.opacity(0.30) : Color.white.opacity(0.06))
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(isSelected ? GlassColors.borderHover : GlassColors.border, lineWidth: 1)
+                )
         }
     }
 
@@ -193,8 +198,8 @@ struct ShopView: View {
             }
             .padding(12)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(isOwned ? KanjiJourneyTheme.surfaceVariant : KanjiJourneyTheme.surface)
-            .cornerRadius(12)
+            .glassCard(borderColor: isOwned ? KanjiJourneyTheme.secondary.opacity(0.5) : GlassColors.border)
+            .opacity(isOwned ? 0.75 : 1)
         }
         .disabled(isOwned)
     }
@@ -271,8 +276,7 @@ struct ShopView: View {
                 }
             }
             .padding(24)
-            .background(KanjiJourneyTheme.surface)
-            .cornerRadius(16)
+            .glassCard(cornerRadius: 16)
             .padding(32)
         }
     }

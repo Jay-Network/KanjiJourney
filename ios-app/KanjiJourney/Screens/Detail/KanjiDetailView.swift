@@ -102,6 +102,7 @@ struct KanjiDetailView: View {
                     Image(systemName: viewModel.isInFlashcardDeck ? "star.fill" : "star")
                         .foregroundColor(viewModel.isInFlashcardDeck ? KanjiJourneyTheme.xpGold : .white)
                 }
+                .accessibilityLabel(viewModel.isInFlashcardDeck ? "Remove from flashcards" : "Add to flashcards")
             }
         }
         .toolbarBackground(KanjiJourneyTheme.primary, for: .navigationBar)

@@ -11,22 +11,30 @@ struct CollectionView: View {
 
     var body: some View {
         ZStack {
-            KanjiJourneyTheme.background.ignoresSafeArea()
+            GlassColors.background.ignoresSafeArea()
 
             if viewModel.isLoading {
                 VStack(spacing: 16) {
-                    ProgressView()
-                    Text("Loading collection...").font(KanjiJourneyTheme.bodyLarge)
+                    ProgressView().tint(GlassBrand.current)
+                    Text("Loading collection...")
+                        .font(GlassTypography.bodyLarge)
+                        .foregroundColor(GlassColors.textSecondary)
                 }
             } else {
                 VStack(spacing: 0) {
                     // Stats summary
-                    HStack {
+                    HStack(spacing: 12) {
+                        Image(systemName: "square.grid.2x2.fill")
+                            .foregroundColor(GlassBrand.current)
+                            .accessibilityHidden(true)
                         Text("\(viewModel.totalCollected) Collected")
-                            .font(KanjiJourneyTheme.titleMedium).fontWeight(.bold)
+                            .font(GlassTypography.titleLarge)
                         Spacer()
                     }
-                    .padding(.horizontal, 16).padding(.vertical, 8)
+                    .padding(16)
+                    .glassCard()
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
 
                     // Tabs
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -34,14 +42,16 @@ struct CollectionView: View {
                             ForEach(CollectionTab.allCases, id: \.self) { tab in
                                 let selected = viewModel.selectedTab == tab
                                 Button { viewModel.selectTab(tab) } label: {
-                                    Text(tab.rawValue)
-                                        .font(KanjiJourneyTheme.bodyMedium)
-                                        .fontWeight(selected ? .bold : .regular)
-                                        .foregroundColor(selected ? .white : KanjiJourneyTheme.onSurfaceVariant)
-                                        .padding(.horizontal, 16).padding(.vertical, 8)
-                                        .background(selected ? KanjiJourneyTheme.primary : KanjiJourneyTheme.surfaceVariant)
-                                        .cornerRadius(20)
+                                    GlassChip(selected: selected) {
+                                        Text(tab.rawValue)
+                                            .font(GlassTypography.labelLarge)
+                                            .foregroundColor(selected ? GlassColors.textPrimary : GlassColors.textSecondary)
+                                    }
+                                    .frame(minHeight: 44)
+                                    .contentShape(Rectangle())
                                 }
+                                .buttonStyle(.plain)
+                                .accessibilityAddTraits(selected ? [.isSelected] : [])
                             }
                         }
                         .padding(.horizontal, 16)
@@ -62,17 +72,23 @@ struct CollectionView: View {
                     ScrollView {
                         if viewModel.filteredItems.isEmpty {
                             VStack(spacing: 16) {
-                                Spacer().frame(height: 60)
                                 Image(systemName: "tray")
                                     .font(.system(size: 48))
-                                    .foregroundColor(KanjiJourneyTheme.onSurfaceVariant.opacity(0.3))
-                                Text("No items collected yet")
-                                    .font(KanjiJourneyTheme.bodyLarge)
-                                    .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
+                                    .foregroundColor(GlassBrand.current)
+                                    .accessibilityHidden(true)
+                                Text(viewModel.selectedRarityFilter == nil ? "No items collected yet" : "No items match this rarity")
+                                    .font(GlassTypography.titleMedium)
+                                Text(viewModel.selectedRarityFilter == nil ? "Practice to grow your collection." : "Choose another rarity or All to see more items.")
+                                    .font(GlassTypography.bodyMedium)
+                                    .foregroundColor(GlassColors.textSecondary)
                             }
+                            .multilineTextAlignment(.center)
                             .frame(maxWidth: .infinity)
+                            .padding(24)
+                            .glassCard()
+                            .padding(16)
                         } else {
-                            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 5), spacing: 8) {
+                            LazyVGrid(columns: [GridItem(.adaptive(minimum: 64), spacing: 8)], spacing: 8) {
                                 ForEach(viewModel.filteredItems, id: \.itemId) { item in
                                     collectionItemCard(item)
                                 }
@@ -83,32 +99,40 @@ struct CollectionView: View {
                 }
             }
         }
+        .foregroundColor(GlassColors.textPrimary)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
                     Image(systemName: "chevron.left"); Text("Back")
-                }.foregroundColor(.white)
+                }.foregroundColor(GlassColors.textPrimary)
             }
             ToolbarItem(placement: .principal) {
-                Text("Collection").font(.headline).foregroundColor(.white)
+                Text("Collection")
+                    .font(GlassTypography.titleLarge)
+                    .foregroundColor(GlassColors.textPrimary)
             }
         }
-        .toolbarBackground(KanjiJourneyTheme.primary, for: .navigationBar)
+        .toolbarBackground(GlassColors.surfaceDark, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .task { viewModel.load(container: container) }
     }
 
     private func rarityChip(_ rarity: CollectedItemRarity?, label: String) -> some View {
         let selected = viewModel.selectedRarityFilter == rarity
+        let tint = rarity.map { Color(hex: UInt($0.colorValue)) } ?? GlassBrand.current
         return Button { viewModel.filterByRarity(rarity) } label: {
-            Text(label)
-                .font(KanjiJourneyTheme.labelSmall)
-                .foregroundColor(selected ? .white : KanjiJourneyTheme.onSurfaceVariant)
-                .padding(.horizontal, 10).padding(.vertical, 4)
-                .background(selected ? KanjiJourneyTheme.primary : KanjiJourneyTheme.surfaceVariant)
-                .cornerRadius(12)
+            GlassChip(selected: selected, selectedColor: tint) {
+                Text(label)
+                    .font(GlassTypography.labelMedium)
+                    .foregroundColor(selected ? GlassColors.textPrimary : GlassColors.textSecondary)
+            }
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(selected ? [.isSelected] : [])
     }
 
     private func collectionItemCard(_ item: CollectedItem) -> some View {
@@ -120,18 +144,15 @@ struct CollectionView: View {
                 onKanjiClick?(item.itemId)
             }
         } label: {
-            VStack(spacing: 2) {
-                Text(literal)
-                    .font(.system(size: 24))
-                    .frame(width: 48, height: 48)
-                    .background(KanjiJourneyTheme.surface)
-                    .cornerRadius(8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(rarityColor, lineWidth: 2)
-                    )
-            }
+            Text(literal)
+                .font(.system(size: 28))
+                .foregroundColor(GlassColors.textPrimary)
+                .frame(maxWidth: .infinity)
+                .frame(height: 64)
+                .glassCard(borderColor: rarityColor, borderWidth: 2)
+                .contentShape(RoundedRectangle(cornerRadius: 12))
         }
         .buttonStyle(.plain)
+        .accessibilityLabel("\(literal), \(item.rarity.label)")
     }
 }

@@ -10,7 +10,7 @@ struct AchievementsView: View {
 
     var body: some View {
         ZStack {
-            KanjiJourneyTheme.background.ignoresSafeArea()
+            GlassColors.background.ignoresSafeArea()
 
             if viewModel.isLoading {
                 VStack(spacing: 16) {
@@ -55,10 +55,12 @@ struct AchievementsView: View {
                 Button(action: { viewModel.refresh(container: container) }) {
                     Image(systemName: "arrow.clockwise")
                 }.foregroundColor(.white)
+                .accessibilityLabel("Refresh")
             }
         }
-        .toolbarBackground(KanjiJourneyTheme.primary, for: .navigationBar)
+        .toolbarBackground(GlassColors.surfaceDark, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .task { viewModel.load(container: container) }
     }
 
@@ -87,8 +89,7 @@ struct AchievementsView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity)
-        .background(KanjiJourneyTheme.primary.opacity(0.12))
-        .cornerRadius(KanjiJourneyTheme.radiusM)
+        .glassCard(borderColor: GlassBrand.current.opacity(0.55), borderWidth: 1.5)
     }
 
     // MARK: - Achievement Card
@@ -132,7 +133,7 @@ struct AchievementsView: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(isUnlocked ? KanjiJourneyTheme.secondary.opacity(0.12) : KanjiJourneyTheme.surfaceVariant)
-        .cornerRadius(KanjiJourneyTheme.radiusM)
+        .glassCard(borderColor: isUnlocked ? KanjiJourneyTheme.secondary.opacity(0.55) : GlassColors.border)
+        .opacity(isUnlocked ? 1 : 0.72)
     }
 }
