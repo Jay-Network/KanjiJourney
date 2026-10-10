@@ -14,7 +14,15 @@ final class ShopViewModel: ObservableObject {
     @Published var hasRedeemedTrial = false
 
     var categories: [ShopCategory] {
-        Array(Set(catalog.map { $0.category }))
+        // Dedup while preserving catalog order -- a Set round-trip has no
+        // guaranteed iteration order and reshuffled on every launch (found
+        // 2026-10-09, BUGS.md).
+        var seen = Set<ShopCategory>()
+        var result: [ShopCategory] = []
+        for item in catalog where seen.insert(item.category).inserted {
+            result.append(item.category)
+        }
+        return result
     }
 
     var filteredItems: [ShopItem] {

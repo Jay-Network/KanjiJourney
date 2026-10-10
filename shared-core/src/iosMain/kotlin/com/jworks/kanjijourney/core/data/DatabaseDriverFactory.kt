@@ -182,6 +182,16 @@ actual class DatabaseDriverFactory {
         for (sql in statements) {
             driver.execute(null, sql.trimIndent(), 0)
         }
+
+        // Add client_event_id column if upgrading from old schema (J Coin earn dedup key,
+        // jworks:35 2026-09-27). Same column, same ALTER-with-try/catch pattern as
+        // androidMain's DatabaseDriverFactory.kt -- the CREATE TABLE above never had it;
+        // this is the only place it's added, idempotently, on every app start.
+        try {
+            driver.execute(null, "ALTER TABLE coin_sync_queue ADD COLUMN client_event_id TEXT", 0)
+        } catch (_: Exception) {
+            // Column already exists
+        }
     }
 
     companion object {

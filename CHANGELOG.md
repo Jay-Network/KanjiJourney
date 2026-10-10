@@ -5,6 +5,16 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.5 (2026-10-09) — BUG-008 confirmed fixed; 3 more findings from real screenshots (jworks:47)
+
+### Fixed
+- **BUG-008 CONFIRMED WORKING** (jworks-mac:90, CI run 38019842453 green): the app now reaches a real screen end to end — DB opens, `AppContainer.init()` completes, zero crashes in light or dark launches. First real screenshots exist (Shop screen). See BUGS.md.
+- **Dark Mode's Light option was a dead end**: `GlassColors` has no light variants, so picking "Light" in Settings only flipped the status bar, leaving it nearly unreadable against the still-dark background — reachable by any user now that the switch actually works. Removed "Light" from the Settings picker (Dark/System Default only) and clamped `KanjiJourneyApp.swift` to treat a persisted `.light` as `.dark` too. Real light-mode support needs a GlassColors light palette — a design decision, not made here.
+- **Shop category chip order was non-deterministic**: `ShopViewModel.categories` went through a `Set`, which has no guaranteed iteration order in Swift. Changed to an order-preserving dedup.
+- **`coin_sync_queue` missing `client_event_id`** (regression from v1.3.2/2650fa2, Android-only ALTER, caught by jworks:44): mirrored Android's exact try/catch `ALTER TABLE ... ADD COLUMN` pattern into iOS's `ensureNewTables()`. Would have crashed the first iOS J-Coin earn once BUG-008 was fixed.
+
+None of the last 3 are independently rebuilt/screenshotted by me — no Xcode on this host. See BUGS.md for full evidence and what's still unverified.
+
 ## v1.4.4 (2026-10-09) — BUG-008 fix, round 3: remove the SELECT-via-execute() crash (jworks:47)
 
 ### Fixed (still UNVERIFIED — needs a Mac rebuild to confirm)

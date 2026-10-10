@@ -44,7 +44,12 @@ struct SettingsView: View {
             Button("Cancel", role: .cancel) {}
         }
         .confirmationDialog("Select Theme", isPresented: $showThemeDialog) {
-            ForEach(AppTheme.allCases, id: \.self) { theme in
+            // Light excluded: GlassColors has no light variants yet (fixed dark
+            // hex), so Light mode only changes the status bar, leaving it
+            // nearly unreadable against the still-dark background (found
+            // 2026-10-09, BUGS.md). Re-enable once GlassColors gets a real
+            // light palette.
+            ForEach([AppTheme.dark, .system], id: \.self) { theme in
                 Button(theme.rawValue) { viewModel.setTheme(theme) }
             }
             Button("Cancel", role: .cancel) {}

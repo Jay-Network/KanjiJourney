@@ -20,7 +20,13 @@ struct KanjiJourneyApp: App {
     private var preferredColorScheme: ColorScheme? {
         switch AppTheme(rawValue: selectedTheme) ?? .system {
         case .light:
-            return .light
+            // GlassColors has no light variants yet (fixed dark hex) -- an
+            // actual .light scheme only flips the status bar, leaving it
+            // nearly unreadable against the still-dark background (found
+            // 2026-10-09, BUGS.md). The Settings picker no longer offers
+            // Light, but clamp here too in case "light" is already
+            // persisted in UserDefaults from before that change.
+            return .dark
         case .dark:
             return .dark
         case .system:
