@@ -28,6 +28,25 @@ jobs:
 
       - run: chmod +x gradlew
 
+      # Without this the debug APK ships empty BuildConfig URLs/keys (J-Coin, auth, Gemini all dead).
+      # A missing secret expands to empty, same as before.
+      - name: Create local.properties
+        env:
+          SB_URL: ${{ secrets.SUPABASE_URL }}
+          SB_ANON: ${{ secrets.SUPABASE_ANON_KEY }}
+          AUTH_URL: ${{ secrets.AUTH_SUPABASE_URL }}
+          AUTH_ANON: ${{ secrets.AUTH_SUPABASE_ANON_KEY }}
+          GEMINI: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          cat > local.properties << EOF
+          sdk.dir=$ANDROID_HOME
+          SUPABASE_URL=$SB_URL
+          SUPABASE_ANON_KEY=$SB_ANON
+          AUTH_SUPABASE_URL=$AUTH_URL
+          AUTH_SUPABASE_ANON_KEY=$AUTH_ANON
+          GEMINI_API_KEY=$GEMINI
+          EOF
+
       - name: Build debug APK
         run: ./gradlew :android-app:assembleDebug
 
@@ -93,6 +112,9 @@ jobs:
           K_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           SB_URL: ${{ secrets.SUPABASE_URL }}
           SB_ANON: ${{ secrets.SUPABASE_ANON_KEY }}
+          AUTH_URL: ${{ secrets.AUTH_SUPABASE_URL }}
+          AUTH_ANON: ${{ secrets.AUTH_SUPABASE_ANON_KEY }}
+          GEMINI: ${{ secrets.GEMINI_API_KEY }}
         run: |
           cat > local.properties << EOF
           sdk.dir=$ANDROID_HOME
@@ -102,6 +124,9 @@ jobs:
           RELEASE_KEY_PASSWORD=$K_PASSWORD
           SUPABASE_URL=$SB_URL
           SUPABASE_ANON_KEY=$SB_ANON
+          AUTH_SUPABASE_URL=$AUTH_URL
+          AUTH_SUPABASE_ANON_KEY=$AUTH_ANON
+          GEMINI_API_KEY=$GEMINI
           EOF
 
       - name: Build release AAB

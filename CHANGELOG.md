@@ -5,6 +5,12 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.6 (2026-10-10) — Android CI debug APK gets its config; versionName aligned (jworks:44)
+
+### Fixed
+- **CI debug APK shipped with empty Supabase/auth/Gemini config**: the `build-debug` job never wrote `local.properties`, so every `BuildConfig` URL and key was `""` and J-Coin, sign-in and handwriting scoring could not work in a CI-built APK. The job now writes it from repo secrets, and both jobs now also pass `AUTH_SUPABASE_URL`, `AUTH_SUPABASE_ANON_KEY` and `GEMINI_API_KEY`. A secret that is not set still expands to empty, as before. The `SUPABASE_*` secrets date from 2026-02-21 and jworks:35 says they are stale, and the two `AUTH_*` secrets do not exist yet, so a CI APK is still not tester-ready until those are set.
+- **Android versionName 1.4.4 → 1.4.6** (versionCode 16 → 17) so the APK label matches VERSION.
+
 ## v1.4.5 (2026-10-09) — BUG-008 confirmed fixed; 3 more findings from real screenshots (jworks:47)
 
 ### Fixed
