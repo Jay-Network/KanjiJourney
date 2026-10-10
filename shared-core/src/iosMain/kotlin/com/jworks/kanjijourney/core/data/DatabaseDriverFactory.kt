@@ -3,6 +3,7 @@ package com.jworks.kanjijourney.core.data
 
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.native.NativeSqliteDriver
+import co.touchlab.sqliter.DatabaseConfiguration
 import com.jworks.kanjijourney.db.KanjiJourneyDatabase
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
@@ -12,13 +13,13 @@ import platform.Foundation.NSUserDomainMask
 
 actual class DatabaseDriverFactory {
     // Expose the full DB path so Swift can verify it
-    val resolvedDbPath: String = run {
+    val docsDir: String = run {
         val paths = NSSearchPathForDirectoriesInDomains(
             NSDocumentDirectory, NSUserDomainMask, true
         )
-        val docs = paths.firstOrNull() as? String ?: ""
-        "$docs/$DB_NAME"
+        paths.firstOrNull() as? String ?: ""
     }
+    val resolvedDbPath: String = "$docsDir/$DB_NAME"
 
     actual fun createDriver(): SqlDriver {
         NSLog("KanjiJourney [KN]: Opening DB at FULL PATH: %s", resolvedDbPath)
@@ -31,11 +32,16 @@ actual class DatabaseDriverFactory {
         } else 0L
         NSLog("KanjiJourney [KN]: DB exists=%s, size=%d bytes", exists.toString(), size)
 
-        // Use FULL PATH so NativeSqliteDriver opens exactly where Swift copied the DB.
-        // When name contains "/", sqliter uses it as-is (no path resolution).
+        // sqliter no longer accepts a path separator in `name` (throws
+        // IllegalArgumentException). Pass the bare filename as `name` and the
+        // Documents directory as `basePath` via DatabaseConfiguration.Extended
+        // so the driver opens the exact file Swift copied into Documents.
         val driver = NativeSqliteDriver(
             schema = KanjiJourneyDatabase.Schema,
-            name = resolvedDbPath
+            name = DB_NAME,
+            onConfigurationChange = { config ->
+                config.copy(extendedConfig = DatabaseConfiguration.Extended(basePath = docsDir))
+            }
         )
 
         // Verify kanji count right after opening

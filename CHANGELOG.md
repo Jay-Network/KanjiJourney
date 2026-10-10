@@ -5,6 +5,11 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.2 (2026-10-09) — BUG-008 fix attempt: iOS DB open crash (jworks:47)
+
+### Fixed (UNVERIFIED — needs a Mac rebuild to confirm)
+- `shared-core/.../DatabaseDriverFactory.kt` (iosMain): `NativeSqliteDriver` was being given the full resolved Documents path as `name=`, which the installed sqliter version rejects (`IllegalArgumentException: ... contains a path separator`) — crashed the real app on launch, before reaching any real screen (Shop, Achievements, every game mode go through `AppContainer`, which triggers this). Found by jworks-mac:90 building+running main@1c44ba0 on an iPad simulator. Changed to the bare filename + `DatabaseConfiguration.Extended(basePath = docsDir)` via `onConfigurationChange`. Pre-existing bug (dates to the KanjiQuest→KanjiJourney rename, c8a90c1) — unrelated to v1.4.0/v1.4.1. See BUGS.md BUG-008. Not independently compiled by me (no Xcode on this host); asked jworks-mac:90 to rebuild and confirm.
+
 ## v1.4.1 (2026-10-09) — WCAG 1.4.1 fix: non-color answer-tile labels (jworks:47)
 
 ### Fixed
