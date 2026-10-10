@@ -188,6 +188,14 @@ struct RadicalRecognitionView: View {
                 .cornerRadius(KanjiJourneyTheme.radiusM)
         }
         .disabled(viewModel.showResult)
+        .accessibilityLabel(answerAccessibilityLabel(choice, isAnswer: isAnswer, isSelected: isSelected))
+    }
+
+    private func answerAccessibilityLabel(_ choice: String, isAnswer: Bool, isSelected: Bool) -> String {
+        guard viewModel.showResult else { return choice }
+        if isAnswer { return "\(choice), correct answer" }
+        if isSelected { return "\(choice), your answer, incorrect" }
+        return choice
     }
 
     // MARK: - Session Complete

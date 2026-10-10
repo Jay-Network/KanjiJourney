@@ -225,6 +225,14 @@ struct PlacementTestView: View {
                         .stroke(borderColor, lineWidth: 2)
                 )
         }
+        .accessibilityLabel(answerAccessibilityLabel(option, isCorrectOption: isCorrectOption, isSelected: isSelected))
+    }
+
+    private func answerAccessibilityLabel(_ option: String, isCorrectOption: Bool, isSelected: Bool) -> String {
+        guard viewModel.selectedAnswer != nil else { return option }
+        if isCorrectOption { return "\(option), correct answer" }
+        if isSelected { return "\(option), your answer, incorrect" }
+        return option
     }
 
     // MARK: - Results

@@ -5,6 +5,11 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.1 (2026-10-09) — WCAG 1.4.1 fix: non-color answer-tile labels (jworks:47)
+
+### Fixed
+- 5 game screens (`KanaRecognitionView`, `RadicalBuilderView`, `RadicalRecognitionView`, `VocabularyView`, `PlacementTestView`) signaled correct/wrong multiple-choice answers by tile color alone. Ported `RecognitionView.swift`'s existing `answerAccessibilityLabel` helper into all 5, so VoiceOver now announces "correct answer" / "your answer, incorrect" instead of relying on color. Closes the second WCAG L1 audit finding from v1.4.0; see BUGS.md.
+
 ## v1.4.0 (2026-10-09) — iOS Glass UI completion, Dark Mode wiring, WCAG accessibility labels (jworks:47)
 
 ### Added
