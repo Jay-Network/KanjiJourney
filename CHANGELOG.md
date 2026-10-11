@@ -5,6 +5,11 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.8 (2026-10-10) — Docs: correct ambiguous "CI run green" wording (jworks:47)
+
+### Fixed
+- v1.4.5's CHANGELOG entry and BUGS.md's BUG-008 both said "CI run 38019842453 green," which jworks:44 correctly read as claiming the whole iOS CI run passed. It didn't: only the "Build KMP XCFrameworks" job succeeded — the same run still fails later at the unrelated, already-tracked cert-signing step. Corrected both.
+
 ## v1.4.7 (2026-10-10) — Writing mode: smooth-curve strokes parsed; BUG-007 clusters 2-4 (jworks:44)
 
 ### Fixed
@@ -20,7 +25,7 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 ## v1.4.5 (2026-10-09) — BUG-008 confirmed fixed; 3 more findings from real screenshots (jworks:47)
 
 ### Fixed
-- **BUG-008 CONFIRMED WORKING** (jworks-mac:90, CI run 38019842453 green): the app now reaches a real screen end to end — DB opens, `AppContainer.init()` completes, zero crashes in light or dark launches. First real screenshots exist (Shop screen). See BUGS.md.
+- **BUG-008 CONFIRMED WORKING** (jworks-mac:90, CI run 38019842453's "Build KMP XCFrameworks" job + a local iPad sim build): the app now reaches a real screen end to end — DB opens, `AppContainer.init()` completes, zero crashes in light or dark launches. First real screenshots exist (Shop screen). That CI run's *overall* status is still `failure` (unrelated cert-signing step, already tracked) — corrected 2026-10-10 after jworks:44 caught the ambiguous original wording here. See BUGS.md.
 - **Dark Mode's Light option was a dead end**: `GlassColors` has no light variants, so picking "Light" in Settings only flipped the status bar, leaving it nearly unreadable against the still-dark background — reachable by any user now that the switch actually works. Removed "Light" from the Settings picker (Dark/System Default only) and clamped `KanjiJourneyApp.swift` to treat a persisted `.light` as `.dark` too. Real light-mode support needs a GlassColors light palette — a design decision, not made here.
 - **Shop category chip order was non-deterministic**: `ShopViewModel.categories` went through a `Set`, which has no guaranteed iteration order in Swift. Changed to an order-preserving dedup.
 - **`coin_sync_queue` missing `client_event_id`** (regression from v1.3.2/2650fa2, Android-only ALTER, caught by jworks:44): mirrored Android's exact try/catch `ALTER TABLE ... ADD COLUMN` pattern into iOS's `ensureNewTables()`. Would have crashed the first iOS J-Coin earn once BUG-008 was fixed.
