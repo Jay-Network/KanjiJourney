@@ -17,12 +17,14 @@ final class FeedbackViewModel: ObservableObject {
     private static let pollInterval: UInt64 = 15_000_000_000 // 15 seconds
 
     private var feedbackRepository: FeedbackRepository?
+    private var userSessionProvider: UserSessionProviderImpl?
     private var cachedEmail: String?
     private var lastFeedbackId: Int64? = nil
     private var pollTask: Task<Void, Never>?
 
     func configure(container: AppContainer) {
         feedbackRepository = container.feedbackRepository
+        userSessionProvider = container.userSessionProvider
         Task {
             cachedEmail = try? await container.userSessionProvider.getUserEmail()
         }
@@ -36,6 +38,11 @@ final class FeedbackViewModel: ObservableObject {
         isDialogOpen = true
 
         Task {
+            // Refresh the email on every open, as Android does. configure() runs once at launch,
+            // so a session that launched logged out would otherwise stay "User not authenticated".
+            if let provider = userSessionProvider {
+                cachedEmail = try? await provider.getUserEmail()
+            }
             loadFeedbackHistory()
         }
         startPolling()

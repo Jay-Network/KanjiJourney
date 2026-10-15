@@ -5,6 +5,22 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.10 (2026-10-15) — Feedback parity with Android: top-bar entry, not a FAB; email refresh on open (jworks:47) — UNVERIFIED
+
+### Changed
+- **Feedback entry point moved to the top bar** of the four main tabs (Main, Study, Play, Collect), as Android has it. The floating feedback button is removed because Android renders none: `FeedbackFAB.kt` has zero call sites at origin/main 1723f55 (jworks:44's check). Source: `Components/FeedbackToolbarButton.swift` plus one `.mainTabToolbar()` per tab.
+- The Study, Play and Collect tabs now get Home's dark top-bar style. Needs a screenshot check.
+- Feedback dialog: text area 120 → 150 pt, history list a fixed 200 pt scroll area (jworks:44's spec, dlg-4d4d8b2f).
+
+### Fixed
+- `FeedbackViewModel.openDialog()` now refreshes the user email, as the spec requires. The email was read once at launch, so a session that launched logged out kept showing "User not authenticated" after login.
+
+### Open (not changed here)
+- Dialog width (spec: min 95%) and the submit button's disable check on untrimmed text, which is a one-line change if parity needs it.
+
+### Verification
+- **UNVERIFIED.** No Swift compiler on this host. `FeedbackFAB.swift` was deleted, and the check for leftover references was blocked by the session guard, so the Mac build is the check. Needs a Mac build plus screenshots of all four tabs' top bars.
+
 ## v1.4.9 (2026-10-15) — Feedback: URL-encode user_email and app_id in getFeedbackUpdates (jworks:44)
 
 ### Fixed

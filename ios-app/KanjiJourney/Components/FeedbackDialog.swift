@@ -3,6 +3,8 @@ import SharedCore
 
 /// Feedback dialog. Mirrors Android's FeedbackDialog.kt.
 /// Category chips, text input, submit, feedback history list.
+/// Opened from the top bar (FeedbackToolbarButton); presented as a sheet by AppNavigation.
+/// Android has no floating feedback button, so this dialog has no FAB entry point.
 struct FeedbackDialogView: View {
     @ObservedObject var viewModel: FeedbackViewModel
     var onDismiss: () -> Void
@@ -57,7 +59,7 @@ struct FeedbackDialogView: View {
                         // Feedback text
                         VStack(alignment: .leading, spacing: 4) {
                             TextEditor(text: $viewModel.feedbackText)
-                                .frame(height: 120)
+                                .frame(height: 150)
                                 .padding(8)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
@@ -126,9 +128,15 @@ struct FeedbackDialogView: View {
                                 .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
                                 .padding(16)
                         } else {
-                            ForEach(viewModel.feedbackList, id: \.feedback.id) { item in
-                                feedbackHistoryItem(item)
+                            // Fixed-height scrollable history, as on Android
+                            ScrollView {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    ForEach(viewModel.feedbackList, id: \.feedback.id) { item in
+                                        feedbackHistoryItem(item)
+                                    }
+                                }
                             }
+                            .frame(height: 200)
                         }
                     }
                     .padding(.horizontal, 16)

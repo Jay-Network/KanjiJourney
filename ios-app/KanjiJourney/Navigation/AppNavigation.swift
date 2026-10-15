@@ -2,16 +2,15 @@ import SwiftUI
 import SharedCore
 
 /// Full navigation host matching Android KanjiJourneyNavHost.
-/// Handles all 23+ routes, feedback FAB, and post-login routing.
+/// Handles all 23+ routes, the feedback sheet, and post-login routing.
 struct AppNavigation: View {
     @EnvironmentObject var container: AppContainer
     @State private var path = NavigationPath()
     @State private var showSplash = true
     @State private var isAuthenticated = false
 
-    // Feedback
+    // Feedback: opened from the main tabs' top bar (FeedbackToolbarButton), no floating button
     @StateObject private var feedbackViewModel = FeedbackViewModel()
-    @State private var showFeedbackDialog = false
 
     var body: some View {
         ZStack {
@@ -34,24 +33,14 @@ struct AppNavigation: View {
                     destinationView(for: route)
                 }
             }
-
-            // Feedback FAB — shown on all screens except splash/login
-            if !showSplash && isAuthenticated {
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        FeedbackFAB(action: { showFeedbackDialog = true })
-                            .padding(.trailing, 16)
-                            .padding(.bottom, 16)
-                    }
-                }
-            }
         }
-        .sheet(isPresented: $showFeedbackDialog) {
+        .sheet(
+            isPresented: $feedbackViewModel.isDialogOpen,
+            onDismiss: { feedbackViewModel.closeDialog() }
+        ) {
             FeedbackDialogView(
                 viewModel: feedbackViewModel,
-                onDismiss: { showFeedbackDialog = false }
+                onDismiss: { feedbackViewModel.closeDialog() }
             )
         }
         .task {
@@ -59,6 +48,7 @@ struct AppNavigation: View {
             isAuthenticated = (try? await container.authRepository.getCurrentUserId()) != nil
         }
         .environmentObject(container)
+        .environmentObject(feedbackViewModel)
     }
 
     // MARK: - Post-login routing (placement test check)
