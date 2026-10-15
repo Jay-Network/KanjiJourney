@@ -245,9 +245,12 @@ final class AppContainer: ObservableObject {
         handwritingChecker
     }
 
+    // iPad-only: CalligraphyFeedbackService lives in Calligraphy/, which project-iphone.yml excludes.
+    #if IPAD_TARGET
     func makeCalligraphyFeedbackService() -> CalligraphyFeedbackService {
         CalligraphyFeedbackService(apiKey: configuration.geminiApiKey)
     }
+    #endif
 
     // MARK: - Bundle Database Staging
 

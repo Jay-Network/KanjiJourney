@@ -5,6 +5,16 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.13 (2026-10-15) — iPhone build fix: calligraphy feedback factory is iPad-only (jworks:47) — UNVERIFIED on iPhone
+
+### Fixed
+- **The iPhone target did not compile.** `AppContainer.makeCalligraphyFeedbackService()` names `CalligraphyFeedbackService`, which lives in `Calligraphy/`, and `project-iphone.yml` excludes that folder. The factory is now wrapped in `#if IPAD_TARGET`, which only the iPad target sets. This predates v1.4.12: every iPhone CI run since 03a051d has failed, and the Mac's iPhone build of `aa10293` failed on this one line.
+
+### Verification
+- iPad, `aa10293` (jworks-mac:90): simulator build succeeded with 0 errors. The envelope fix works: one "Send feedback" button in the top bar on Main, Study, Play and Collect, and it opens the dialog. XCUITest passed.
+- **iPhone: not yet verified.** It needs a Mac iPhone simulator build of this commit.
+- Cosmetic, not changed: in the feedback dialog the last category chip ("Other") sits at the right edge of a horizontal scroll row.
+
 ## v1.4.12 (2026-10-15) — iPad: Feedback top bar moved to the TabView (jworks:47) — UNVERIFIED
 
 ### Fixed
