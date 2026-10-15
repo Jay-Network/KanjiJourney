@@ -10,6 +10,7 @@ import com.jworks.kanjijourney.core.domain.model.SubmitFeedbackResult
 import com.jworks.kanjijourney.core.domain.repository.FeedbackRepository
 import io.github.jan.supabase.functions.functions
 import io.ktor.client.call.body
+import io.ktor.http.encodeURLParameter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -93,10 +94,10 @@ class FeedbackRepositoryImpl : FeedbackRepository {
         try {
             val supabase = SupabaseClientFactory.getInstance()
 
-            // Build query string
+            // Build query string; encode values so "+" (and & = # etc.) in an email reach the server intact
             val queryParams = buildString {
-                append("user_email=$email")
-                append("&app_id=$appId")
+                append("user_email=${email.encodeURLParameter()}")
+                append("&app_id=${appId.encodeURLParameter()}")
                 if (sinceId != null) {
                     append("&since_id=$sinceId")
                 }

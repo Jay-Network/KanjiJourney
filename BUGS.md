@@ -92,6 +92,8 @@ History: BUG-001 (APK size)
   - **Final fix**: added `JCoinRepository.reconcileMigratedBalance(userId, amount, eventId)` — sends ONE aggregate earn event (`source_type=guest_migration`, deterministic `client_event_id="migration:{authUserId}"`) before the local queue is deleted, so the server learns about the pre-login coins exactly once. `MigrateLocalDataUseCase` is now `suspend`; if the reconcile call fails, the entire migration aborts without touching any local data, retrying cleanly on the next sign-in instead of losing or duplicating coins.
   - **Verified**: `assembleDebug` BUILD SUCCESSFUL after each change; confirmed `client_event_id`/`guest_migration`/`migration:` strings present in the compiled `classes.dex`.
 
+- [ ] [BUG-009] shared-core `FeedbackRepositoryImpl.getFeedbackUpdates` sent `user_email` and `app_id` unencoded in the query string. The server reads a "+" in an email as a space, so that user looks up the wrong account, and the error is swallowed to an empty list. FIXED IN CODE in v1.4.9 (encodeURLParameter on both values, `shared-core/.../data/FeedbackRepositoryImpl.kt`). Found by jworks:47 during the Feedback parity check; jworks:47 did not test it. Verified: Android `:shared-core:compileDebugKotlinAndroid` BUILD SUCCESSFUL on 2026-10-15 (`agent-text/jworks-44/kj-compile-feedback-url.log`, the shared-core task executed, not up-to-date). The encoding itself is not exercised by a test: it relies on Ktor's `encodeURLParameter`, which turns "+" into %2B. iOS parity is not verified until a Mac build runs.
+
 ## Resolved
 
 - [x] [BUG-008] iOS app crashed on launch past the mock home screen — EVERY real screen unreachable (Shop, Achievements, all game modes go through `AppContainer`) — RESOLVED 2026-10-09, jworks:47 + jworks-mac:90

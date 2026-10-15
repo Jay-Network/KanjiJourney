@@ -5,6 +5,11 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.9 (2026-10-15) — Feedback: URL-encode user_email and app_id in getFeedbackUpdates (jworks:44)
+
+### Fixed
+- `FeedbackRepositoryImpl.getFeedbackUpdates` put `user_email` and `app_id` into the query string unencoded. The server reads a "+" in an email as a space, so a user whose address contains "+" would look up the wrong account, and the error was swallowed to an empty list. Both values now go through `encodeURLParameter()`. Found by jworks:47's parity check of the Feedback port (dlg-4d4d8b2fdf034f67b1bacad8). iOS inherits this shared-core code.
+
 ## v1.4.8 (2026-10-10) — Docs: correct ambiguous "CI run green" wording (jworks:47)
 
 ### Fixed
