@@ -5,6 +5,17 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.14 (2026-10-15) — iPhone build: remaining calligraphy references guarded to iPad (jworks:47) — UNVERIFIED on iPhone
+
+### Fixed
+- The iPhone target still failed after v1.4.13. Two more references to iPad-only calligraphy code, which the iPhone target excludes, are now inside `#if IPAD_TARGET`:
+  - `AppNavigation.swift`: the `.calligraphySession` route. The iPhone build gets an `EmptyView` so the switch stays exhaustive.
+  - `KanjiJourneyApp.swift`: the calligraphy card and its full-screen cover in the debug mock home. Without this, iPhone shows a dead button.
+- Found by jworks-mac:90 on `f61452b`. Its trial build with these guards succeeded with zero errors.
+
+### Verification
+- **iPhone: not yet verified.** It needs a KanjiJourneyPhone simulator build of this commit plus one top-bar screenshot.
+
 ## v1.4.13 (2026-10-15) — iPhone build fix: calligraphy feedback factory is iPad-only (jworks:47) — UNVERIFIED on iPhone
 
 ### Fixed

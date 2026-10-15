@@ -211,10 +211,12 @@ struct MockHomeView: View {
 
                     mockModeCard(title: "Recognition", desc: "Identify kanji from choices", color: Color(hex: 0x2196F3), icon: "eye.fill", available: false)
 
+                    #if IPAD_TARGET
                     Button(action: { showCalligraphy = true }) {
                         mockModeCardContent(title: "書道 Writing", desc: "Practice calligraphy with AI feedback", color: Color(hex: 0x4CAF50), icon: "pencil.tip", available: true)
                     }
                     .buttonStyle(.plain)
+                    #endif
 
                     mockModeCard(title: "Vocabulary", desc: "Learn words using kanji", color: Color(hex: 0xFF9800), icon: "book.fill", available: false)
                     mockModeCard(title: "Camera Challenge", desc: "Find kanji in the real world", color: Color(hex: 0x9C27B0), icon: "camera.fill", available: false)
@@ -285,11 +287,14 @@ struct MockHomeView: View {
             .toolbarBackground(GlassColors.surfaceDark, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
+            // iPad-only: MockCalligraphyView lives in Calligraphy/, excluded from the iPhone target.
+            #if IPAD_TARGET
             .fullScreenCover(isPresented: $showCalligraphy) {
                 NavigationStack {
                     MockCalligraphyView()
                 }
             }
+            #endif
         }
     }
 

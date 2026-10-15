@@ -227,12 +227,17 @@ struct AppNavigation: View {
         case .fieldJournal:
             FieldJournalView(onBack: { navigateBack() })
 
-        // MARK: - Calligraphy
+        // MARK: - Calligraphy (iPad-only: Calligraphy/ is excluded from the iPhone target)
+        #if IPAD_TARGET
         case .calligraphySession(let kanji, let paths):
             CalligraphySessionView(
                 kanjiLiteral: kanji,
                 strokePaths: paths
             )
+        #else
+        case .calligraphySession:
+            EmptyView()
+        #endif
         }
     }
 }
