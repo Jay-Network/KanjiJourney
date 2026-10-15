@@ -57,6 +57,9 @@ struct MainTabView: View {
                 .tag(BottomTab.collect)
         }
         .accentColor(GlassBrand.current)
+        // Top bar on the TabView, not on each tab: a .toolbar inside a tab does not reach the
+        // navigation bar on iPad (seen on the Home gear/J buttons, jworks-mac:90 2026-10-15).
+        .mainTabToolbar()
     }
 }
 

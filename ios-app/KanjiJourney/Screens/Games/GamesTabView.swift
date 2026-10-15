@@ -49,7 +49,6 @@ struct GamesTabView: View {
             .padding(16)
         }
         .background(GlassColors.background)
-        .mainTabToolbar()
     }
 }
 

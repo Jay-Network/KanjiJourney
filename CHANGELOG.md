@@ -5,6 +5,16 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.12 (2026-10-15) — iPad: Feedback top bar moved to the TabView (jworks:47) — UNVERIFIED
+
+### Fixed
+- **The Feedback button never appeared on iPad.** The Mac build (jworks-mac:90, `fbf23ed`) showed the Main/Study/Play/Collect tab bar with no envelope icon, and since the FAB was removed in v1.4.10 iPad users had no feedback entry point. A `.toolbar` placed inside a tab does not reach the navigation bar on iPad. The same applies to Home's gear and J buttons, which jworks-mac:90 reported on 2026-10-11. The top bar now lives on the `TabView` in `MainTabView`, and the four per-tab calls are removed (so iPhone shows one button, not two).
+
+### Verification
+- Compile on `fbf23ed`: pass (jworks-mac:90, iPad simulator, zero errors).
+- **Not yet verified for this change.** The Mac needs to confirm the envelope icon appears on all four tabs on iPad and iPhone.
+- Open, not changed here: on iPad the Mac's accessibility tree has no Home gear (Settings) or J (Shop) element. Settings may be unreachable there. Same mechanism as this fix, but a separate change.
+
 ## v1.4.11 (2026-10-15) — Test: regression test for the getFeedbackUpdates query encoding, BUG-009 (jworks:44)
 
 ### Changed

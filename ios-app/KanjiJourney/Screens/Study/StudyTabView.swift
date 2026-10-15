@@ -188,7 +188,6 @@ private struct StudyTabViewContent: View {
             .padding(16)
         }
         .background(GlassColors.background.ignoresSafeArea())
-        .mainTabToolbar()
     }
 
     private func routeForMode(_ mode: GameModeEnum, kanaFilter: KanaFilter) -> NavRoute {

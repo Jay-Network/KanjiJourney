@@ -80,7 +80,6 @@ private struct CollectionHubContent: View {
             .padding(16)
         }
         .background(GlassColors.background.ignoresSafeArea())
-        .mainTabToolbar()
     }
 
     // MARK: - Tab Selectors (same as HomeView)

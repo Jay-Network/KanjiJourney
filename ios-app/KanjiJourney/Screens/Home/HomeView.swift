@@ -420,7 +420,6 @@ private struct HomeViewBody: View {
         .toolbarBackground(GlassColors.surfaceDark, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar)
-        .mainTabToolbar()
     }
 
     // All the same section builders as HomeView above, extracted into this body struct.
