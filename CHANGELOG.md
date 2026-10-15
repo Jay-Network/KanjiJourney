@@ -5,6 +5,18 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.11 (2026-10-15) — Test: regression test for the getFeedbackUpdates query encoding, BUG-009 (jworks:44)
+
+### Changed
+- The query string for `getFeedbackUpdates` is built by `feedbackUpdatesQuery()` (internal, same file). Behavior is unchanged.
+
+### Added
+- `FeedbackUpdatesQueryTest` (shared-core commonTest). It round-trips the query through Ktor's `parseQueryString`, so a raw "+" in an email fails the test. Mutation check: with the encoding removed, 2 of 4 cases fail. The encoding was restored and the file matches the tested copy.
+
+### Verification
+- `./gradlew :shared-core:testDebugUnitTest --tests FeedbackUpdatesQueryTest --offline`: BUILD SUCCESSFUL, 4/4 pass (`agent-text/jworks-44/kj-test-feedback-query-android.log`). The JVM test task cannot resolve its supabase `-jvm` artifacts offline on this host; the Android unit-test target runs the same commonTest.
+- iOS parity of the encoding is still unverified until a Mac build runs.
+
 ## v1.4.10 (2026-10-15) — Feedback parity with Android: top-bar entry, not a FAB; email refresh on open (jworks:47) — UNVERIFIED
 
 ### Changed

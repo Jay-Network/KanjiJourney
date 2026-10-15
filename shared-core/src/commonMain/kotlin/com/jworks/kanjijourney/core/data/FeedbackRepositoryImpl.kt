@@ -94,17 +94,8 @@ class FeedbackRepositoryImpl : FeedbackRepository {
         try {
             val supabase = SupabaseClientFactory.getInstance()
 
-            // Build query string; encode values so "+" (and & = # etc.) in an email reach the server intact
-            val queryParams = buildString {
-                append("user_email=${email.encodeURLParameter()}")
-                append("&app_id=${appId.encodeURLParameter()}")
-                if (sinceId != null) {
-                    append("&since_id=$sinceId")
-                }
-            }
-
             val response = supabase.functions.invoke(
-                function = "feedback-get-updates?$queryParams"
+                function = "feedback-get-updates?${feedbackUpdatesQuery(email, appId, sinceId)}"
             )
 
             if (response.status.value !in 200..299) return@withContext emptyList()
@@ -188,5 +179,14 @@ class FeedbackRepositoryImpl : FeedbackRepository {
         } catch (e: Exception) {
             false
         }
+    }
+}
+
+// Build query string; encode values so "+" (and & = # etc.) in an email reach the server intact
+internal fun feedbackUpdatesQuery(email: String, appId: String, sinceId: Long?): String = buildString {
+    append("user_email=${email.encodeURLParameter()}")
+    append("&app_id=${appId.encodeURLParameter()}")
+    if (sinceId != null) {
+        append("&since_id=$sinceId")
     }
 }
