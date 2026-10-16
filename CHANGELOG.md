@@ -5,7 +5,16 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
-## v1.4.17 (2026-10-16) — J Coin: anonymous sign-in so Android calls carry a user token (task #41, Jay option A) — UNVERIFIED
+## v1.4.18 (2026-10-16) — J Coin sync no longer stores request headers (tokens) in the local database, BUG-015 (jworks:44)
+
+### Fixed
+- `syncPendingEvents` saved the whole exception message in `coin_sync_queue.error_message`. For a supabase-kt `RestException` that includes the request headers: the user's Bearer access token and the apikey. Only the text before `URL:` is stored now, at most 500 characters (`storedErrorMessage()`).
+
+### Verification
+- `StoredErrorMessageTest` 3/3 and `AnonymousSignupBodyTest` 3/3 pass (`:shared-core:testDebugUnitTest`, log `agent-text/jworks-44/kj-test-stored-error.log`).
+- v1.4.17 device result (Z Flip 7, 2026-10-16): the anonymous signup works (session saved, `user_metadata.country` = "US"). The earn reaches `jcoin-unified-earn` with the user token (no 401), and the server refuses it: "Premium subscription required". J Coin credits only premium bought through its own checkout. How players earn is with Jay (task #41).
+
+## v1.4.17 (2026-10-16) — J Coin: anonymous sign-in so Android calls carry a user token (task #41, pending Jay's decision) — UNVERIFIED
 
 ### Fixed
 - Android J Coin calls were refused 401 by the function's auth layer, which needs a user token. The J Coin client now installs Auth. `SupabaseClientFactory.ensureAnonymousSession()` signs the install in anonymously on the J Coin project once, and Functions then sends that access token as Bearer. The earn sync and the guest-balance reconcile both ensure the session first. If sign-in fails, the queued earns stay queued. (BUG-010)
@@ -18,7 +27,7 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 ### Docs
 - Release gate (task #42, jworks:0): `STATUS.md` and `BETA_LAUNCH_READY.md` now require an app-restricted Gemini key before the APK goes past the current testers. The APK carries a Gemini key that is not restricted to the app (jayhub:67).
 
-### Known limits (Jay chose this 2026-10-15)
+### Known limits (anonymous accounts are NOT yet approved by Jay; desk card open, so this must not ship to players before his answer)
 - Coins follow the install's anonymous session. Clearing app data or reinstalling loses them until accounts are linked (task #31).
 - The guest-balance reconcile on sign-in now runs under the anonymous session. Whether it credits the signed-in account is not verified.
 - Session persistence uses supabase-kt's default session manager on Android. Confirm on a device.

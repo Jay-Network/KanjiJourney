@@ -58,8 +58,8 @@ object SupabaseClientFactory {
     /**
      * Makes sure the J Coin client holds a project-issued user session. The function's auth layer
      * answers 401 to any call without a user token (task #41), so each install signs in anonymously
-     * once, on the J Coin project, and keeps that session. Chosen by Jay 2026-10-15: coins follow
-     * the install's session until accounts are linked (task #31). Returns false when no session can
+     * once, on the J Coin project, and keeps that session. Pending Jay's decision (task #41): coins
+     * follow the install's session until accounts are linked (task #31). Returns false when no session can
      * be made; callers keep their queued work and try again later.
      */
     suspend fun ensureAnonymousSession(): Boolean {

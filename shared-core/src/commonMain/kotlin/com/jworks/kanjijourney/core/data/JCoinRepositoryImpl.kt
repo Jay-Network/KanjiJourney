@@ -43,6 +43,16 @@ internal suspend fun <T> withOneTransportRetry(block: suspend () -> T): T = try 
     block()
 }
 
+/**
+ * What the sync queue stores as an error. supabase-kt's RestException message ends with
+ * "URL: ...", "Headers: ..." (the Bearer token and apikey) and "Http Method: ..."; only the part
+ * before that is kept, so no credential is written to the database (BUG-015).
+ */
+internal fun storedErrorMessage(message: String?): String {
+    val kept = message?.substringBefore("\nURL:")?.trim()
+    return if (kept.isNullOrEmpty()) "Unknown error" else kept.take(500)
+}
+
 class JCoinRepositoryImpl(
     private val database: KanjiJourneyDatabase,
     private val clock: Clock
@@ -187,7 +197,7 @@ class JCoinRepositoryImpl(
                 queries.updateSyncStatus(
                     sync_status = "failed",
                     last_attempt_at = clock.now().epochSeconds,
-                    error_message = e.message ?: "Unknown error",
+                    error_message = storedErrorMessage(e.message),
                     id = event.id
                 )
             }
