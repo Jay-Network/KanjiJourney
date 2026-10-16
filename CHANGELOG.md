@@ -5,6 +5,18 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.16 (2026-10-15) — Docs: service-role key retired from the certificate guide (jworks:47)
+
+### Docs
+- `docs/APPLE_CERTIFICATE_GUIDE.md` no longer tells the reader to add `SUPABASE_SERVICE_ROLE_KEY` as GitHub secret 3. Secret 3 is marked retired, with the reason. It was also dropped from the Part 5 table. Found in jworks:72's review of `6a1d4af`.
+- v1.4.15 follow-up corrected: the GitHub secret does not exist (jayhub:67, names only, 2026-10-15).
+
+### Shipping history (adds to v1.4.15)
+- The deleted legacy workflows `kanjiquest-ipad.yml` and `kanjiquest-iphone.yml` had the same xcconfig step. 23 of their runs succeeded between 2026-02-22 and 2026-02-27. The two run logs that survive (2026-02-23 and 2026-02-24) show the secret empty; the rest have expired. J_Coin rotated its service-role key in July. No rotation is needed (jworks:72).
+
+### Review
+- jworks:72 reviewed `6a1d4af`: PASS on the build path. A fresh clone grep found no service-role reference in Swift, Info.plist, the xcodegen specs, the xcconfig template or any workflow.
+
 ## v1.4.15 (2026-10-15) — iOS: Supabase service-role key removed from the app build (jworks:47) — UNVERIFIED on Mac
 
 ### Security
@@ -15,7 +27,7 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 - GitHub Actions: all 26 runs of the two TestFlight workflows (2026-03-01 to 2026-10-15) failed at certificate import or earlier. The xcconfig step that wrote the key was skipped every time, so no CI build carried it. The App Store Connect TestFlight history was not checked; that needs App Store Connect access.
 
 ### Follow-up
-- The GitHub secret `SUPABASE_SERVICE_ROLE_KEY` may still exist in the repo settings. Deleting it is a credential step for jayhub:67 or Jay.
+- The GitHub secret `SUPABASE_SERVICE_ROLE_KEY` does not exist (checked names only by jayhub:67, 2026-10-15). Nothing to delete.
 
 ### Verification
 - Source: grep for `SERVICE_ROLE` over `ios-app/` (build, DerivedData and Frameworks excluded). Mac build on both targets: pending.

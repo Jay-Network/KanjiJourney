@@ -8,13 +8,13 @@ Complete step-by-step guide for setting up all 13 GitHub Actions secrets needed 
 - Access to a Mac (even temporarily - for certificate generation only)
 - GitHub repository admin access (to add secrets)
 
-## Quick Reference: All 13 Secrets
+## Quick Reference: 12 Secrets (number 3 retired)
 
 | # | Secret Name | Category | Value Type |
 |---|-------------|----------|------------|
 | 1 | `SUPABASE_URL` | App | URL string |
 | 2 | `SUPABASE_ANON_KEY` | App | JWT string |
-| 3 | `SUPABASE_SERVICE_ROLE_KEY` | App | JWT string |
+| 3 | (retired, do not add) | — | See Secret 3 below |
 | 4 | `GEMINI_API_KEY` | App | API key string |
 | 5 | `APPLE_TEAM_ID` | Signing | 10-char alphanumeric |
 | 6 | `APPLE_CERTIFICATE_BASE64` | Signing | Base64-encoded .p12 |
@@ -28,7 +28,7 @@ Complete step-by-step guide for setting up all 13 GitHub Actions secrets needed 
 
 ---
 
-## Part 1: App Secrets (4 secrets)
+## Part 1: App Secrets (3 secrets)
 
 These are non-Apple secrets your app needs at build time.
 
@@ -49,13 +49,9 @@ Example: https://inygcrdhfmoerborxehq.supabase.co
 2. Under **Project API keys**, copy the `anon` / `public` key
 3. This is a long JWT string starting with `eyJ...`
 
-### Secret 3: SUPABASE_SERVICE_ROLE_KEY
+### Secret 3: retired, do not add
 
-1. Same page: **Settings** > **API**
-2. Under **Project API keys**, click **Reveal** next to `service_role`
-3. Copy the full JWT string
-
-**Warning**: This key has full database access. Never expose it client-side. It's injected at build time into the app binary via xcconfig, not hardcoded in source.
+Do not add the Supabase `service_role` key as a GitHub secret. Every app secret here is written into the xcconfig and ends up in the app's Info.plist, so anyone with the build can read it, and the service-role key bypasses row-level security. The workflows stopped reading it in v1.4.15.
 
 ### Secret 4: GEMINI_API_KEY
 
@@ -273,7 +269,6 @@ Before your first TestFlight upload, create the app in App Store Connect:
 |-------------|-------|
 | `SUPABASE_URL` | `https://inygcrdhfmoerborxehq.supabase.co` |
 | `SUPABASE_ANON_KEY` | (from Supabase dashboard) |
-| `SUPABASE_SERVICE_ROLE_KEY` | (from Supabase dashboard) |
 | `GEMINI_API_KEY` | (from Google AI Studio) |
 | `APPLE_TEAM_ID` | (from developer.apple.com Membership) |
 | `APPLE_CERTIFICATE_BASE64` | (base64 of .p12 file) |
