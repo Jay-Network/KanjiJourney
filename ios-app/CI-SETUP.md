@@ -13,13 +13,14 @@ You develop on Ubuntu (VS Code), push to GitHub, and CI handles compilation + Te
 
 Go to: Repository Settings > Secrets and variables > Actions
 
-### App Secrets (4)
+### App Secrets (3)
 | Secret | Description | Where to get |
 |--------|-------------|--------------|
 | `SUPABASE_URL` | Supabase project URL | supabase.com dashboard |
 | `SUPABASE_ANON_KEY` | Supabase anon/public key | supabase.com > Settings > API |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key | supabase.com > Settings > API |
 | `GEMINI_API_KEY` | Google AI Studio API key | aistudio.google.com |
+
+Never add the Supabase service-role key here. Anything in these secrets is baked into the app's Info.plist, and a service-role key bypasses row-level security.
 
 ### Apple Signing (6)
 | Secret | Description | How to create |

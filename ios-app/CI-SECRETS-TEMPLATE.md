@@ -6,14 +6,15 @@ Go to: `github.com/Jay-Network/KanjiJourney/settings/secrets/actions`
 
 ---
 
-## App Secrets (4)
+## App Secrets (3)
 
 | Secret Name | Value | Notes |
 |-------------|-------|-------|
 | `SUPABASE_URL` | `https://__________.supabase.co` | From supabase.com dashboard |
 | `SUPABASE_ANON_KEY` | `eyJ___...` | Supabase > Settings > API > anon/public |
-| `SUPABASE_SERVICE_ROLE_KEY` | `eyJ___...` | Supabase > Settings > API > service_role |
 | `GEMINI_API_KEY` | `AIza___...` | From aistudio.google.com |
+
+Do not add the Supabase service_role key. These values are baked into the app, and a service-role key bypasses row-level security.
 
 ---
 
@@ -96,7 +97,6 @@ base64 -i KanjiJourney_iPhone_AppStore.mobileprovision | pbcopy
 
 - [ ] `SUPABASE_URL`
 - [ ] `SUPABASE_ANON_KEY`
-- [ ] `SUPABASE_SERVICE_ROLE_KEY`
 - [ ] `GEMINI_API_KEY`
 - [ ] `APPLE_CERTIFICATE_BASE64`
 - [ ] `APPLE_CERTIFICATE_PASSWORD`
@@ -106,7 +106,7 @@ base64 -i KanjiJourney_iPhone_AppStore.mobileprovision | pbcopy
 - [ ] `APPLE_API_ISSUER_ID`
 - [ ] `APPLE_API_KEY_BASE64`
 
-**Total: 11 secrets**
+**Total: 10 secrets**
 
 ---
 
@@ -118,5 +118,5 @@ base64 -i KanjiJourney_iPhone_AppStore.mobileprovision | pbcopy
 4. **Create 2 Provisioning Profiles** - One per App ID (App Store Distribution)
 5. **Create App Store Connect API Key** - For automated uploads (reuse if already created)
 6. **Register iPhone app** in App Store Connect
-7. **Configure GitHub Secrets** - Add all 11 secrets above
+7. **Configure GitHub Secrets** - Add all 10 secrets above
 8. **Push code** → triggers `kanjijourney-ipad.yml` + `kanjijourney-iphone.yml` → TestFlight

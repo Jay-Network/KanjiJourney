@@ -105,9 +105,10 @@ cp KanjiJourney.xcconfig.template KanjiJourney.xcconfig
 Required values in `KanjiJourney.xcconfig`:
 - `SUPABASE_URL`
 - `SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
 - `GEMINI_API_KEY`
 - `DEVELOPMENT_TEAM`
+
+Never put the Supabase service-role key in this file. Every value here ends up in the app's Info.plist, and a service-role key bypasses row-level security.
 
 ### Running Tests
 

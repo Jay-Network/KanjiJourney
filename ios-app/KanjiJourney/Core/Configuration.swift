@@ -6,14 +6,13 @@ struct Configuration {
     let supabaseUrl: String
     let supabaseAnonKey: String
     let geminiApiKey: String
-    let supabaseServiceRoleKey: String
+    // No service-role key here: it bypasses row-level security and must never ship in a client build.
 
     init() {
         let bundle = Bundle.main
         supabaseUrl = bundle.infoPlistString(for: "SUPABASE_URL") ?? ""
         supabaseAnonKey = bundle.infoPlistString(for: "SUPABASE_ANON_KEY") ?? ""
         geminiApiKey = bundle.infoPlistString(for: "GEMINI_API_KEY") ?? ""
-        supabaseServiceRoleKey = bundle.infoPlistString(for: "SUPABASE_SERVICE_ROLE_KEY") ?? ""
     }
 }
 

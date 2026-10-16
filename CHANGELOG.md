@@ -5,6 +5,21 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.15 (2026-10-15) — iOS: Supabase service-role key removed from the app build (jworks:47) — UNVERIFIED on Mac
+
+### Security
+- The iOS build no longer carries `SUPABASE_SERVICE_ROLE_KEY`. A service-role key bypasses row-level security, so it must never be inside a client app. Found by jworks:72 (dlg-afc8c867fb224dfc8b14b4ee). Removal agreed with jayhub:0.
+- Removed from both TestFlight workflows (`kanjijourney-ipad.yml`, `kanjijourney-iphone.yml`), `Info.plist`, `project.yml`, `project-iphone.yml`, `Configuration.swift` and `KanjiJourney.xcconfig.template`. Also removed from the CI-SETUP, CI-SECRETS-TEMPLATE and README docs, which now list 10 CI secrets. No Swift code read the value.
+
+### Shipping history
+- GitHub Actions: all 26 runs of the two TestFlight workflows (2026-03-01 to 2026-10-15) failed at certificate import or earlier. The xcconfig step that wrote the key was skipped every time, so no CI build carried it. The App Store Connect TestFlight history was not checked; that needs App Store Connect access.
+
+### Follow-up
+- The GitHub secret `SUPABASE_SERVICE_ROLE_KEY` may still exist in the repo settings. Deleting it is a credential step for jayhub:67 or Jay.
+
+### Verification
+- Source: grep for `SERVICE_ROLE` over `ios-app/` (build, DerivedData and Frameworks excluded). Mac build on both targets: pending.
+
 ## v1.4.14 (2026-10-15) — iPhone build: remaining calligraphy references guarded to iPad (jworks:47) — UNVERIFIED on iPhone
 
 ### Fixed
