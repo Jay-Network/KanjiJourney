@@ -170,7 +170,9 @@ dependencies {
     // WorkManager for background J Coin sync
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
-    ksp(libs.hilt.compiler)
+    // AndroidX Hilt compiler generates the @HiltWorker factories; without it WorkManager
+    // cannot create CoinSyncWorker or LearningSyncWorker (BUG-012)
+    ksp(libs.androidx.hilt.compiler)
 
     // Firebase Cloud Messaging for feedback push notifications (plugin disabled, libs kept for compile)
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))

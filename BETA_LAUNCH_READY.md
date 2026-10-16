@@ -157,6 +157,7 @@ Located at: `docs/e2e-testing-checklist.md`
 - Weekend (Feb 15-16): Fix critical bugs
 
 **Production Deployment:**
+- **HARD STEP FIRST (jworks:0 2026-10-16, task #42):** create a KanjiJourney Gemini key restricted to `com.jworks.kanjijourney` + the release signing SHA-1, swap it into CI `GEMINI_API_KEY` and `local.properties`, and verify one Gemini call from the signed build. Do not promote past the current testers until this is done.
 - Replace debug APK with signed release APK
 - Update download page
 - Announce soft launch to all TutoringJay students

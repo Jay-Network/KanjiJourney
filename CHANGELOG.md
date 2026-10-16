@@ -5,6 +5,30 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.17 (2026-10-16) — J Coin: anonymous sign-in so Android calls carry a user token (task #41, Jay option A) — UNVERIFIED
+
+### Fixed
+- Android J Coin calls were refused 401 by the function's auth layer, which needs a user token. The J Coin client now installs Auth. `SupabaseClientFactory.ensureAnonymousSession()` signs the install in anonymously on the J Coin project once, and Functions then sends that access token as Bearer. The earn sync and the guest-balance reconcile both ensure the session first. If sign-in fails, the queued earns stay queued. (BUG-010)
+- `syncPendingEvents` no longer posts spend rows to `jcoin-unified-earn`, where each purchase would have been credited as an earn once calls succeed. Only `event_type = 'earn'` rows are sent; spends stay queued. Found by jworks:72. (BUG-011)
+- WorkManager could not create `CoinSyncWorker` or `LearningSyncWorker` (`NoSuchMethodException`), so neither background sync ever ran on Android. The AndroidX Hilt compiler (`androidx.hilt:hilt-compiler` 1.2.0) now generates the `@HiltWorker` factories; it replaces a duplicate Dagger compiler line. (BUG-012)
+
+### Added
+- The anonymous J Coin signup sends the device country as `data.country` (uppercase ISO alpha-2 from `Locale.getDefault().country`; omitted when empty or not two letters). It lands in the J Coin project's `auth.users.raw_user_meta_data.country`; copying it into `customers.country` is J Coin backend work (jworks:35). Requested by jworks-vm:35, S-337 option A, dlg-4012ef0b6c4245d2a820d1d5. Unit test: `AnonymousSignupBodyTest`.
+
+### Docs
+- Release gate (task #42, jworks:0): `STATUS.md` and `BETA_LAUNCH_READY.md` now require an app-restricted Gemini key before the APK goes past the current testers. The APK carries a Gemini key that is not restricted to the app (jayhub:67).
+
+### Known limits (Jay chose this 2026-10-15)
+- Coins follow the install's anonymous session. Clearing app data or reinstalling loses them until accounts are linked (task #31).
+- The guest-balance reconcile on sign-in now runs under the anonymous session. Whether it credits the signed-in account is not verified.
+- Session persistence uses supabase-kt's default session manager on Android. Confirm on a device.
+
+### Verification
+- Unit tests: `AnonymousSignupBodyTest` 3/3 pass (`:shared-core:testDebugUnitTest`).
+- Pixel 10 Pro, debug APK sha256 4fb37f28 installed over a fresh test install: `CoinSyncWorker` now starts (BUG-012 verified). The signup request reaches `https://j-coin.jworks-ai.com/auth/v1/signup`.
+- NOT verified: the earn round trip. The 09:33Z signup got a server-side 504 (GoTrue 10.2 s timeout, Mac overloaded, per jayhub-mac:110), and the Pixel was then needed for eBay runs. One queued test earn (5 coins, tagged `[e2e test jworks:44]`) waits on the device for the app's next retry.
+- Session persistence across restarts and the country field on a real signup are not yet observed on a device.
+
 ## v1.4.16 (2026-10-15) — Docs: service-role key retired from the certificate guide (jworks:47)
 
 ### Docs

@@ -13,10 +13,11 @@
 - **Branch**: main
 - **Stage**: Beta, sideload-only (Play Console not registered). Tester count: **UNVERIFIED — do not treat any number as fact until confirmed by the TutoringJay-portal owner.** The prior "4 students" figure is dated 2026-03-30 and became load-bearing on a 2026-07-27 J-Coin hostname cutover before anyone could confirm it; flagged to Jay, tracked as jworks:44 task #19.
 - **Rename**: KanjiQuest → KanjiJourney complete (codebase + infrastructure)
+- **Release gate (hard step, jworks:0 2026-10-16, task #42)**: before promoting past the current testers (Play track or a public link), create a KanjiJourney Gemini key restricted to `com.jworks.kanjijourney` + the release signing SHA-1, swap it into CI `GEMINI_API_KEY` and `local.properties`, and verify one Gemini call from the signed build. Today the APK carries an unrestricted key on Jay's project (jayhub:67, dlg-42c06c4f). Key creation owner: whoever jayhub:67 names for that GCP project; jayhub:0 only if Jay's console is needed.
 
 ### ⚠️ Live incident — J-Coin/Auth backend cutover (2026-07-27 → in progress)
 Two production breaks found + fixed this pass (Android `local.properties`, not yet rebuilt/shipped as of this doc update):
-1. **J-Coin backend URL** — was pointing at the abolished `jcoin.jworks-ai.com` (unhyphenated hostname is a closed/retired topic per Jay directive). Repointed to `j-coin.jworks-ai.com`, anon key refreshed to the 2026-07-27 rotated value. Both independently verified live (Kong 200 w/ new key, edge functions reachable, unexposed tables correctly 404).
+1. **J-Coin backend URL** — repointed to `j-coin.jworks-ai.com`, anon key refreshed to the 2026-07-27 rotated value. Both independently verified live (Kong 200 w/ new key, edge functions reachable, unexposed tables correctly 404).
 2. **Auth backend URL** — was pointing at a decommissioned cloud Supabase project (`sitmlszxevzczfydemok.supabase.co`, NXDOMAIN) for login + the premium subscription gate. Repointed to the self-hosted TutoringJay portal Kong (`https://jayboard.tutoringjay.com/supabase`), verified live (401 = Kong alive, auth required — correct unauthenticated response). Existing `AUTH_SUPABASE_ANON_KEY` still valid against the new URL (verified, no rotation needed).
 - Full detail: jworks:44 task #18. Next: rebuild, verify the compiled APK reaches the live surface, then redistribute to confirmed testers.
 

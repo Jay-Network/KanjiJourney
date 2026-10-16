@@ -129,12 +129,17 @@ class JCoinRepositoryImpl(
         if (!SupabaseClientFactory.isInitialized()) {
             return@withContext 0 // Skip sync if backend not configured
         }
+        // The function answers 401 without a user token (task #41). No session: keep the queue.
+        if (!SupabaseClientFactory.ensureAnonymousSession()) return@withContext 0
 
         val supabase = SupabaseClientFactory.getInstance()
         val pending = queries.getPendingEvents().executeAsList()
         var syncedCount = 0
 
         for (event in pending) {
+            // Only earns go to jcoin-unified-earn: a spend row posted there would be credited as an
+            // earn. Spends stay queued, untouched, until a spend endpoint exists (jworks:72, 2026-10-15).
+            if (event.event_type != "earn") continue
             try {
                 // Call Supabase Edge Function: jcoin-unified-earn. Only rows carrying a
                 // client_event_id get the transport retry: the server dedups on that key, so a
@@ -197,6 +202,7 @@ class JCoinRepositoryImpl(
         eventId: String
     ): Boolean = withContext(Dispatchers.Default) {
         if (!SupabaseClientFactory.isInitialized()) return@withContext false
+        if (!SupabaseClientFactory.ensureAnonymousSession()) return@withContext false
         try {
             val supabase = SupabaseClientFactory.getInstance()
             // Always keyed, so the transport retry is safe here (server dedup live 2026-10-09).

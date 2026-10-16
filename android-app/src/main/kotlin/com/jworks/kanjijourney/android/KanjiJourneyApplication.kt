@@ -44,6 +44,7 @@ class KanjiJourneyApplication : Application(), Configuration.Provider {
         if (supabaseUrl.isNotBlank() && supabaseKey.isNotBlank()) {
             try {
                 SupabaseClientFactory.initialize(supabaseUrl, supabaseKey)
+                SupabaseClientFactory.deviceCountry = java.util.Locale.getDefault().country
                 android.util.Log.i("KanjiJourney", "Supabase initialized for J Coin sync")
             } catch (e: Exception) {
                 android.util.Log.w("KanjiJourney", "Failed to initialize Supabase: ${e.message}")
