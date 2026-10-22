@@ -7,7 +7,7 @@
 
 ## Current Status
 
-- **Version**: v1.3.0 (Android versionCode 15 / versionName 1.3.0, per VERSION file + build.gradle.kts, verified). iPad build 25 / iPhone build 11 figures below are UNVERIFIED this pass — carried over from 2026-03-30, ask jworks:47 for current numbers.
+- **Version**: v1.4.20 (Android versionCode 18 / versionName 1.4.20, read from the CI debug APK with aapt, run 39866725206, 2026-10-22; versionName now comes from the VERSION file, BUG-016). iPad build 25 / iPhone build 11 figures below are UNVERIFIED this pass — carried over from 2026-03-30, ask jworks:47 for current numbers.
 - **Platforms**: Android (Kotlin) + iOS/iPad (SwiftUI via KMP + SKIE)
 - **CI Build**: android-build.yml — verified green as of 2026-07-23 (all 3 jobs: debug, unit tests, release AAB w/ keystore)
 - **Branch**: main
