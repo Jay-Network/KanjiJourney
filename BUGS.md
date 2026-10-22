@@ -106,6 +106,8 @@ History: BUG-001 (APK size)
 
 - [ ] [BUG-015] `syncPendingEvents` stored the full exception message in `coin_sync_queue.error_message`. For a supabase-kt `RestException` that message ends with the request `URL:`, `Headers:` (the user's Bearer access token and the apikey) and `Http Method:`, so a failed earn wrote a live access token into the app's local database. Seen on the Z Flip test 2026-10-16 15:01Z, VALIDATION_ERROR on the anonymous test user; that token was short-lived and the app was uninstalled. FIXED in v1.4.18: `storedErrorMessage()` keeps only the text before `\nURL:`, at most 500 chars. `StoredErrorMessageTest` 3/3 pass. v1.4.19 also clears headers that older builds already stored, on the first sync of the new build (`JCoinSyncSwitchTest`).
 
+- [ ] [BUG-016] Every Android build reported versionName "1.4.7": `android-app/build.gradle.kts` hard-coded it while VERSION moved on to 1.4.19. Feedback reports (`DeviceInfoProvider`) and the force-upgrade check (`ForceUpgradeChecker`, which compares numerically; also BUG-013) read that value, so they could not tell builds apart. Found 2026-10-22 by the v1.4.19 review (follow-up 8, task #41). FIXED in v1.4.20: versionName is read from the repo-root VERSION file. versionCode stays manual (18).
+
 ## Resolved
 
 - [x] [BUG-008] iOS app crashed on launch past the mock home screen — EVERY real screen unreachable (Shop, Achievements, all game modes go through `AppContainer`) — RESOLVED 2026-10-09, jworks:47 + jworks-mac:90

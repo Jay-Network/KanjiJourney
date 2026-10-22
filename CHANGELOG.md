@@ -5,6 +5,11 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.20 (2026-10-22) — Android versionName follows VERSION (jworks:44)
+
+### Fixed
+- `android-app/build.gradle.kts` hard-coded `versionName = "1.4.7"`, so every Android build since then reported 1.4.7 in feedback device info and to the force-upgrade check (BUG-016). versionName is now read from the repo-root `VERSION` file. versionCode is unchanged (18). Android-only; no shared-core change.
+
 ## v1.4.19 (2026-10-22) — Anonymous J Coin sign-in behind a switch, OFF by default; clear tokens stored by older builds (jworks:44)
 
 ### Changed

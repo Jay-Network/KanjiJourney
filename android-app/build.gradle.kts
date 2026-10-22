@@ -19,7 +19,8 @@ android {
         minSdk = 26
         targetSdk = 35
         versionCode = 18
-        versionName = "1.4.7"
+        // Single source of truth: the repo-root VERSION file (BUG-016)
+        versionName = rootProject.file("VERSION").readText().trim()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
