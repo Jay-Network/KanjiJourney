@@ -77,6 +77,7 @@ kotlin {
 
         jvmTest.dependencies {
             implementation(libs.sqldelight.sqlite.driver)
+            implementation(libs.ktor.client.mock)
         }
 
         // JdbcSqliteDriver (used by tests that exercise SQLDelight against an in-memory DB) is

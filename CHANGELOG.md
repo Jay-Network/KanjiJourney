@@ -5,6 +5,27 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.19 (2026-10-22) — Anonymous J Coin sign-in behind a switch, OFF by default; clear tokens stored by older builds (jworks:44)
+
+### Changed
+- `SupabaseClientFactory.anonymousSignInEnabled` defaults to `false`. While it is off, `ensureAnonymousSession()` returns false at once: no signup, no J Coin earn call, and queued earns stay queued. Jay's decision on anonymous accounts and earning is still open (desk card `desk-jworks44-kanjijourney-jcoin-earning`, task #41). Turning it on is a one-line change once he answers.
+- `SupabaseClientFactory.initialize` takes an optional `httpEngine`, used only by tests.
+
+### Fixed
+- `syncPendingEvents` first clears request headers, including access tokens, that older builds stored in `coin_sync_queue.error_message` (BUG-015). It reuses `storedErrorMessage()` and is safe to repeat.
+- `storedErrorMessage()` cuts at the first `URL:` or `Headers:`, even without a line break before it. The learning-data sync queue now stores errors the same way, so it cannot keep a user token once a session exists.
+
+### Ships with this push (approved by jayhub:0 2026-10-22)
+- BUG-012 (v1.4.17): the coin and learning sync workers can now be created on Android.
+- BUG-015 (v1.4.18): no request headers are stored for new failures.
+- BUG-011 (v1.4.17): spend rows are never sent to the earn endpoint.
+
+### Verification
+- `JCoinSyncSwitchTest` (shared-core jvmTest, Ktor MockEngine records every request): with the switch off there are zero requests and the queued earn is untouched; with the switch on the signup request is made, so the test can fail; stored headers are scrubbed.
+- Also passing: `StoredErrorMessageTest` 4/4, `JCoinRepositoryTest` 16/16, `CompleteSessionCoinTest` 8/8, `AnonymousSignupBodyTest` 3/3; `:android-app:compileDebugKotlin` builds (log `agent-text/jworks-44/kj-test-v1.4.19.log`).
+- Independent review of the full diff against origin/main (2026-10-22): no blocking issues. Follow-ups for before the switch is turned on are listed in task #41.
+- Not run here: `GameEngineTest`/`WritingModeEngineTest` fail before and after this change (BUG-007, level gating); iOS (Kotlin/Native) compile is checked by CI on push.
+
 ## v1.4.18 (2026-10-16) — J Coin sync no longer stores request headers (tokens) in the local database, BUG-015 (jworks:44)
 
 ### Fixed
@@ -15,6 +36,8 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 - v1.4.17 device result (Z Flip 7, 2026-10-16): the anonymous signup works (session saved, `user_metadata.country` = "US"). The earn reaches `jcoin-unified-earn` with the user token (no 401), and the server refuses it: "Premium subscription required". J Coin credits only premium bought through its own checkout. How players earn is with Jay (task #41).
 
 ## v1.4.17 (2026-10-16) — J Coin: anonymous sign-in so Android calls carry a user token (task #41, pending Jay's decision) — UNVERIFIED
+
+> Since v1.4.19 the anonymous sign-in below is OFF by default (`anonymousSignInEnabled = false`) until Jay decides.
 
 ### Fixed
 - Android J Coin calls were refused 401 by the function's auth layer, which needs a user token. The J Coin client now installs Auth. `SupabaseClientFactory.ensureAnonymousSession()` signs the install in anonymously on the J Coin project once, and Functions then sends that access token as Bearer. The earn sync and the guest-balance reconcile both ensure the session first. If sign-in fails, the queued earns stay queued. (BUG-010)

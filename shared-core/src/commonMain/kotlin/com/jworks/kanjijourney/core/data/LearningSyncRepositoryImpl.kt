@@ -232,7 +232,8 @@ class LearningSyncRepositoryImpl(
                 syncQueries.updateSyncStatus(
                     sync_status = "failed",
                     last_attempt_at = clock.now().epochSeconds,
-                    error_message = e.message ?: "Unknown error",
+                    // Never store request headers (a user token once a session exists), BUG-015
+                    error_message = storedErrorMessage(e.message),
                     id = event.id
                 )
             }

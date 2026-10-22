@@ -107,6 +107,14 @@ DELETE FROM coin_sync_queue WHERE sync_status = 'synced';
 deleteSyncEvent:
 DELETE FROM coin_sync_queue WHERE id = ?;
 
+-- Older builds stored request headers (the user's access token) in error_message (BUG-015)
+getSyncErrorsWithHeaders:
+SELECT id, error_message FROM coin_sync_queue
+WHERE error_message LIKE '%URL:%';
+
+setSyncErrorMessage:
+UPDATE coin_sync_queue SET error_message = ? WHERE id = ?;
+
 -- Premium content queries
 getUnlock:
 SELECT * FROM premium_content_unlocks

@@ -23,6 +23,16 @@ class StoredErrorMessageTest {
     }
 
     @Test
+    fun headersWithoutLineBreak_areDroppedToo() {
+        val stored = storedErrorMessage(
+            "Request failed URL: https://example.test/x Headers: [Authorization=[Bearer TOKEN_PLACEHOLDER]]"
+        )
+
+        assertEquals("Request failed", stored)
+        assertFalse(stored.contains("Bearer"))
+    }
+
+    @Test
     fun plainMessage_isKept() {
         assertEquals("Request timeout has expired", storedErrorMessage("Request timeout has expired"))
     }

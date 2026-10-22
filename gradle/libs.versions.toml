@@ -105,6 +105,7 @@ supabase-functions-kt = { module = "io.github.jan-tennert.supabase:functions-kt"
 supabase-auth-kt = { module = "io.github.jan-tennert.supabase:gotrue-kt", version.ref = "supabase" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 
 # Testing
 junit = { module = "junit:junit", version.ref = "junit" }

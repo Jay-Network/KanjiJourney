@@ -7,6 +7,7 @@ import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.user.UserSession
 import io.github.jan.supabase.postgrest.Postgrest
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
@@ -33,12 +34,19 @@ object SupabaseClientFactory {
     var deviceCountry: String? = null
 
     /**
+     * Anonymous J Coin sign-in for players. OFF until Jay decides (desk card
+     * desk-jworks44-kanjijourney-jcoin-earning, task #41). While off there is no signup and no
+     * J Coin earn call; queued earns stay queued.
+     */
+    var anonymousSignInEnabled: Boolean = false
+
+    /**
      * Initialize the Supabase client with configuration.
      *
      * @param supabaseUrl The Supabase project URL (e.g., https://xxxxx.supabase.co)
      * @param supabaseKey The Supabase anon/public key
      */
-    fun initialize(supabaseUrl: String, supabaseKey: String) {
+    fun initialize(supabaseUrl: String, supabaseKey: String, httpEngine: HttpClientEngine? = null) {
         if (_instance != null) {
             throw IllegalStateException("SupabaseClient already initialized")
         }
@@ -47,6 +55,8 @@ object SupabaseClientFactory {
             supabaseUrl = supabaseUrl,
             supabaseKey = supabaseKey
         ) {
+            // Tests pass a mock engine; the app uses the platform default
+            if (httpEngine != null) this.httpEngine = httpEngine
             // Auth carries the anonymous J Coin session: Functions sends its access token as Bearer.
             // Default session manager (persistent on Android), so the session survives restarts.
             install(Auth)
@@ -63,6 +73,7 @@ object SupabaseClientFactory {
      * be made; callers keep their queued work and try again later.
      */
     suspend fun ensureAnonymousSession(): Boolean {
+        if (!anonymousSignInEnabled) return false
         val client = getInstance()
         if (client.auth.currentSessionOrNull() != null) return true
         return try {

@@ -49,7 +49,9 @@ internal suspend fun <T> withOneTransportRetry(block: suspend () -> T): T = try 
  * before that is kept, so no credential is written to the database (BUG-015).
  */
 internal fun storedErrorMessage(message: String?): String {
-    val kept = message?.substringBefore("\nURL:")?.trim()
+    // Cut at the first "URL:" or "Headers:", with or without a line break before it
+    val cut = message?.let { m -> Regex("URL:|Headers:").find(m)?.range?.first ?: m.length }
+    val kept = message?.substring(0, cut ?: 0)?.trim()
     return if (kept.isNullOrEmpty()) "Unknown error" else kept.take(500)
 }
 
@@ -135,6 +137,12 @@ class JCoinRepositoryImpl(
     }
 
     override suspend fun syncPendingEvents(): Int = withContext(Dispatchers.Default) {
+        // Clear tokens that older builds wrote into error_message (BUG-015); safe to repeat
+        queries.getSyncErrorsWithHeaders().executeAsList().forEach { row ->
+            val scrubbed = storedErrorMessage(row.error_message)
+            if (scrubbed != row.error_message) queries.setSyncErrorMessage(scrubbed, row.id)
+        }
+
         // Check if Supabase is initialized
         if (!SupabaseClientFactory.isInitialized()) {
             return@withContext 0 // Skip sync if backend not configured
