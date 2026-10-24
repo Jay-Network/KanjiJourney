@@ -5,6 +5,13 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.29 (2026-10-24) — Verified: KanjiJourney is back on TestFlight (jworks:47)
+
+### Verified
+- Version 1.0.0, build 118, is processed and VALID in App Store Connect for both apps. iPad: app 6759483601, run 40066820570, delivery ed4519eb. iPhone: app 6759512291, run 40066822402, delivery 9431901d. `buildUploads` shows COMPLETE with no errors or warnings (asc-read run 40069115830). These are the first usable TestFlight builds since 2026-02-27. Build 117 had been FAILED by Apple with ITMS-90683, fixed in v1.4.28 (BUG-017).
+- Apple's own messages confirm both build-machine changes were needed. The February builds carry warning 90725: since 2026-04-28, uploads must use the iOS 26 SDK, which the Xcode 26.3 move covers.
+- Not done, by design: no App Store or Beta App Review submission, no external tester group, no store-listing change. The App Store Connect record names still read "KanjiQuest: Write & Master" and "KanjiQuest: Collect & Master".
+
 ## v1.4.28 (2026-10-24) — iOS: camera usage string (BUG-017); ASC read shows upload errors (jworks:47)
 
 ### Fixed
