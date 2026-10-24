@@ -202,6 +202,7 @@ private struct TestModeContent: View {
                                     .stroke(borderColor, lineWidth: answered && (isCorrectOption || isSelected) ? 2 : 1)
                             )
                     }
+                    .accessibilityLabel(answerAccessibilityLabel(option, answered: answered, isAnswer: isCorrectOption, isSelected: isSelected))
                 }
             }
             .padding(.horizontal, 16)
@@ -224,6 +225,13 @@ private struct TestModeContent: View {
             }
             } // VStack
         } // if let question
+    }
+
+    private func answerAccessibilityLabel(_ choice: String, answered: Bool, isAnswer: Bool, isSelected: Bool) -> String {
+        guard answered else { return choice }
+        if isAnswer { return "\(choice), correct answer" }
+        if isSelected { return "\(choice), your answer, incorrect" }
+        return choice
     }
 
     // MARK: - Results Content

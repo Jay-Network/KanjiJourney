@@ -5,6 +5,12 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.34 (2026-10-24) — iOS Test Mode VoiceOver answer feedback
+
+### Fixed
+- Test Mode answer buttons now use the same spoken correct/incorrect feedback as Recognition after an answer is revealed. Before selection, each label remains the option text only; unselected incorrect options remain unchanged afterward.
+- Accessibility-only: no visual layout or answer-selection behavior changes. CI Release archives for build 120 and runtime VoiceOver acceptance remain pending.
+
 ## v1.4.33 (2026-10-24) — iOS VoiceOver review corrections
 
 ### Fixed
