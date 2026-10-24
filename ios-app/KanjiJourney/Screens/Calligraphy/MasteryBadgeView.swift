@@ -36,6 +36,6 @@ struct MasteryBadgeView: View {
                 .foregroundColor(.secondary)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Mastery, \(level.labelJp)")
+        .accessibilityLabel("Mastery, \(level.label)")
     }
 }

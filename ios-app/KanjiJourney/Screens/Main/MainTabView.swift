@@ -27,7 +27,7 @@ struct MainTabView: View {
             // Tab 1: Main (Home)
             HomeView(navigateTo: navigateTo)
                 .tabItem {
-                    Image(systemName: "house.fill").accessibilityHidden(true)
+                    Image(systemName: "house.fill")
                     Text("Main")
                 }
                 .tag(BottomTab.main)
@@ -35,7 +35,7 @@ struct MainTabView: View {
             // Tab 2: Study
             StudyTabView(navigateTo: navigateTo)
                 .tabItem {
-                    Image(systemName: "pencil.line").accessibilityHidden(true)
+                    Image(systemName: "pencil.line")
                     Text("Study")
                 }
                 .tag(BottomTab.study)
@@ -43,7 +43,7 @@ struct MainTabView: View {
             // Tab 3: Play (Games)
             GamesTabView(navigateTo: navigateTo)
                 .tabItem {
-                    Image(systemName: "play.fill").accessibilityHidden(true)
+                    Image(systemName: "play.fill")
                     Text("Play")
                 }
                 .tag(BottomTab.play)
@@ -51,7 +51,7 @@ struct MainTabView: View {
             // Tab 4: Collect
             CollectionHubView(navigateTo: navigateTo)
                 .tabItem {
-                    Image(systemName: "star.fill").accessibilityHidden(true)
+                    Image(systemName: "star.fill")
                     Text("Collect")
                 }
                 .tag(BottomTab.collect)

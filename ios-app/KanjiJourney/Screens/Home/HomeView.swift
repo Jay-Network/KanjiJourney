@@ -431,6 +431,7 @@ private struct HomeViewBody: View {
                             .background(GlassBrand.current.opacity(0.20))
                             .cornerRadius(6)
                     }
+                    .accessibilityLabel("Shop")
                     Button(action: { navigateTo(.settings) }) {
                         Image(systemName: "gearshape.fill").accessibilityHidden(true)
                             .foregroundColor(GlassColors.textPrimary)

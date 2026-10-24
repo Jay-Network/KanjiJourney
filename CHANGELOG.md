@@ -5,6 +5,19 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.33 (2026-10-24) — iOS VoiceOver review corrections
+
+### Fixed
+- Mastery badges use the existing English mastery label for VoiceOver; their visible text is unchanged.
+- Restored the four tab-item images without accessibility-hiding modifiers so each standard tab item retains its native icon/title behavior.
+- Named the Home toolbar's "J" button "Shop" for VoiceOver.
+
+### Verified existing release
+- BUG-018 is closed: App Store Connect read run 40076526776 reports build 119 `IN_BETA_TESTING` with `usesNonExemptEncryption=False` for both apps. Build 119 predates these VoiceOver changes; this is not build verification of v1.4.33.
+
+### Recorded, not fixed
+- Quiz answer buttons still lack spoken correct/incorrect feedback after selection (`TestModeView.swift`); tracked as an open item in BUGS.md. Mac builds and runtime VoiceOver acceptance for this revision remain unverified.
+
 ## v1.4.32 (2026-10-24) — iOS VoiceOver card grouping and image semantics
 
 ### Fixed
