@@ -43,6 +43,7 @@ enum NavRoute: Hashable {
     // Shop & Subscription
     case shop
     case subscription
+    case subscriptionFromDeepLink
 
     // Settings
     case settings

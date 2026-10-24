@@ -1,8 +1,10 @@
 import SwiftUI
 
 @main
+@MainActor
 struct KanjiJourneyApp: App {
     @StateObject private var appState = AppState()
+    @StateObject private var deepLinks = DeepLinkQueue()
     @AppStorage("theme") private var selectedTheme = AppTheme.system.rawValue
 
     init() {
@@ -13,6 +15,8 @@ struct KanjiJourneyApp: App {
         WindowGroup {
             AppRootView()
                 .environmentObject(appState)
+                .environmentObject(deepLinks)
+                .onOpenURL { deepLinks.enqueue($0) }
                 .preferredColorScheme(preferredColorScheme)
         }
     }

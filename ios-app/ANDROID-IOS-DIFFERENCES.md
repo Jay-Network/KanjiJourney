@@ -109,14 +109,14 @@
 | Route count | 23+ composable blocks | 7 cases | 23+ cases | Full parity now |
 | FeedbackFAB | Global Scaffold overlay | Not present | Global overlay | Ported |
 | FeedbackDialog | `hiltViewModel()` scoped | Not present | `@StateObject` scoped | Ported |
-| Deep linking | `kanjijourney://collect?kanji_id=X` | Not present | TODO (Phase 5+) | Deferred |
+| Deep linking | `kanjijourney://collect`, `import`, `subscription` | Not present | App-scoped URL queue + `onOpenURL` | Local collection/import; subscription preview only (remote setup remains deferred) |
 | Post-login routing | Placement test check → Home | Direct to Home | Placement test check → Home | Ported |
 
 **Platform Differences (Intentional):**
 - Android `Scaffold(floatingActionButton:)` → iOS `ZStack` with overlay.
 - Android `hiltViewModel()` → iOS `@StateObject` with container injection.
 - Android `popUpTo(inclusive=true)` → iOS `path = NavigationPath()` (reset stack).
-- Deep linking deferred on iOS — Android uses `Uri` parsing, iOS would use `onOpenURL`.
+- iOS registers `kanjijourney` for both targets and queues links until splash/login finish. Collection uses the discovery overlay; imports use SharedCore's local study-deck flow. Subscription links open a local-only preview: remote status/purchase actions remain omitted pending account setup. Invalid links are ignored; unknown kanji IDs report "Kanji not found." rather than Android's misleading already-collected fallback. Release archive/runtime verification is pending.
 
 ### AppContainer (DI)
 
@@ -515,7 +515,6 @@
 | LearningSyncWorker | workers/LearningSyncWorker.kt | WorkManager (iOS TODO) |
 | FeedbackFCMService | service/FeedbackFCMService.kt | Firebase Cloud Messaging (iOS uses APNs — TODO) |
 | OllamaClient | network/OllamaClient.kt | Local LLM inference (desktop/server only) |
-| Deep linking | KanjiJourneyNavHost.kt (L68-111) | `kanjijourney://collect?kanji_id=X` (iOS TODO) |
 
 ---
 

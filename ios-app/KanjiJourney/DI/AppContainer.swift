@@ -51,6 +51,7 @@ final class AppContainer: ObservableObject {
     // MARK: - Use Cases
     let wordOfTheDayUseCase: WordOfTheDayUseCase
     let completeSessionUseCase: CompleteSessionUseCase
+    let importKanjiUseCase: ImportKanjiUseCase
 
     // MARK: - Sync Service
     let syncService: SyncService
@@ -150,6 +151,13 @@ final class AppContainer: ObservableObject {
         // Use Cases
         CrashDiagnostic.step("Creating WordOfTheDayUseCase...")
         wordOfTheDayUseCase = WordOfTheDayUseCase(kanjiRepository: kanjiRepository)
+        // Local database only: no Supabase or J Coin dependency.
+        importKanjiUseCase = ImportKanjiUseCase(
+            receivedKanjiRepository: ReceivedKanjiRepositoryImpl(db: database),
+            kanjiRepository: kanjiRepository,
+            srsRepository: srsRepository,
+            flashcardRepository: flashcardRepository
+        )
         CrashDiagnostic.step("Creating CompleteSessionUseCase...")
         completeSessionUseCase = CompleteSessionUseCase(
             userRepository: userRepository,

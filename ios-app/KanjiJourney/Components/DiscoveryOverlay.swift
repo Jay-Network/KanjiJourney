@@ -39,6 +39,7 @@ struct DiscoveryOverlay: View {
         ZStack {
             Color.black.opacity(0.7).ignoresSafeArea()
                 .onTapGesture(perform: onDismiss)
+                .accessibilityHidden(true)
 
             VStack(spacing: KanjiJourneyTheme.spacingM) {
                 // "NEW!" header
@@ -100,9 +101,11 @@ struct DiscoveryOverlay: View {
 
                 Spacer().frame(height: KanjiJourneyTheme.spacingL)
 
-                Text("Tap to continue")
-                    .font(.system(size: 12))
-                    .foregroundColor(.white.opacity(0.5))
+                Button("Continue", action: onDismiss)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.white)
+                    .padding(12)
+                    .accessibilityLabel("Dismiss discovery")
             }
             .padding(32)
         }

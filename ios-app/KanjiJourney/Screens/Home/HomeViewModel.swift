@@ -86,6 +86,7 @@ class HomeViewModel: ObservableObject {
 
     private let container: AppContainer
     private var isFirstLoad = true
+    private var collectionObserver: AnyCancellable?
 
     static let frequencyRanges: [(Int32, Int32)] = [
         (1, 500), (501, 1000), (1001, 2000), (2001, 5000)
@@ -94,6 +95,10 @@ class HomeViewModel: ObservableObject {
 
     init(container: AppContainer) {
         self.container = container
+        collectionObserver = NotificationCenter.default.publisher(for: .localKanjiDataDidChange)
+            .sink { [weak self] _ in
+                Task { @MainActor [weak self] in await self?.refreshLocalCollection() }
+            }
         Task { await loadData() }
         Task { await observeCoinBalance() }
     }
@@ -260,6 +265,32 @@ class HomeViewModel: ObservableObject {
             perJlptTotalCounts: perJlptTotal
         )
         isFirstLoad = false
+        await refreshLocalCollection()
+    }
+
+    /// Refresh visible collection/deck state after a deep link without auth, coin or sync calls.
+    private func refreshLocalCollection() async {
+        guard let items = try? await container.collectionRepository.getCollectedByType(type: .kanji) else { return }
+        let ids = Set(items.map { $0.itemId })
+        uiState.collectedItems = Dictionary(uniqueKeysWithValues: items.map { ($0.itemId, $0) })
+        uiState.collectedKanjiCount = items.count
+        var gradesWithCollection: Set<Int32> = []
+        for grade in uiState.allGrades {
+            if let kanji = try? await container.kanjiRepository.getKanjiByGrade(grade: grade) {
+                let count = kanji.filter { ids.contains($0.id) }.count
+                uiState.perGradeCollectedCounts[grade] = count
+                if count > 0 { gradesWithCollection.insert(grade) }
+            }
+        }
+        uiState.gradesWithCollection = gradesWithCollection
+        for level: Int32 in [5, 4, 3, 2, 1] {
+            if let kanji = try? await container.kanjiRepository.getKanjiByJlptLevel(level: level) {
+                uiState.perJlptCollectedCounts[level] = kanji.filter { ids.contains($0.id) }.count
+            }
+        }
+        if let count = try? await container.flashcardRepository.getDeckCount() {
+            uiState.flashcardDeckCount = count.int64Value
+        }
     }
 
     // MARK: - Preview Trials

@@ -3,11 +3,21 @@ import SharedCore
 
 /// Full navigation host matching Android KanjiJourneyNavHost.
 /// Handles all 23+ routes, the feedback sheet, and post-login routing.
+@MainActor
 struct AppNavigation: View {
     @EnvironmentObject var container: AppContainer
+    @EnvironmentObject var deepLinks: DeepLinkQueue
     @State private var path = NavigationPath()
     @State private var showSplash = true
     @State private var isAuthenticated = false
+    @State private var deepLinkDiscovery: DeepLinkDiscovery?
+    @State private var deepLinkMessage: String?
+
+    private struct DeepLinkDiscovery: Identifiable {
+        let item: CollectedItem
+        let literal: String
+        var id: Int32 { item.itemId }
+    }
 
     // Feedback: opened from the main tabs' top bar (FeedbackToolbarButton), no floating button
     @StateObject private var feedbackViewModel = FeedbackViewModel()
@@ -49,6 +59,84 @@ struct AppNavigation: View {
         }
         .environmentObject(container)
         .environmentObject(feedbackViewModel)
+        .onAppear { processPendingDeepLink() }
+        .onChange(of: showSplash) { _ in processPendingDeepLink() }
+        .onChange(of: isAuthenticated) { _ in processPendingDeepLink() }
+        .onChange(of: deepLinks.pending) { _ in processPendingDeepLink() }
+        .fullScreenCover(item: $deepLinkDiscovery, onDismiss: finishDeepLink) { discovery in
+            DiscoveryOverlay(
+                discoveredItem: discovery.item,
+                kanjiLiteral: discovery.literal,
+                kanjiMeaning: nil,
+                onDismiss: { deepLinkDiscovery = nil }
+            )
+        }
+        .alert("KanjiJourney", isPresented: Binding(
+            get: { deepLinkMessage != nil },
+            set: { presented in
+                if !presented {
+                    deepLinkMessage = nil
+                    finishDeepLink()
+                }
+            }
+        )) {
+            Button("OK", role: .cancel) { }
+                .accessibilityLabel("Dismiss deep link result")
+        } message: {
+            Text(deepLinkMessage ?? "")
+        }
+    }
+
+    // MARK: - Deep links (all mutations stay in local SharedCore repositories)
+
+    private func finishDeepLink() {
+        deepLinks.finish()
+        processPendingDeepLink()
+    }
+
+    private func processPendingDeepLink() {
+        guard let link = deepLinks.beginNext(isReady: !showSplash && isAuthenticated) else { return }
+        Task { @MainActor in
+            do {
+                switch link {
+                case .collect(let kanjiId, let source):
+                    let collected = try await container.collectionRepository.isCollected(itemId: kanjiId, itemType: .kanji)
+                    if collected.boolValue {
+                        deepLinkMessage = "Already in collection!"
+                        return
+                    }
+                    guard let kanji = try await container.kanjiRepository.getKanjiById(id: kanjiId) else {
+                        deepLinkMessage = "Kanji not found."
+                        return
+                    }
+                    let item = CollectedItem(
+                        itemId: kanjiId, itemType: .kanji,
+                        rarity: RarityCalculator.shared.calculateKanjiRarity(
+                            grade: kanji.grade, frequency: kanji.frequency, strokeCount: kanji.strokeCount
+                        ),
+                        itemLevel: 1, itemXp: 0,
+                        discoveredAt: Int64(Date().timeIntervalSince1970), source: source
+                    )
+                    try await container.collectionRepository.collect(item: item)
+                    NotificationCenter.default.post(name: .localKanjiDataDidChange, object: nil)
+                    deepLinkDiscovery = DeepLinkDiscovery(item: item, literal: kanji.literal)
+
+                case .importKanji(let literals, let source):
+                    try await container.importKanjiUseCase.receiveKanji(literals: literals, sourceApp: source)
+                    let result = try await container.importKanjiUseCase.processPending()
+                    NotificationCenter.default.post(name: .localKanjiDataDidChange, object: nil)
+                    deepLinkMessage = KanjiDeepLink.importMessage(
+                        imported: result.imported, alreadyKnown: result.alreadyKnown, notFound: result.notFound
+                    )
+
+                case .subscription:
+                    navigate(to: .subscriptionFromDeepLink)
+                    finishDeepLink()
+                }
+            } catch {
+                deepLinkMessage = "Could not finish opening this link. Please try again."
+            }
+        }
     }
 
     // MARK: - Post-login routing (placement test check)
@@ -199,6 +287,9 @@ struct AppNavigation: View {
 
         case .subscription:
             SubscriptionView(onBack: { navigateBack() })
+
+        case .subscriptionFromDeepLink:
+            SubscriptionView(remoteStatusEnabled: false, onBack: { navigateBack() })
 
         // MARK: - Settings
         case .settings:

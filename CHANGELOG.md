@@ -5,6 +5,14 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.36 (2026-10-24) — iOS deep links
+
+### Added
+- Both iOS targets register `kanjijourney://` and retain links across splash/login. Serial processing preserves multiple incoming links and their result dialogs.
+- Collection links use local rarity/collection storage and the discovery overlay, now with a VoiceOver-accessible dismissal. Import links reuse SharedCore's local received-kanji/SRS/default-deck workflow and show result counts.
+- Subscription links open SubscriptionView in local-only preview mode. Remote status and purchase actions are intentionally omitted for this route while account setup is deferred; existing in-app navigation is unchanged.
+- Parser, queue/readiness and import-message regression tests added. CI Release archives and runtime deep-link/VoiceOver verification remain pending.
+
 ## v1.4.35 (2026-10-24) — STATUS.md iOS sections brought current (jworks:47)
 
 ### Docs
