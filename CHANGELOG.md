@@ -5,6 +5,12 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.25 (2026-10-24) — CI: new App Store profiles installed; build number from the run number (jworks:47)
+
+### Fixed
+- The two App Store profiles were created on certificate Q4784CA4D7 by run 40061583808. iPad: profile BF59G3JTWQ, "KanjiJourney iPad App Store Q4784CA4D7". iPhone: 8Z5HBM48YB. Both expire 2027-03-09. They are stored in `APPLE_PROVISIONING_PROFILE_BASE64` and `APPLE_PROVISIONING_PROFILE_IPHONE_BASE64` (updated 2026-10-24 04:15Z).
+- TestFlight already holds iPad builds up to 25 and iPhone builds up to 11 (all 2026-02-27). Those are the numbers still in `project.yml` and `project-iphone.yml`, so an upload would be rejected as a duplicate. Both archive steps now pass `CURRENT_PROJECT_VERSION=$((GITHUB_RUN_NUMBER + 100))`, which always rises and starts above the old builds.
+
 ## v1.4.24 (2026-10-24) — iOS: ship on the existing KanjiQuest App IDs; profile workflow (jworks:47)
 
 ### Changed
