@@ -5,6 +5,14 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.22 (2026-10-24) — CI: TestFlight signing jobs move to macos-15 (jworks:47)
+
+### Fixed
+- Both TestFlight workflows failed at certificate import on `macos-14` with "MAC verification failed (wrong password?)". Signing-check run 40060542313 showed the password is right. OpenSSL 3 opens the p12 on both runners, and `macos-15` imports it ("Apple Distribution: Takuma Inoue (27943BGKL7)", valid to 2027-03-09). macOS 14's `security` cannot read the p12's AES-256 encryption. The `build-ios` and `build-iphone` jobs now run on `macos-15`. The XCFramework jobs stay on `macos-14`.
+
+### Still blocking TestFlight
+- Both provisioning-profile secrets are the old KanjiQuest App Store profiles, for `com.jworks.kanjiquest.ipad/.iphone`, on an older certificate. The build uses `com.jworks.kanjijourney.ipad/.iphone`. Two new App Store profiles on the current certificate are needed (BUGS.md). This commit is pushed with `[skip ci]`, because a TestFlight run would fail at archive until then.
+
 ## v1.4.21 (2026-10-23) — CI: manual iOS signing check, import only (jworks:47)
 
 ### Added

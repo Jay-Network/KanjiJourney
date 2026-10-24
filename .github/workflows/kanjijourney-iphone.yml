@@ -54,7 +54,8 @@ jobs:
 
   build-iphone:
     name: Build iPhone & Upload to TestFlight
-    runs-on: macos-14
+    # macos-15: macOS 14's `security` cannot import this p12 (AES-256), see kanjijourney-signing-check.yml
+    runs-on: macos-15
     needs: build-xcframework
     steps:
       - uses: actions/checkout@v4
