@@ -5,6 +5,11 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.26 (2026-10-24) — CI: TestFlight archive uses Xcode 26.3 (jworks:47)
+
+### Fixed
+- The first TestFlight runs with the new profiles (40061779890 iPad, 40061781589 iPhone) passed certificate and profile install for the first time since March. Both then failed at Archive. actool could not compile `Assets.xcassets`: "No simulator runtime version ... available to use with iphonesimulator SDK version 22C146". Xcode 16.2's iOS 18.2 SDK has no matching simulator runtime on macos-15, which ships iOS 18.5, 18.6 and 26.x runtimes. Both workflows now select `Xcode_26.3`, the same as JayBoard's macos-15 workflow. Signing itself worked.
+
 ## v1.4.25 (2026-10-24) — CI: new App Store profiles installed; build number from the run number (jworks:47)
 
 ### Fixed

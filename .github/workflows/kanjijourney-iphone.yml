@@ -83,7 +83,9 @@ jobs:
 
       - name: Select Xcode
         run: |
-          sudo xcode-select -s /Applications/Xcode_16.2.app || sudo xcode-select -s /Applications/Xcode_16.1.app || sudo xcode-select -s /Applications/Xcode_16.0.app || sudo xcode-select -s /Applications/Xcode.app
+          # Xcode 26.3, as JayBoard uses on macos-15. Xcode 16.2's iOS 18.2 SDK has no matching
+          # simulator runtime on macos-15, so actool failed the archive (run 40061781589).
+          sudo xcode-select -s /Applications/Xcode_26.3.app/Contents/Developer
           xcodebuild -version
 
       - name: Install xcodegen
