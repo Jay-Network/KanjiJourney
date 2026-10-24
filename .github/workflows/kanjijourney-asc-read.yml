@@ -71,13 +71,22 @@ jobs:
 
           print("\n== App Store Connect app records ==")
           found = False
+          app_ids = []
           for app in get("/v1/apps", {"limit": 200})["data"]:
               a = app["attributes"]
               if ours(a.get("bundleId")):
                   found = True
+                  app_ids.append((app["id"], a["bundleId"]))
                   print(f"  {a['bundleId']}  app id={app['id']}  name={a.get('name')!r}  sku={a.get('sku')!r}")
           if not found:
               print("  none")
+
+          print("\n== Latest builds (TestFlight processing state) ==")
+          for app_id, bundle in app_ids:
+              for b in get("/v1/builds", {"filter[app]": app_id, "sort": "-uploadedDate", "limit": 3})["data"]:
+                  a = b["attributes"]
+                  print(f"  {bundle}  build {a.get('version')}  uploaded={a.get('uploadedDate')}  "
+                        f"state={a.get('processingState')}  expired={a.get('expired')}")
 
           print("\n== App Store profiles on those App IDs ==")
           found = False

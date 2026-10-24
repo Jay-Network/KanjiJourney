@@ -5,6 +5,14 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.27 (2026-10-24) — TestFlight uploads work again; build listing (jworks:47)
+
+### Verified
+- First TestFlight uploads since 2026-02-27. iPad run 40063026090 and iPhone run 40063027485 (Xcode 26.3, macos-15) archived, exported and uploaded. altool reported "UPLOAD SUCCEEDED with no errors": iPad delivery 99ea49a7-4520-41c9-9a4f-ae42a5b1ad76, iPhone ff74070e-d913-44e3-aeed-ca339a17c994. Both are version 1.0.0, build 117, on app records 6759483601 and 6759512291. TestFlight only: nothing was submitted for review or to external testers.
+
+### Added
+- `kanjijourney-asc-read.yml` also lists each app's 3 latest builds with their TestFlight processing state. It is a read-only GET; key handling is unchanged.
+
 ## v1.4.26 (2026-10-24) — CI: TestFlight archive uses Xcode 26.3 (jworks:47)
 
 ### Fixed
