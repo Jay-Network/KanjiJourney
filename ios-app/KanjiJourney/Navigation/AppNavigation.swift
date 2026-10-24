@@ -130,7 +130,7 @@ struct AppNavigation: View {
                     )
 
                 case .subscription:
-                    navigate(to: .subscriptionFromDeepLink)
+                    navigate(to: .subscription)
                     finishDeepLink()
                 }
             } catch {
@@ -287,9 +287,6 @@ struct AppNavigation: View {
 
         case .subscription:
             SubscriptionView(onBack: { navigateBack() })
-
-        case .subscriptionFromDeepLink:
-            SubscriptionView(remoteStatusEnabled: false, onBack: { navigateBack() })
 
         // MARK: - Settings
         case .settings:

@@ -5,7 +5,6 @@ import SwiftUI
 struct SubscriptionView: View {
     @EnvironmentObject var container: AppContainer
     @StateObject private var viewModel = SubscriptionViewModel()
-    var remoteStatusEnabled = true
     var onBack: () -> Void = {}
 
     var body: some View {
@@ -17,11 +16,11 @@ struct SubscriptionView: View {
                     // Current plan badge
                     let isPremium = viewModel.isPremium
                     VStack(spacing: 4) {
-                        Text(remoteStatusEnabled ? "Current Plan" : "Subscription")
+                        Text("Current Plan")
                             .font(KanjiJourneyTheme.labelLarge)
                             .foregroundColor(isPremium ? .black : KanjiJourneyTheme.onSurfaceVariant)
 
-                        Text(remoteStatusEnabled ? (isPremium ? "Premium" : "Free") : "Status not checked")
+                        Text(isPremium ? "Premium" : "Free")
                             .font(KanjiJourneyTheme.headlineMedium).fontWeight(.bold)
                             .foregroundColor(isPremium ? .black : KanjiJourneyTheme.onSurface)
 
@@ -64,13 +63,7 @@ struct SubscriptionView: View {
 
                     Spacer().frame(height: 24)
 
-                    if !remoteStatusEnabled {
-                        Text("Account status and purchases are not available from this link.")
-                            .font(KanjiJourneyTheme.bodyMedium)
-                            .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 16)
-                    } else if !isPremium {
+                    if !isPremium {
                         Button(action: {
                             if let url = URL(string: "https://portal.tutoringjay.com/subscribe/kanjijourney") {
                                 UIApplication.shared.open(url)
@@ -122,9 +115,7 @@ struct SubscriptionView: View {
         .toolbarBackground(GlassColors.surfaceDark, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar)
-        .task {
-            if remoteStatusEnabled { viewModel.load(container: container) }
-        }
+        .task { viewModel.load(container: container) }
     }
 
     private func featureRow(_ feature: String, free: Bool = false, premium: Bool = false, freeText: String? = nil, premiumText: String? = nil) -> some View {

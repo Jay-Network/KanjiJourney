@@ -5,6 +5,13 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.38 (2026-10-24) — iOS subscription link parity
+
+### Fixed
+- `kanjijourney://subscription` now navigates to the normal `.subscription` route, with the same plan status and upgrade/manage actions as in-app navigation. Removed the alternate route and restored SubscriptionView to its pre-v1.4.36 implementation.
+- Removed the deep-link-only restriction introduced in v1.4.36. The screen reuses its existing account/subscription calls; collection/import and splash/login queue behavior are unchanged.
+- Updated deep-link source checks and the parity documentation. Source checks pass; native tests, Release compilation and device acceptance for this revision remain pending.
+
 ## v1.4.37 (2026-10-24) — iOS Kanken taxonomy
 
 ### Added
@@ -17,7 +24,7 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 ### Added
 - Both iOS targets register `kanjijourney://` and retain links across splash/login. Serial processing preserves multiple incoming links and their result dialogs.
 - Collection links use local rarity/collection storage and the discovery overlay, now with a VoiceOver-accessible dismissal. Import links reuse SharedCore's local received-kanji/SRS/default-deck workflow and show result counts.
-- Subscription links open SubscriptionView in local-only preview mode. Remote status and purchase actions are intentionally omitted for this route while account setup is deferred; existing in-app navigation is unchanged.
+- Initially introduced a restricted subscription-link screen, with remote status and purchase actions omitted; this restriction was removed in v1.4.38. Existing in-app navigation was unchanged.
 - Parser, queue/readiness and import-message regression tests added. CI Release archives and runtime deep-link/VoiceOver verification remain pending.
 
 ## v1.4.35 (2026-10-24) — STATUS.md iOS sections brought current (jworks:47)

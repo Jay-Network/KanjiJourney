@@ -109,14 +109,14 @@
 | Route count | 23+ composable blocks | 7 cases | 23+ cases | Full parity now |
 | FeedbackFAB | Global Scaffold overlay | Not present | Global overlay | Ported |
 | FeedbackDialog | `hiltViewModel()` scoped | Not present | `@StateObject` scoped | Ported |
-| Deep linking | `kanjijourney://collect`, `import`, `subscription` | Not present | App-scoped URL queue + `onOpenURL` | Local collection/import; subscription preview only (remote setup remains deferred) |
+| Deep linking | `kanjijourney://collect`, `import`, `subscription` | Not present | App-scoped URL queue + `onOpenURL` | Local collection/import; subscription uses the normal in-app route |
 | Post-login routing | Placement test check → Home | Direct to Home | Placement test check → Home | Ported |
 
 **Platform Differences (Intentional):**
 - Android `Scaffold(floatingActionButton:)` → iOS `ZStack` with overlay.
 - Android `hiltViewModel()` → iOS `@StateObject` with container injection.
 - Android `popUpTo(inclusive=true)` → iOS `path = NavigationPath()` (reset stack).
-- iOS registers `kanjijourney` for both targets and queues links until splash/login finish. Collection uses the discovery overlay; imports use SharedCore's local study-deck flow. Subscription links open a local-only preview: remote status/purchase actions remain omitted pending account setup. Invalid links are ignored; unknown kanji IDs report "Kanji not found." rather than Android's misleading already-collected fallback. Release archive/runtime verification is pending.
+- iOS registers `kanjijourney` for both targets and queues links until splash/login finish. Collection uses the discovery overlay; imports use SharedCore's local study-deck flow. Subscription links navigate to the normal `.subscription` route, retaining the existing plan status and upgrade/manage actions. Invalid links are ignored; unknown kanji IDs report "Kanji not found." rather than Android's misleading already-collected fallback. Release archive/runtime verification of v1.4.38 is pending.
 
 ### AppContainer (DI)
 
