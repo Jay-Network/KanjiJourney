@@ -5,6 +5,13 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.31 (2026-10-24) — iOS answers TestFlight's export-compliance question (jworks:47)
+
+### Fixed
+- BUG-018: `ios-app/KanjiJourney/Info.plist` now declares `ITSAppUsesNonExemptEncryption` = false
+  (HTTPS through Apple's URLSession only), so TestFlight stops holding builds as Missing
+  Compliance. Approved by jworks:66; the same declaration JayBoard and BookSage make.
+
 ## v1.4.30 (2026-10-24) — App Store Connect read shows export compliance (jworks:47)
 
 ### Changed
