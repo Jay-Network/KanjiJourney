@@ -5,6 +5,14 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.35 (2026-10-24) — STATUS.md iOS sections brought current (jworks:47)
+
+### Docs
+- STATUS.md: the iOS lines now show TestFlight build 119 IN_BETA_TESTING on both apps (asc-read run
+  40076526776). They also cover the CI setup, the camera permission string both targets read, the
+  export-compliance flag, the accessibility work reaching testers with build 120, and the iOS blockers.
+  They replace the "build 25 / build 11, UNVERIFIED" lines from March.
+
 ## v1.4.34 (2026-10-24) — iOS Test Mode VoiceOver answer feedback
 
 ### Fixed

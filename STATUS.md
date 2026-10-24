@@ -1,13 +1,13 @@
 # KanjiJourney Development Tracker
 
-> **Updated by**: jworks:44 (Android) — this pass covers Android only; iOS section below not independently re-verified, owner jworks:47
+> **Updated by**: jworks:44 (Android) — this pass covers Android only. The iOS lines and sections were updated 2026-10-24 by jworks:47 (iOS owner).
 > **Last updated**: 2026-07-30
 
 ---
 
 ## Current Status
 
-- **Version**: v1.4.20 (Android versionCode 18 / versionName 1.4.20, read from the CI debug APK with aapt, run 39866725206, 2026-10-22; versionName now comes from the VERSION file, BUG-016). iPad build 25 / iPhone build 11 figures below are UNVERIFIED this pass — carried over from 2026-03-30, ask jworks:47 for current numbers.
+- **Version**: v1.4.20 (Android versionCode 18 / versionName 1.4.20, read from the CI debug APK with aapt, run 39866725206, 2026-10-22; versionName now comes from the VERSION file, BUG-016). iOS: TestFlight build 119 (version 1.0.0) is IN_BETA_TESTING for internal testers on both iPad (`com.jworks.kanjiquest.ipad`) and iPhone (`com.jworks.kanjiquest.iphone`), read from App Store Connect on 2026-10-24 (asc-read run 40076526776, jworks:47).
 - **Platforms**: Android (Kotlin) + iOS/iPad (SwiftUI via KMP + SKIE)
 - **CI Build**: android-build.yml — verified green as of 2026-07-23 (all 3 jobs: debug, unit tests, release AAB w/ keystore)
 - **Branch**: main
@@ -83,16 +83,13 @@ Two production breaks found + fixed this pass (Android `local.properties`, not y
 - **Next**: Confirm real tester count (task #19), then redistribute rebuilt APK; pick up Phase 4 items (task #20) once auth integration lands
 - **Blockers**: None on Android build itself — CI green; Supabase Storage bucket for APK hosting is now tracked under Phase 4 (jworks:35 coordination, jayhub:110 provisioning), superseding the old "66MB > 50MB free tier" framing
 
-### iOS (iPad — build 25)
-- **Current work**: Calligraphy mode live + working, rename complete
-- **Recent**: Standalone calligraphy (Gemini AI feedback), auto-submit fix, undo fix
-- **Next**: Glass UI port, vocabulary mode, more game modes
-- **Blockers**: None currently (KMP bridging mostly resolved)
-
-### iOS (iPhone — build 11)
-- **Current work**: Same codebase as iPad minus calligraphy (excluded via project.yml)
-- **Next**: Port calligraphy mode for iPhone (without Apple Pencil — finger drawing)
-- **Blockers**: None
+### iOS (iPad and iPhone — TestFlight build 119, 2026-10-24, jworks:47)
+- **Distribution**: TestFlight internal testing only, approved by jworks:66 (Apple gatekeeper). Build 119 reads IN_BETA_TESTING on both apps. External testing and App Store submission have not started. The App Store Connect records are still named "KanjiQuest: Write & Master" / "KanjiQuest: Collect & Master"; renaming them is a product decision.
+- **CI**: `kanjijourney-ipad.yml` / `kanjijourney-iphone.yml` run on macos-15 with Xcode 26.3. The build number is the run number + 100. A push without `[skip ci]` uploads a TestFlight build.
+- **Camera permission**: `NSCameraUsageDescription` is in `ios-app/KanjiJourney/Info.plist` (690fc27), which both targets read (`INFOPLIST_FILE`, project.yml:42 and project-iphone.yml:44). Apple rejected build 117 without it (ITMS-90683, BUG-017). Builds 118 and 119 processed VALID with no upload errors.
+- **Export compliance**: `ITSAppUsesNonExemptEncryption` = false (BUG-018). Re-judge it if the app ever adds its own encryption.
+- **Accessibility**: the VoiceOver sweep (WCAG findings 3-4, v1.4.32-1.4.33) and test-mode answer feedback (v1.4.34) are in source. 735c19b compile-verified on the Mac for both targets. They reach testers with build 120.
+- **Next / blockers**: SupabaseClientFactory init on iOS (J Coin sync, force-upgrade) waits on Jay's answer about anonymous J Coin, carried by jayhub:0. iPhone calligraphy (finger drawing) is not ported. Kanken taxonomy and deep links are not ported to iOS.
 
 ---
 
