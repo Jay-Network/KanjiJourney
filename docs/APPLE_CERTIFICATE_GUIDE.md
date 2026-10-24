@@ -81,7 +81,7 @@ Before creating certificates, register the bundle identifier:
 3. Select **App IDs** > **App**
 4. Fill in:
    - **Description**: `KanjiJourney iPad`
-   - **Bundle ID**: Select **Explicit** and enter `com.jworks.kanjijourney.ipad`
+   - **Bundle ID**: Select **Explicit** and enter `com.jworks.kanjiquest.ipad`
 5. Under **Capabilities**: No special capabilities needed for MVP
 6. Click **Continue** > **Register**
 
@@ -161,7 +161,7 @@ The quoted string (e.g., `Apple Distribution: Jay Works (ABC1234DEF)`) is your `
 2. Click the **+** button
 3. Under **Distribution**, select **App Store Connect**
 4. Click **Continue**
-5. Select the App ID: `com.jworks.kanjijourney.ipad (KanjiJourney iPad)`
+5. Select the App ID: `com.jworks.kanjiquest.ipad (KanjiJourney iPad)`
 6. Click **Continue**
 7. Select the distribution certificate you just created
 8. Click **Continue**
@@ -252,7 +252,7 @@ Before your first TestFlight upload, create the app in App Store Connect:
    - **Platforms**: iOS
    - **Name**: `KanjiJourney`
    - **Primary Language**: English (U.S.)
-   - **Bundle ID**: Select `com.jworks.kanjijourney.ipad`
+   - **Bundle ID**: Select `com.jworks.kanjiquest.ipad`
    - **SKU**: `kanjijourney-ipad`
    - **User Access**: Full Access
 4. Click **Create**

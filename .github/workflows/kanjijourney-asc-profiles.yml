@@ -1,0 +1,111 @@
+name: KanjiJourney App Store Profiles
+
+# Manual only. Creates (or reuses, if they already exist) the two IOS_APP_STORE profiles the
+# TestFlight workflows need, on the active distribution certificate Q4784CA4D7, for the App IDs
+# com.jworks.kanjiquest.ipad (732Q38Q3P3) and com.jworks.kanjiquest.iphone (GVQQR8325B).
+# Approved by jworks:66 (Apple gatekeeper). Never revokes or deletes anything and touches no other
+# app. Also prints, read-only, the certificate's serial and each app's latest build numbers.
+# The profiles contain no private key; they leave as a 1-day artifact and are then stored as the
+# APPLE_PROVISIONING_PROFILE_*_BASE64 secrets by hand. The key and the token never reach the log.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  profiles:
+    name: Create or reuse the two App Store profiles
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install PyJWT
+        run: python -m pip install --quiet 'pyjwt[crypto]==2.9.0'
+
+      - name: Create or reuse profiles
+        env:
+          API_KEY_BASE64: ${{ secrets.APPLE_API_KEY_BASE64 }}
+          API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          API_ISSUER_ID: ${{ secrets.APPLE_API_ISSUER_ID }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/profiles"
+          python - <<'EOF'
+          import base64, json, os, time, urllib.error, urllib.parse, urllib.request
+          import jwt
+
+          CERT_ID = "Q4784CA4D7"
+          TARGETS = [
+              # (file name, bundle id resource, identifier, app record, profile name)
+              ("ipad", "732Q38Q3P3", "com.jworks.kanjiquest.ipad", "6759483601", "KanjiJourney iPad App Store Q4784CA4D7"),
+              ("iphone", "GVQQR8325B", "com.jworks.kanjiquest.iphone", "6759512291", "KanjiJourney iPhone App Store Q4784CA4D7"),
+          ]
+          out_dir = os.path.join(os.environ["RUNNER_TEMP"], "profiles")
+          now = int(time.time())
+          token = jwt.encode(
+              {"iss": os.environ["API_ISSUER_ID"], "iat": now, "exp": now + 600, "aud": "appstoreconnect-v1"},
+              base64.b64decode(os.environ["API_KEY_BASE64"]).decode(),
+              algorithm="ES256",
+              headers={"kid": os.environ["API_KEY_ID"], "typ": "JWT"},
+          )
+
+          def call(method, path, params=None, body=None):
+              url = "https://api.appstoreconnect.apple.com" + path
+              if params:
+                  url += "?" + urllib.parse.urlencode(params)
+              data = json.dumps(body).encode() if body is not None else None
+              req = urllib.request.Request(url, data=data, method=method,
+                                           headers={"Authorization": "Bearer " + token,
+                                                    "Content-Type": "application/json"})
+              try:
+                  with urllib.request.urlopen(req, timeout=60) as r:
+                      return json.load(r)
+              except urllib.error.HTTPError as e:
+                  # Status and Apple's error titles/details only; never the request headers.
+                  try:
+                      errs = [(x.get("title"), x.get("detail")) for x in json.load(e).get("errors", [])]
+                  except Exception:
+                      errs = []
+                  raise SystemExit(f"HTTP {e.code} on {method} {path}: {errs}")
+
+          cert = call("GET", f"/v1/certificates/{CERT_ID}")["data"]["attributes"]
+          print(f"Certificate {CERT_ID}: name={cert.get('name')!r} serial={cert.get('serialNumber')} "
+                f"expires={cert.get('expirationDate')}")
+
+          for fname, bundle_res, identifier, app_id, name in TARGETS:
+              builds = call("GET", "/v1/builds", {"filter[app]": app_id, "sort": "-uploadedDate", "limit": 3})["data"]
+              print(f"\n[{fname}] {identifier}: latest builds " +
+                    (", ".join(f"{b['attributes'].get('version')} ({b['attributes'].get('uploadedDate', '')[:10]})"
+                               for b in builds) or "none"))
+              existing = call("GET", "/v1/profiles", {"filter[name]": name, "limit": 5})["data"]
+              active = [p for p in existing if p["attributes"].get("profileState") == "ACTIVE"]
+              if active:
+                  prof = active[0]
+                  print(f"  reusing existing profile {prof['id']}")
+              else:
+                  prof = call("POST", "/v1/profiles", body={"data": {
+                      "type": "profiles",
+                      "attributes": {"name": name, "profileType": "IOS_APP_STORE"},
+                      "relationships": {
+                          "bundleId": {"data": {"type": "bundleIds", "id": bundle_res}},
+                          "certificates": {"data": [{"type": "certificates", "id": CERT_ID}]},
+                      },
+                  }})["data"]
+                  print(f"  created profile {prof['id']}")
+              a = prof["attributes"]
+              with open(os.path.join(out_dir, fname + ".mobileprovision"), "wb") as f:
+                  f.write(base64.b64decode(a["profileContent"]))
+              print(f"  name={a.get('name')!r} uuid={a.get('uuid')} state={a.get('profileState')} "
+                    f"expires={a.get('expirationDate')}")
+          EOF
+          ls -l "$RUNNER_TEMP/profiles"
+
+      - name: Hand out the profiles (1-day artifact, no private key inside)
+        uses: actions/upload-artifact@v4
+        with:
+          name: kanjijourney-app-store-profiles
+          path: ${{ runner.temp }}/profiles/
+          retention-days: 1
+          if-no-files-found: error

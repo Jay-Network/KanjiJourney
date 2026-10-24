@@ -5,8 +5,8 @@ SUPABASE_URL = https://YOUR_PROJECT.supabase.co
 SUPABASE_ANON_KEY = YOUR_ANON_KEY_HERE
 GEMINI_API_KEY = YOUR_GEMINI_API_KEY_HERE
 
-// Bundle ID
-PRODUCT_BUNDLE_IDENTIFIER = com.jworks.kanjijourney.ipad
+// Bundle ID (kept from before the rename; project.yml sets it, this line only documents it)
+PRODUCT_BUNDLE_IDENTIFIER = com.jworks.kanjiquest.ipad
 
 // Development Team (Apple Developer)
 DEVELOPMENT_TEAM = YOUR_TEAM_ID

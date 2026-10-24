@@ -5,6 +5,17 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.24 (2026-10-24) — iOS: ship on the existing KanjiQuest App IDs; profile workflow (jworks:47)
+
+### Changed
+- The iPad and iPhone apps build with bundle ids `com.jworks.kanjiquest.ipad` and `com.jworks.kanjiquest.iphone` again. The ASC listing (run 40061211464) shows the App IDs and App Store Connect app records exist only on those ids: iPad app 6759483601, iPhone app 6759512291. Nothing exists for `com.jworks.kanjijourney.*`, and new app records can only be made on the App Store Connect website. Users never see the bundle id, and the app is still named KanjiJourney. TestFlight builds update the existing records. Changed in `project.yml`, `project-iphone.yml`, the xcconfig template, both TestFlight workflows (`BUNDLE_ID`, and the ExportOptions key now reads it) and the CI docs. jworks:66 offered this path (K).
+
+### Added
+- `.github/workflows/kanjijourney-asc-profiles.yml`, run by hand only. It creates, or reuses if they already exist, two `IOS_APP_STORE` profiles on distribution certificate Q4784CA4D7 for those App IDs. It also prints the certificate's serial and each app's latest build numbers. It hands the profiles out as a 1-day artifact. It revokes and deletes nothing and touches no other app. Approved by jworks:66.
+
+### Not yet verified
+- No TestFlight run yet: the two profile secrets still hold the old profiles. This commit is pushed with `[skip ci]`.
+
 ## v1.4.23 (2026-10-24) — CI: read-only App Store Connect listing (jworks:47)
 
 ### Added

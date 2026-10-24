@@ -38,7 +38,9 @@ targets:
 
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.jworks.kanjijourney.iphone
+        # Kept from before the KanjiQuest -> KanjiJourney rename: the App ID and the App Store
+        # Connect app record (6759512291) exist on this id. Users never see it; the name is KanjiJourney.
+        PRODUCT_BUNDLE_IDENTIFIER: com.jworks.kanjiquest.iphone
         INFOPLIST_FILE: KanjiJourney/Info.plist
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         TARGETED_DEVICE_FAMILY: "1"  # iPhone only

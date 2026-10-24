@@ -6,7 +6,7 @@ You develop on Ubuntu (VS Code), push to GitHub, and CI handles compilation + Te
 
 ## Prerequisites
 1. **Apple Developer Account** ($99/year) - developer.apple.com
-2. **App Store Connect** - Create the app record for `com.jworks.kanjijourney.ipad`
+2. **App Store Connect** - Create the app record for `com.jworks.kanjiquest.ipad`
 3. **GitHub repository** - Jay-Network repo with Actions enabled
 
 ## GitHub Repository Secrets
@@ -42,7 +42,7 @@ Never add the Supabase service-role key here. Anything in these secrets is baked
 
 ### 1. Create App ID
 - Go to developer.apple.com > Certificates, Identifiers & Profiles
-- Create App ID: `com.jworks.kanjijourney.ipad`
+- Create App ID: `com.jworks.kanjiquest.ipad`
 - Enable capabilities: (none special needed for MVP)
 
 ### 2. Create Distribution Certificate
@@ -61,7 +61,7 @@ base64 -i certificate.p12 | pbcopy
 ```bash
 # 1. developer.apple.com > Profiles > New
 # 2. Type: App Store Distribution
-# 3. Select App ID: com.jworks.kanjijourney.ipad
+# 3. Select App ID: com.jworks.kanjiquest.ipad
 # 4. Select distribution certificate
 # 5. Download .mobileprovision
 # 6. Base64 encode:
@@ -79,7 +79,7 @@ base64 -i profile.mobileprovision | pbcopy
 - App Store Connect > My Apps > New App
 - Platform: iOS
 - Name: KanjiJourney
-- Bundle ID: com.jworks.kanjijourney.ipad
+- Bundle ID: com.jworks.kanjiquest.ipad
 - SKU: kanjijourney-ipad
 
 ## Triggering a Build

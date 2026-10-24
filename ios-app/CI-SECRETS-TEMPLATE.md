@@ -47,7 +47,7 @@ base64 -i certificate.p12 | pbcopy
 # iPad profile:
 # 1. developer.apple.com > Profiles > New
 # 2. Type: App Store Distribution
-# 3. App ID: com.jworks.kanjijourney.ipad
+# 3. App ID: com.jworks.kanjiquest.ipad
 # 4. Select your distribution certificate
 # 5. Download .mobileprovision file
 # 6. Base64 encode:
@@ -57,7 +57,7 @@ base64 -i KanjiJourney_iPad_AppStore.mobileprovision | pbcopy
 # iPhone profile:
 # 1. developer.apple.com > Profiles > New
 # 2. Type: App Store Distribution
-# 3. App ID: com.jworks.kanjijourney.iphone
+# 3. App ID: com.jworks.kanjiquest.iphone
 # 4. Select your distribution certificate
 # 5. Download .mobileprovision file
 # 6. Base64 encode:
@@ -113,7 +113,7 @@ base64 -i KanjiJourney_iPhone_AppStore.mobileprovision | pbcopy
 ## Quick Setup Order
 
 1. **Apple Developer Account** - Ensure membership is active at developer.apple.com
-2. **Create App IDs** - `com.jworks.kanjijourney.ipad` + `com.jworks.kanjijourney.iphone`
+2. **Create App IDs** - `com.jworks.kanjiquest.ipad` + `com.jworks.kanjiquest.iphone`
 3. **Create/Reuse Distribution Certificate** - Requires Mac with Keychain Access
 4. **Create 2 Provisioning Profiles** - One per App ID (App Store Distribution)
 5. **Create App Store Connect API Key** - For automated uploads (reuse if already created)

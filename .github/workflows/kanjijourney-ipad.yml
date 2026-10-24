@@ -12,7 +12,8 @@ on:
 
 env:
   JAVA_VERSION: '17'
-  BUNDLE_ID: 'com.jworks.kanjijourney.ipad'
+  # App ID and App Store Connect record kept from before the KanjiQuest -> KanjiJourney rename
+  BUNDLE_ID: 'com.jworks.kanjiquest.ipad'
   SCHEME: 'KanjiJourney'
   TEAM_ID: '27943BGKL7'
 
@@ -166,7 +167,7 @@ jobs:
             <string>Apple Distribution</string>
             <key>provisioningProfiles</key>
             <dict>
-              <key>com.jworks.kanjijourney.ipad</key>
+              <key>${BUNDLE_ID}</key>
               <string>${PP_NAME}</string>
             </dict>
           </dict>
