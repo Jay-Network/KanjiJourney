@@ -193,7 +193,7 @@
 | Flashcard button | ✅ With deck count | ❌ | ✅ | |
 | Collection button | ✅ XX/YY count | ❌ | ✅ | |
 | Multi-tab browser | ✅ 4 tabs (Hiragana/Katakana/Radicals/Kanji) | ❌ | ✅ | |
-| Kanji sort modes | ✅ 4 modes (Grade/JLPT/Strokes/Freq) | ❌ | ✅ | |
+| Kanji sort modes | ✅ 5 modes (Grade/Kanken/JLPT/Strokes/Freq) | ❌ | ✅ | Kanken 10–4 uses SharedCore's grade-derived taxonomy; iOS labels are English. Native verification pending. |
 | Kanji filter tabs | ✅ Dynamic per sort mode | ❌ | ✅ | |
 | Kanji grid | ✅ 5-col with rarity borders + mode badges | ❌ | ✅ | |
 | Kana grid | ✅ 5-col with rarity borders | ❌ | ✅ | |

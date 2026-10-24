@@ -105,12 +105,16 @@ private struct CollectionHubContent: View {
             HStack(spacing: 4) {
                 ForEach(KanjiSortMode.allCases, id: \.self) { mode in
                     let isSelected = mode == state.kanjiSortMode
-                    GlassChip(selected: isSelected, selectedColor: KanjiJourneyTheme.tertiary) {
-                        Text(mode.rawValue)
-                            .font(GlassTypography.labelSmall)
-                            .foregroundColor(isSelected ? KanjiJourneyTheme.onTertiary : GlassColors.textSecondary)
+                    Button(action: { viewModel.selectSortMode(mode) }) {
+                        GlassChip(selected: isSelected, selectedColor: KanjiJourneyTheme.tertiary) {
+                            Text(mode.rawValue)
+                                .font(GlassTypography.labelSmall)
+                                .foregroundColor(isSelected ? KanjiJourneyTheme.onTertiary : GlassColors.textSecondary)
+                        }
                     }
-                        .onTapGesture { viewModel.selectSortMode(mode) }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(mode.rawValue)
+                    .accessibilityAddTraits(isSelected ? .isSelected : [])
                 }
             }
         }
@@ -136,6 +140,22 @@ private struct CollectionHubContent: View {
                         }
                             .opacity(hasCollection ? 1 : 0.5)
                             .onTapGesture { if hasCollection { viewModel.selectGrade(grade) } }
+                    }
+                case .kankenLevel:
+                    ForEach(HomeViewModel.kankenLevels, id: \.self) { level in
+                        let isSelected = level == state.selectedKankenLevel
+                        let collected = state.perKankenCollectedCounts[level] ?? 0
+                        let total = state.perKankenTotalCounts[level] ?? 0
+                        Button(action: { viewModel.selectKankenLevel(level) }) {
+                            GlassChip(selected: isSelected) {
+                                Text("Level \(level)\n\(collected)/\(total)")
+                                    .font(GlassTypography.labelSmall).multilineTextAlignment(.center)
+                                    .foregroundColor(isSelected ? GlassColors.textPrimary : GlassColors.textSecondary)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Kanken level \(level), \(collected) of \(total) collected")
+                        .accessibilityAddTraits(isSelected ? .isSelected : [])
                     }
                 case .jlptLevel:
                     ForEach([5, 4, 3, 2, 1] as [Int32], id: \.self) { level in
@@ -185,6 +205,7 @@ private struct CollectionHubContent: View {
         case .kanji:
             switch state.kanjiSortMode {
             case .schoolGrade: title = "Grade \(state.selectedGrade) Kanji"
+            case .kankenLevel: title = "Kanken Level \(state.selectedKankenLevel) Kanji"
             case .jlptLevel: title = "JLPT N\(state.selectedJlptLevel) Kanji"
             case .strokes: title = "\(state.selectedStrokeCount)-Stroke Kanji"
             case .frequency: title = "\(HomeViewModel.frequencyLabels[state.selectedFrequencyRange]) Kanji"

@@ -5,6 +5,13 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.37 (2026-10-24) — iOS Kanken taxonomy
+
+### Added
+- Home and Collect now offer Kanken levels 10–4 beside School Grade and JLPT, using SharedCore's existing grade-derived queries and counts. Selected Kanken level survives data reloads; collection counts refresh after a deep-link collection.
+- Kanji details show the shared model's derived Kanken level when available. New labels are English; axis/level selectors are native buttons with VoiceOver names and selected-state traits.
+- Added taxonomy/default regression tests. No new Supabase/J Coin calls or schema changes. Native tests, CI Release compilation and device interaction/VoiceOver acceptance remain pending.
+
 ## v1.4.36 (2026-10-24) — iOS deep links
 
 ### Added

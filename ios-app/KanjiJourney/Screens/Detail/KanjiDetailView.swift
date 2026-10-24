@@ -117,6 +117,7 @@ struct KanjiDetailView: View {
             var items: [(String, String)] = []
             if let grade = kanji.grade { items.append(("grade", "Grade \(grade)")) }
             if let jlpt = kanji.jlptLevel { items.append(("jlpt", "JLPT N\(jlpt)")) }
+            if let kanken = kanji.kankenLevel { items.append(("kanken", "Kanken Level \(kanken)")) }
             items.append(("strokes", "\(kanji.strokeCount) strokes"))
             if let freq = kanji.frequency { items.append(("freq", "Freq #\(freq)")) }
             return items

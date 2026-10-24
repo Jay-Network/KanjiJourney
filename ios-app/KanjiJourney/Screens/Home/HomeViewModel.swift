@@ -13,6 +13,7 @@ enum MainTab: String, CaseIterable {
 
 enum KanjiSortMode: String, CaseIterable {
     case schoolGrade = "School Grade"
+    case kankenLevel = "Kanken Level"
     case jlptLevel = "JLPT Level"
     case strokes = "Strokes"
     case frequency = "Frequency"
@@ -57,6 +58,7 @@ struct HomeUiState {
     var selectedMainTab: MainTab = .kanji
     var radicals: [Radical] = []
     var kanjiSortMode: KanjiSortMode = .schoolGrade
+    var selectedKankenLevel: Int32 = 10
     var selectedJlptLevel: Int32 = 5
     var selectedStrokeCount: Int32 = 1
     var selectedFrequencyRange: Int = 0
@@ -74,6 +76,8 @@ struct HomeUiState {
     var collectedRadicalItems: [Int32: CollectedItem] = [:]
     var perGradeCollectedCounts: [Int32: Int] = [:]
     var perGradeTotalCounts: [Int32: Int] = [:]
+    var perKankenCollectedCounts: [Int32: Int] = [:]
+    var perKankenTotalCounts: [Int32: Int] = [:]
     var perJlptCollectedCounts: [Int32: Int] = [:]
     var perJlptTotalCounts: [Int32: Int] = [:]
 }
@@ -87,6 +91,9 @@ class HomeViewModel: ObservableObject {
     private let container: AppContainer
     private var isFirstLoad = true
     private var collectionObserver: AnyCancellable?
+
+    // Matches Android and SharedCore's school-grade-derived Kanken taxonomy.
+    static let kankenLevels: [Int32] = [10, 9, 8, 7, 6, 5, 4]
 
     static let frequencyRanges: [(Int32, Int32)] = [
         (1, 500), (501, 1000), (1001, 2000), (2001, 5000)
@@ -110,6 +117,7 @@ class HomeViewModel: ObservableObject {
         let preserveMainTab = prev.selectedMainTab
         let preserveSortMode = prev.kanjiSortMode
         let preserveGrade = prev.selectedGrade
+        let preserveKanken = prev.selectedKankenLevel
         let preserveJlpt = prev.selectedJlptLevel
         let preserveStroke = prev.selectedStrokeCount
         let preserveFreq = prev.selectedFrequencyRange
@@ -136,7 +144,12 @@ class HomeViewModel: ObservableObject {
         let highestGrade = unlockedGrades.max() ?? 1
 
         let activeGrade = isFirstLoad ? highestGrade : preserveGrade
-        let gradeKanji = (try? await container.kanjiRepository.getKanjiByGrade(grade: activeGrade)) ?? []
+        let gradeKanji: [Kanji]
+        if !isFirstLoad && preserveSortMode == .kankenLevel {
+            gradeKanji = (try? await container.kanjiRepository.getKanjiByKankenLevel(kankenLevel: preserveKanken)) ?? []
+        } else {
+            gradeKanji = (try? await container.kanjiRepository.getKanjiByGrade(grade: activeGrade)) ?? []
+        }
 
         // Grade mastery for all unlocked grades
         var gradeMasteryList: [GradeMastery] = []
@@ -173,6 +186,16 @@ class HomeViewModel: ObservableObject {
             let collected = gradeList.filter { collectedKanjiIds.contains($0.id) }.count
             perGradeCollected[grade] = collected
             if collected > 0 { gradesWithCollection.insert(grade) }
+        }
+
+        // Per-Kanken counts use the shared taxonomy, not a second grade mapping in Swift.
+        var perKankenCollected: [Int32: Int] = [:]
+        var perKankenTotal: [Int32: Int] = [:]
+        for level in Self.kankenLevels {
+            let kanji = (try? await container.kanjiRepository.getKanjiByKankenLevel(kankenLevel: level)) ?? []
+            let total = try? await container.kanjiRepository.getKanjiCountByKankenLevel(kankenLevel: level)
+            perKankenTotal[level] = total?.intValue ?? kanji.count
+            perKankenCollected[level] = kanji.filter { collectedKanjiIds.contains($0.id) }.count
         }
 
         // Per-JLPT counts
@@ -244,6 +267,7 @@ class HomeViewModel: ObservableObject {
             selectedMainTab: isFirstLoad ? .kanji : preserveMainTab,
             radicals: radicals,
             kanjiSortMode: isFirstLoad ? .schoolGrade : preserveSortMode,
+            selectedKankenLevel: isFirstLoad ? 10 : preserveKanken,
             selectedJlptLevel: isFirstLoad ? 5 : preserveJlpt,
             selectedStrokeCount: isFirstLoad ? (strokeCounts.first ?? 1) : preserveStroke,
             selectedFrequencyRange: isFirstLoad ? 0 : preserveFreq,
@@ -261,6 +285,8 @@ class HomeViewModel: ObservableObject {
             collectedRadicalItems: Dictionary(uniqueKeysWithValues: collectedRadicals.map { ($0.itemId, $0) }),
             perGradeCollectedCounts: perGradeCollected,
             perGradeTotalCounts: perGradeTotal,
+            perKankenCollectedCounts: perKankenCollected,
+            perKankenTotalCounts: perKankenTotal,
             perJlptCollectedCounts: perJlptCollected,
             perJlptTotalCounts: perJlptTotal
         )
@@ -283,6 +309,11 @@ class HomeViewModel: ObservableObject {
             }
         }
         uiState.gradesWithCollection = gradesWithCollection
+        for level in Self.kankenLevels {
+            if let kanji = try? await container.kanjiRepository.getKanjiByKankenLevel(kankenLevel: level) {
+                uiState.perKankenCollectedCounts[level] = kanji.filter { ids.contains($0.id) }.count
+            }
+        }
         for level: Int32 in [5, 4, 3, 2, 1] {
             if let kanji = try? await container.kanjiRepository.getKanjiByJlptLevel(level: level) {
                 uiState.perJlptCollectedCounts[level] = kanji.filter { ids.contains($0.id) }.count
@@ -357,6 +388,9 @@ class HomeViewModel: ObservableObject {
                 uiState.kanjiModeStats = await loadModeStats(kanjiIds: ids)
                 uiState.selectedMainTab = .kanji
 
+            case .kankenLevel:
+                selectKankenLevel(uiState.selectedKankenLevel)
+
             case .jlptLevel:
                 let level = uiState.selectedJlptLevel
                 let kanji = (try? await container.kanjiRepository.getKanjiByJlptLevel(level: level)) ?? []
@@ -391,6 +425,23 @@ class HomeViewModel: ObservableObject {
                 uiState.kanjiModeStats = await loadModeStats(kanjiIds: ids)
                 uiState.selectedMainTab = .kanji
             }
+        }
+    }
+
+    func selectKankenLevel(_ level: Int32) {
+        guard Self.kankenLevels.contains(level) else { return }
+        uiState.selectedKankenLevel = level
+        uiState.kanjiSortMode = .kankenLevel
+        uiState.selectedMainTab = .kanji
+        Task {
+            let kanji = (try? await container.kanjiRepository.getKanjiByKankenLevel(kankenLevel: level)) ?? []
+            let ids = kanji.map { Int64($0.id) }
+            let practiceCounts = await loadPracticeCounts(kanjiIds: ids)
+            let modeStats = await loadModeStats(kanjiIds: ids)
+            guard uiState.kanjiSortMode == .kankenLevel, uiState.selectedKankenLevel == level else { return }
+            uiState.gradeOneKanji = kanji
+            uiState.kanjiPracticeCounts = practiceCounts
+            uiState.kanjiModeStats = modeStats
         }
     }
 
