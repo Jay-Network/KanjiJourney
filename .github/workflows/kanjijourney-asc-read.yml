@@ -88,6 +88,17 @@ jobs:
                   print(f"  {bundle}  build {a.get('version')}  uploaded={a.get('uploadedDate')}  "
                         f"state={a.get('processingState')}  expired={a.get('expired')}")
 
+          print("\n== Recent build uploads (Apple's upload state and messages) ==")
+          for app_id, bundle in app_ids:
+              try:
+                  uploads = get(f"/v1/apps/{app_id}/buildUploads", {"limit": 5})["data"]
+              except SystemExit as e:
+                  print(f"  {bundle}: {e}")
+                  continue
+              for u in uploads:
+                  # Version numbers, dates, state, and Apple's error/warning codes and texts. No secrets in here.
+                  print(f"  {bundle}  {json.dumps(u.get('attributes', {}))[:1500]}")
+
           print("\n== App Store profiles on those App IDs ==")
           found = False
           prof = get("/v1/profiles", {"filter[profileType]": "IOS_APP_STORE", "include": "bundleId", "limit": 200})

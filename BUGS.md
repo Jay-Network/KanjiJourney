@@ -108,6 +108,8 @@ History: BUG-001 (APK size)
 
 - [ ] [BUG-016] Every Android build reported versionName "1.4.7": `android-app/build.gradle.kts` hard-coded it while VERSION moved on to 1.4.19. Feedback reports (`DeviceInfoProvider`) and the force-upgrade check (`ForceUpgradeChecker`, which compares numerically; also BUG-013) read that value, so they could not tell builds apart. Found 2026-10-22 by the v1.4.19 review (follow-up 8, task #41). FIXED in v1.4.20: versionName is read from the repo-root VERSION file. versionCode stays manual (18).
 
+- [ ] [BUG-017] iOS Info.plist had no `NSCameraUsageDescription`, while `Screens/Game/Camera/CameraChallengeView.swift` uses `AVCaptureDevice`/`AVCaptureSession` (Camera Challenge, added 2026-04-24). On a device, iOS kills the app the moment it asks for the camera. App Store Connect processing rejects such a build (ITMS-90683, emailed to the account holder) and does not list it. Found 2026-10-24 (jworks:47): uploads of build 117 (iPad delivery 99ea49a7, iPhone ff74070e) reported UPLOAD SUCCEEDED, but neither build appeared in `/v1/builds` an hour later. The February builds 23-25 and 9-11, which predate the camera, are VALID. Cause hypothesized, not yet confirmed by Apple's message: `kanjijourney-asc-read.yml` now lists `buildUploads` with Apple's error codes. FIX IN CODE, v1.4.28: the camera usage string is added. Verify: a new upload shows processingState VALID.
+
 ## Resolved
 
 - [x] [BUG-008] iOS app crashed on launch past the mock home screen — EVERY real screen unreachable (Shop, Achievements, all game modes go through `AppContainer`) — RESOLVED 2026-10-09, jworks:47 + jworks-mac:90

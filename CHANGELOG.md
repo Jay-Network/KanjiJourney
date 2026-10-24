@@ -5,6 +5,17 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.28 (2026-10-24) — iOS: camera usage string (BUG-017); ASC read shows upload errors (jworks:47)
+
+### Fixed
+- `Info.plist` gains `NSCameraUsageDescription`. Camera Challenge uses the camera, and without this string iOS kills the app when the camera opens. App Store Connect also rejects the build in processing. The build 117 uploads from v1.4.27 never showed up in TestFlight, and this is the likely reason (BUG-017; Apple's message not yet read).
+
+### Added
+- `kanjijourney-asc-read.yml` also lists each app's recent `buildUploads`, with Apple's upload state and error or warning messages. It is a read-only GET.
+
+### Note
+- Pushed with `[skip ci]`. The next TestFlight upload is dispatched by hand once the upload errors are read.
+
 ## v1.4.27 (2026-10-24) — TestFlight uploads work again; build listing (jworks:47)
 
 ### Verified
