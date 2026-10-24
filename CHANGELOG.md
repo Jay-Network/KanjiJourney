@@ -5,6 +5,15 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.21 (2026-10-23) — CI: manual iOS signing check, import only (jworks:47)
+
+### Added
+- `.github/workflows/kanjijourney-signing-check.yml`, run by hand only (`workflow_dispatch`). It imports the distribution p12 into a throwaway keychain on both macos-14 and macos-15, reads the p12 with OpenSSL 3 to tell a wrong password from a format that macOS 14 cannot read, and compares the iPad and iPhone App Store profiles with the p12's certificate (SHA-1). It never builds, signs, exports or uploads, and prints no secret value.
+- Why: both TestFlight workflows fail at certificate import on macos-14 ("MAC verification failed"). jworks:66 found that JayBoard's p12 secrets were set in the same batch on 2026-03-09 and import fine on macos-15. So the password may not be lost: the old runner may simply be unable to read the file. This check settles it before any change to the TestFlight workflows.
+
+### Verification (adds to v1.4.15)
+- The Mac build v1.4.15 was waiting for is done: jworks-mac:90 built KanjiJourney (iPad) and KanjiJourneyPhone (iPhone) at `6a1d4af` on 2026-10-16. Both ended with BUILD SUCCEEDED and 0 errors (dlg-8b67f1c3).
+
 ## v1.4.20 (2026-10-22) — Android versionName follows VERSION (jworks:44)
 
 ### Fixed

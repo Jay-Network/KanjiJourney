@@ -1,0 +1,87 @@
+name: KanjiJourney Signing Check
+
+# Manual only. Answers three questions for the TestFlight workflows:
+#   1. Does the distribution p12 import on macos-14 and on macos-15?
+#   2. Is its password right? (OpenSSL 3 reads the p12 independently of macOS `security`.)
+#   3. Do the two App Store profiles contain the p12's certificate?
+# It never builds, signs, exports or uploads anything, and prints no secret value.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  signing-check:
+    name: Signing check on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-15]
+    steps:
+      - name: Decode the p12 and the two profiles
+        env:
+          CERTIFICATE_BASE64: ${{ secrets.APPLE_CERTIFICATE_BASE64 }}
+          PROFILE_IPAD_BASE64: ${{ secrets.APPLE_PROVISIONING_PROFILE_BASE64 }}
+          PROFILE_IPHONE_BASE64: ${{ secrets.APPLE_PROVISIONING_PROFILE_IPHONE_BASE64 }}
+        run: |
+          echo -n "$CERTIFICATE_BASE64" | base64 --decode -o "$RUNNER_TEMP/certificate.p12"
+          echo -n "$PROFILE_IPAD_BASE64" | base64 --decode -o "$RUNNER_TEMP/ipad.mobileprovision"
+          echo -n "$PROFILE_IPHONE_BASE64" | base64 --decode -o "$RUNNER_TEMP/iphone.mobileprovision"
+          ls -l "$RUNNER_TEMP/certificate.p12" "$RUNNER_TEMP/ipad.mobileprovision" "$RUNNER_TEMP/iphone.mobileprovision"
+
+      - name: Read the p12 with OpenSSL 3 (password and format)
+        continue-on-error: true
+        env:
+          CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          OPENSSL="$(brew --prefix openssl@3)/bin/openssl"
+          "$OPENSSL" version
+          # -noout prints only the structure (MAC and encryption algorithms), never a key or certificate.
+          "$OPENSSL" pkcs12 -info -noout -noenc -in "$RUNNER_TEMP/certificate.p12" -passin env:CERTIFICATE_PASSWORD
+          # The certificate is public: print who it is, when it expires, and its SHA-1.
+          "$OPENSSL" pkcs12 -in "$RUNNER_TEMP/certificate.p12" -clcerts -nokeys -passin env:CERTIFICATE_PASSWORD \
+            | "$OPENSSL" x509 -noout -subject -enddate -fingerprint -sha1 \
+            | tee "$RUNNER_TEMP/p12-cert.txt"
+
+      - name: Import into a throwaway keychain (same import as the TestFlight workflows)
+        continue-on-error: true
+        env:
+          CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          KEYCHAIN_PATH=$RUNNER_TEMP/signing-check.keychain-db
+          KEYCHAIN_PASSWORD=$(openssl rand -base64 32)
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$RUNNER_TEMP/certificate.p12" -P "$CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          echo "Code signing identities in the throwaway keychain:"
+          security find-identity -v -p codesigning "$KEYCHAIN_PATH"
+          security delete-keychain "$KEYCHAIN_PATH"
+
+      - name: Compare the profiles with the p12 certificate
+        continue-on-error: true
+        run: |
+          python3 - <<'EOF'
+          import hashlib, os, plistlib, subprocess
+          tmp = os.environ["RUNNER_TEMP"]
+          p12_sha1 = None
+          try:
+              for line in open(os.path.join(tmp, "p12-cert.txt")):
+                  if "Fingerprint=" in line:
+                      p12_sha1 = line.split("=", 1)[1].strip().replace(":", "").upper()
+          except FileNotFoundError:
+              pass
+          print("p12 certificate SHA-1:", p12_sha1 or "unknown (OpenSSL could not read the p12)")
+          for name in ("ipad", "iphone"):
+              raw = subprocess.run(["security", "cms", "-D", "-i", os.path.join(tmp, name + ".mobileprovision")],
+                                   capture_output=True, check=True).stdout
+              p = plistlib.loads(raw)
+              ent = p.get("Entitlements", {})
+              print(f"\n[{name}] Name={p.get('Name')!r} Team={p.get('TeamIdentifier')} Expires={p.get('ExpirationDate')}")
+              print(f"  app id={ent.get('application-identifier')} get-task-allow={ent.get('get-task-allow')} "
+                    f"devices={'yes' if p.get('ProvisionedDevices') else 'none (App Store or enterprise)'}")
+              for der in p.get("DeveloperCertificates", []):
+                  sha1 = hashlib.sha1(der).hexdigest().upper()
+                  print(f"  profile certificate SHA-1 {sha1} matches p12: {'yes' if sha1 == p12_sha1 else 'no'}")
+          EOF
