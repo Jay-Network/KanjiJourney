@@ -59,7 +59,7 @@ struct WritingView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: onBack) { Image(systemName: "chevron.left"); Text("Back") }
+                Button(action: onBack) { Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back") }
             }
             ToolbarItem(placement: .principal) { Text("Writing").font(.headline) }
         }
@@ -292,6 +292,7 @@ struct WritingView: View {
                         .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
                     Image(uiImage: uiImage)
                         .resizable()
+                        .accessibilityLabel("Your handwriting")
                         .frame(width: 160, height: 160)
                         .cornerRadius(8)
                         .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.3)))
@@ -421,5 +422,6 @@ struct WritingView: View {
             Spacer()
             Text(value).font(KanjiJourneyTheme.bodyLarge).fontWeight(.bold)
         }
+        .accessibilityElement(children: .combine)
     }
 }

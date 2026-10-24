@@ -108,7 +108,7 @@ struct SubscriptionView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: onBack) { Image(systemName: "chevron.left"); Text("Back") }.foregroundColor(.white)
+                Button(action: onBack) { Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back") }.foregroundColor(.white)
             }
             ToolbarItem(placement: .principal) { Text("Subscription").font(.headline).foregroundColor(.white) }
         }
@@ -134,5 +134,7 @@ struct SubscriptionView: View {
             }
         }
         .padding(.vertical, 6)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(feature), Free: \(freeText ?? (free ? "Yes" : "Not included")), Premium: \(premiumText ?? (premium ? "Yes" : "Not included"))")
     }
 }

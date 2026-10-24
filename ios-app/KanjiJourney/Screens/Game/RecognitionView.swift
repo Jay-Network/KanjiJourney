@@ -43,7 +43,7 @@ struct RecognitionView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
-                    Image(systemName: "chevron.left"); Text("Back")
+                    Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back")
                 }.foregroundColor(GlassColors.textPrimary)
             }
             ToolbarItem(placement: .principal) {
@@ -128,6 +128,7 @@ struct RecognitionView: View {
     private var progressRow: some View {
         HStack {
             Text("\(viewModel.questionNumber) / \(viewModel.totalQuestions)")
+                .accessibilityLabel("Question \(viewModel.questionNumber) of \(viewModel.totalQuestions)")
                 .font(GlassTypography.labelLarge)
                 .foregroundColor(GlassColors.textSecondary)
             Spacer()
@@ -141,6 +142,7 @@ struct RecognitionView: View {
                 .font(GlassTypography.labelLarge)
                 .foregroundColor(GlassBrand.current)
         }
+        .accessibilityElement(children: .combine)
     }
 
     private func kanjiCard(_ question: Question) -> some View {
@@ -165,6 +167,7 @@ struct RecognitionView: View {
                     .padding(6)
             }
         }
+        .accessibilityElement(children: .combine)
     }
 
     private func resultFeedback(_ question: Question) -> some View {
@@ -217,6 +220,7 @@ struct RecognitionView: View {
         .glassCard()
         .padding(.horizontal, 16)
         .padding(.bottom, 16)
+        .accessibilityElement(children: .combine)
     }
 
     private func answerGrid(_ question: Question) -> some View {
@@ -398,6 +402,7 @@ struct RecognitionView: View {
             Text(value)
                 .font(GlassTypography.bodyLarge).fontWeight(.bold)
         }
+        .accessibilityElement(children: .combine)
     }
 
     private func formatDuration(_ seconds: Int) -> String {

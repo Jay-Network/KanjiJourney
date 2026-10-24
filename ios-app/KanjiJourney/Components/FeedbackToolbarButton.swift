@@ -10,7 +10,7 @@ struct FeedbackToolbarButton: View {
         Button {
             feedbackViewModel.openDialog()
         } label: {
-            Image(systemName: "envelope.fill")
+            Image(systemName: "envelope.fill").accessibilityHidden(true)
                 .foregroundColor(GlassColors.textPrimary)
         }
         .accessibilityLabel("Send feedback")

@@ -78,6 +78,7 @@ struct RadicalDetailView: View {
                                                 .foregroundColor(KanjiJourneyTheme.onSurface)
                                             if let grade = kanji.grade {
                                                 Text("G\(grade)")
+                                                    .accessibilityLabel("Grade \(grade)")
                                                     .font(.system(size: 10))
                                                     .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
                                             }
@@ -85,6 +86,7 @@ struct RadicalDetailView: View {
                                         .frame(width: 72, height: 72)
                                         .background(KanjiJourneyTheme.surface)
                                         .cornerRadius(8)
+                                        .accessibilityElement(children: .combine)
                                     }
                                 }
                             }
@@ -102,7 +104,7 @@ struct RadicalDetailView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
-                    Image(systemName: "chevron.left"); Text("Back")
+                    Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back")
                 }.foregroundColor(.white)
             }
             ToolbarItem(placement: .principal) {

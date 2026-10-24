@@ -88,11 +88,12 @@ struct DevChatView: View {
                             ProgressView()
                                 .frame(width: 24, height: 24)
                         } else {
-                            Image(systemName: "paperplane.fill")
+                            Image(systemName: "paperplane.fill").accessibilityHidden(true)
                                 .foregroundColor(messageText.trimmingCharacters(in: .whitespaces).isEmpty ? KanjiJourneyTheme.onSurfaceVariant : KanjiJourneyTheme.primary)
                         }
                     }
                     .disabled(messageText.trimmingCharacters(in: .whitespaces).isEmpty || viewModel.isSending)
+                    .accessibilityLabel(viewModel.isSending ? "Sending message" : "Send message")
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
@@ -102,7 +103,7 @@ struct DevChatView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
-                    Image(systemName: "chevron.left"); Text("Back")
+                    Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back")
                 }.foregroundColor(.white)
             }
             ToolbarItem(placement: .principal) {
@@ -148,5 +149,6 @@ struct DevChatView: View {
             .frame(maxWidth: 300, alignment: isFromUser ? .trailing : .leading)
         }
         .frame(maxWidth: .infinity, alignment: isFromUser ? .trailing : .leading)
+        .accessibilityElement(children: .combine)
     }
 }

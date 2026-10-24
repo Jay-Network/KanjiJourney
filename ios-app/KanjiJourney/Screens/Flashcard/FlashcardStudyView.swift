@@ -32,7 +32,7 @@ struct FlashcardStudyView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
-                    Image(systemName: "chevron.left"); Text("Back")
+                    Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back")
                 }.foregroundColor(.white)
             }
             ToolbarItem(placement: .principal) {
@@ -111,6 +111,9 @@ struct FlashcardStudyView: View {
                 .onTapGesture {
                     if !viewModel.isFlipped { viewModel.flip() }
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityAddTraits(viewModel.isFlipped ? [] : .isButton)
+                .accessibilityAction { if !viewModel.isFlipped { viewModel.flip() } }
 
                 // Grade buttons
                 if viewModel.isFlipped {
@@ -195,6 +198,7 @@ struct FlashcardStudyView: View {
                 .fontWeight(.bold)
         }
         .padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
     }
 
     private func gradeColor(_ grade: StudyGrade) -> Color {

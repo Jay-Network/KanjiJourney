@@ -82,6 +82,7 @@ struct WordDetailView: View {
                                                 Spacer()
                                             }
                                             .padding(.vertical, 4)
+                                            .accessibilityElement(children: .combine)
                                         }
                                     }
                                 }
@@ -98,7 +99,7 @@ struct WordDetailView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
-                    Image(systemName: "chevron.left"); Text("Back")
+                    Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back")
                 }.foregroundColor(.white)
             }
             ToolbarItem(placement: .principal) {

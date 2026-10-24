@@ -29,7 +29,7 @@ struct FieldJournalView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
-                    Image(systemName: "chevron.left"); Text("Back")
+                    Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back")
                 }.foregroundColor(.white)
             }
             ToolbarItem(placement: .principal) {
@@ -62,6 +62,7 @@ struct FieldJournalView: View {
                         .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
                 }
                 .frame(maxWidth: .infinity)
+                .accessibilityElement(children: .combine)
 
                 VStack(spacing: 2) {
                     Text("\(viewModel.entries.count)")
@@ -73,6 +74,7 @@ struct FieldJournalView: View {
                         .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
                 }
                 .frame(maxWidth: .infinity)
+                .accessibilityElement(children: .combine)
             }
             .padding(12)
             .background(KanjiJourneyTheme.surfaceVariant)
@@ -140,6 +142,7 @@ struct FieldJournalView: View {
             .background(KanjiJourneyTheme.surface)
             .cornerRadius(12)
         }
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: - Entry Detail
@@ -152,7 +155,7 @@ struct FieldJournalView: View {
                     viewModel.clearSelection()
                 } label: {
                     HStack(spacing: 4) {
-                        Image(systemName: "chevron.left")
+                        Image(systemName: "chevron.left").accessibilityHidden(true)
                         Text("Back to Gallery")
                     }
                     .foregroundColor(KanjiJourneyTheme.primary)
@@ -194,6 +197,8 @@ struct FieldJournalView: View {
                                     .font(KanjiJourneyTheme.bodyLarge)
                             }
                             .padding(.vertical, 6)
+                            .accessibilityElement(children: .ignore)
+                            .accessibilityLabel(kanji)
                         }
                     }
                 }
@@ -232,6 +237,7 @@ struct FieldJournalView: View {
                 .multilineTextAlignment(.center)
         }
         .padding(24)
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: - Helpers

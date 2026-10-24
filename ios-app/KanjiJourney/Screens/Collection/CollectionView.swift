@@ -87,6 +87,7 @@ struct CollectionView: View {
                             .padding(24)
                             .glassCard()
                             .padding(16)
+                            .accessibilityElement(children: .combine)
                         } else {
                             LazyVGrid(columns: [GridItem(.adaptive(minimum: 64), spacing: 8)], spacing: 8) {
                                 ForEach(viewModel.filteredItems, id: \.itemId) { item in
@@ -104,7 +105,7 @@ struct CollectionView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
-                    Image(systemName: "chevron.left"); Text("Back")
+                    Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back")
                 }.foregroundColor(GlassColors.textPrimary)
             }
             ToolbarItem(placement: .principal) {

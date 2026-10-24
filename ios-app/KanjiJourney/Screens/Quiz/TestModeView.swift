@@ -51,7 +51,7 @@ private struct TestModeContent: View {
                         viewModel.resetToScopeSelection()
                     }
                 }) {
-                    Image(systemName: "chevron.left")
+                    Image(systemName: "chevron.left").accessibilityHidden(true)
                         .foregroundColor(.white)
                 }
                 .accessibilityLabel("Back")
@@ -99,6 +99,7 @@ private struct TestModeContent: View {
                                     .foregroundColor(KanjiJourneyTheme.onSurface)
                                 Spacer()
                                 Text("10 Q")
+                                    .accessibilityLabel("10 questions")
                                     .font(KanjiJourneyTheme.bodySmall)
                                     .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
                             }
@@ -107,6 +108,7 @@ private struct TestModeContent: View {
                             .cornerRadius(12)
                         }
                         .padding(.bottom, 8)
+                        .accessibilityElement(children: .combine)
                     }
 
                     Spacer().frame(height: 12)
@@ -261,6 +263,8 @@ private struct TestModeContent: View {
                             .foregroundColor(resultColor)
                     }
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("\(state.correctCount) of \(state.totalQuestions) correct, \(accuracyPct) percent")
 
                 Spacer().frame(height: 24)
 
@@ -325,6 +329,8 @@ private struct TestModeContent: View {
                 .font(KanjiJourneyTheme.bodySmall)
                 .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(label), \(value)")
     }
 
     private func formatTime(_ seconds: Int) -> String {

@@ -136,7 +136,7 @@ struct AppRootView: View {
     private func errorView(_ error: String) -> some View {
         ScrollView {
             VStack(spacing: 16) {
-                Image(systemName: "exclamationmark.triangle.fill")
+                Image(systemName: "exclamationmark.triangle.fill").accessibilityHidden(true)
                     .font(.system(size: 64))
                     .foregroundColor(.orange)
                 Text("KanjiJourney")
@@ -194,6 +194,7 @@ struct MockHomeView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 80, height: 80)
+                                .accessibilityLabel("JWorks logo")
                             Text("Welcome to KanjiJourney!")
                                 .font(GlassTypography.headlineSmall)
                                 .foregroundColor(GlassColors.textPrimary)
@@ -203,6 +204,7 @@ struct MockHomeView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding(24)
+                        .accessibilityElement(children: .combine)
                     }
 
                     Text("Game Modes")
@@ -239,7 +241,7 @@ struct MockHomeView: View {
                                 if isInitializing {
                                     ProgressView().tint(.white)
                                 } else {
-                                    Image(systemName: "play.fill")
+                                    Image(systemName: "play.fill").accessibilityHidden(true)
                                         .foregroundColor(GlassBrand.current)
                                 }
                                 Text(isInitializing ? "Loading database..." : "Unlock All Modes")
@@ -306,7 +308,7 @@ struct MockHomeView: View {
     private func mockModeCardContent(title: String, desc: String, color: Color, icon: String, available: Bool = true) -> some View {
         GlassCard(borderColor: color.opacity(available ? 0.40 : 0.15)) {
             HStack {
-                Image(systemName: icon)
+                Image(systemName: icon).accessibilityHidden(true)
                     .font(.system(size: 24))
                     .foregroundColor(.white)
                     .frame(width: 48, height: 48)
@@ -332,10 +334,11 @@ struct MockHomeView: View {
                         .foregroundColor(GlassColors.textSecondary)
                 }
                 Spacer()
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.right").accessibilityHidden(true)
                     .foregroundColor(available ? color : GlassColors.textMuted)
             }
             .padding(12)
         }
+        .accessibilityElement(children: .combine)
     }
 }

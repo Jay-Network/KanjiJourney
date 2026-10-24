@@ -61,6 +61,7 @@ private struct StudyTabViewContent: View {
                                 VStack(spacing: 4) {
                                     if let imageAsset = modeInfo.imageAsset {
                                         AssetImage(filename: imageAsset, contentDescription: modeInfo.label)
+                                            .accessibilityHidden(true)
                                             .frame(width: 36, height: 36)
                                     }
                                     Text(modeInfo.label)
@@ -83,6 +84,8 @@ private struct StudyTabViewContent: View {
                                     .stroke(isSelected ? Color(hex: UInt(modeInfo.color)).opacity(0.75) : GlassColors.border, lineWidth: isSelected ? 2 : 1)
                             )
                             .opacity(isAccessible ? 1 : 0.55)
+                            .accessibilityElement(children: .combine)
+                            .accessibilityAddTraits(isSelected ? .isSelected : [])
                         }
                     }
                 }

@@ -45,7 +45,7 @@ struct AchievementsView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
-                    Image(systemName: "chevron.left"); Text("Back")
+                    Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back")
                 }.foregroundColor(.white)
             }
             ToolbarItem(placement: .principal) {
@@ -53,7 +53,7 @@ struct AchievementsView: View {
             }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: { viewModel.refresh(container: container) }) {
-                    Image(systemName: "arrow.clockwise")
+                    Image(systemName: "arrow.clockwise").accessibilityHidden(true)
                 }.foregroundColor(.white)
                 .accessibilityLabel("Refresh")
             }
@@ -68,7 +68,7 @@ struct AchievementsView: View {
 
     private var summaryCard: some View {
         VStack(spacing: 8) {
-            Image(systemName: "trophy.fill")
+            Image(systemName: "trophy.fill").accessibilityHidden(true)
                 .font(.system(size: 48))
                 .foregroundColor(KanjiJourneyTheme.xpGold)
 
@@ -90,6 +90,8 @@ struct AchievementsView: View {
         .padding(16)
         .frame(maxWidth: .infinity)
         .glassCard(borderColor: GlassBrand.current.opacity(0.55), borderWidth: 1.5)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(viewModel.unlockedCount) of \(viewModel.totalAchievements) achievements unlocked")
     }
 
     // MARK: - Achievement Card
@@ -101,6 +103,7 @@ struct AchievementsView: View {
             Text(isUnlocked ? achievement.icon : "\u{1F512}")
                 .font(.system(size: 36))
                 .frame(width: 56, height: 56)
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(achievement.title)
@@ -114,8 +117,10 @@ struct AchievementsView: View {
 
                 if !isUnlocked {
                     ProgressView(value: achievement.progressPercent / 100)
+                        .accessibilityHidden(true)
                         .tint(KanjiJourneyTheme.primary)
                     Text("\(achievement.progress) / \(achievement.target)")
+                        .accessibilityLabel("Locked, \(achievement.progress) of \(achievement.target)")
                         .font(KanjiJourneyTheme.labelSmall)
                         .foregroundColor(KanjiJourneyTheme.onSurfaceVariant.opacity(0.6))
                 } else {
@@ -135,5 +140,6 @@ struct AchievementsView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .glassCard(borderColor: isUnlocked ? KanjiJourneyTheme.secondary.opacity(0.55) : GlassColors.border)
         .opacity(isUnlocked ? 1 : 0.72)
+        .accessibilityElement(children: .combine)
     }
 }

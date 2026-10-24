@@ -50,12 +50,13 @@ struct FlashcardView: View {
 
                             // Add deck button
                             Button { showCreateSheet = true } label: {
-                                Image(systemName: "plus")
+                                Image(systemName: "plus").accessibilityHidden(true)
                                     .foregroundColor(KanjiJourneyTheme.primary)
                                     .padding(8)
                                     .background(KanjiJourneyTheme.surfaceVariant)
                                     .clipShape(Circle())
                             }
+                            .accessibilityLabel("Create deck")
                         }
                         .padding(.horizontal, 16).padding(.vertical, 8)
                     }
@@ -75,6 +76,7 @@ struct FlashcardView: View {
                             Spacer()
                         }
                         .padding(24)
+                        .accessibilityElement(children: .combine)
                     } else {
                         // Study button
                         Button {
@@ -106,7 +108,7 @@ struct FlashcardView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
-                    Image(systemName: "chevron.left"); Text("Back")
+                    Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back")
                 }.foregroundColor(.white)
             }
             ToolbarItem(placement: .principal) {
@@ -149,6 +151,7 @@ struct FlashcardView: View {
                     font: .system(size: 36, weight: .regular, design: .serif)
                 )
                 .frame(width: 56, height: 56)
+                .accessibilityHidden(true)
             }
 
             VStack(alignment: .leading, spacing: 2) {
@@ -158,13 +161,16 @@ struct FlashcardView: View {
                     .font(KanjiJourneyTheme.bodySmall)
                     .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel([item.kanji?.literal, item.kanji?.meaningsEn.first ?? "Unknown", item.kanji?.onReadings.joined(separator: ", ")].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: ", "))
 
             Spacer()
 
             Button { viewModel.removeFromDeck(item) } label: {
-                Image(systemName: "xmark.circle")
+                Image(systemName: "xmark.circle").accessibilityHidden(true)
                     .foregroundColor(KanjiJourneyTheme.error.opacity(0.6))
             }
+            .accessibilityLabel("Remove \(item.kanji?.literal ?? "flashcard") from deck")
         }
         .padding(12)
         .background(KanjiJourneyTheme.surface)

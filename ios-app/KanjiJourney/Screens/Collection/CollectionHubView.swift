@@ -254,6 +254,10 @@ private struct CollectionKanjiGridItem: View {
         )
         .opacity(isCollected ? 1 : 0.32)
         .onTapGesture { if isCollected { onClick() } }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction { if isCollected { onClick() } }
+        .accessibilityHidden(!isCollected)
     }
 }
 
@@ -286,6 +290,10 @@ private struct CollectionKanaGridItem: View {
         )
         .opacity(isCollected ? 1 : 0.32)
         .onTapGesture { if isCollected { onClick() } }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction { if isCollected { onClick() } }
+        .accessibilityHidden(!isCollected)
     }
 }
 
@@ -321,5 +329,9 @@ private struct CollectionRadicalGridItem: View {
         )
         .opacity(isCollected ? 1 : 0.32)
         .onTapGesture { if isCollected { onClick() } }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction { if isCollected { onClick() } }
+        .accessibilityHidden(!isCollected)
     }
 }

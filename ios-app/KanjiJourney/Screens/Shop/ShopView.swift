@@ -46,7 +46,7 @@ struct ShopView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
-                    Image(systemName: "chevron.left"); Text("Back")
+                    Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back")
                 }.foregroundColor(.white)
             }
             ToolbarItem(placement: .principal) {
@@ -202,6 +202,7 @@ struct ShopView: View {
             .opacity(isOwned ? 0.75 : 1)
         }
         .disabled(isOwned)
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: - Purchase Dialog Overlay

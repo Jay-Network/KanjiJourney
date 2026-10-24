@@ -28,6 +28,7 @@ private struct GameModeButtonView: View {
                 HStack {
                     if let imageAsset {
                         AssetImage(filename: imageAsset, contentDescription: label)
+                            .accessibilityHidden(true)
                             .frame(width: 48, height: 48)
                         Spacer().frame(width: 8)
                     }
@@ -52,6 +53,7 @@ private struct GameModeButtonView: View {
                 .frame(maxWidth: .infinity)
             }
         }
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -80,6 +82,7 @@ private struct PreviewableGameModeButtonView: View {
                     HStack {
                         if let imageAsset {
                             AssetImage(filename: imageAsset, contentDescription: label)
+                                .accessibilityHidden(true)
                                 .frame(width: 48, height: 48)
                             Spacer().frame(width: 8)
                         }
@@ -98,6 +101,7 @@ private struct PreviewableGameModeButtonView: View {
                     .frame(maxWidth: .infinity)
                 }
             }
+            .accessibilityElement(children: .combine)
         }
     }
 }
@@ -126,6 +130,8 @@ private struct LearningPathCardView: View {
             .padding(8)
             .frame(width: 100, height: 80)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(title), \(subtitle), \(Int(progress * 100)) percent complete")
     }
 }
 
@@ -156,6 +162,7 @@ private struct GradeMasteryBadgeView: View {
         VStack(spacing: 2) {
             ZStack {
                 AssetImage(filename: badgeAsset, contentDescription: "\(mastery.masteryLevel.label) badge")
+                    .accessibilityHidden(true)
                     .frame(width: 56, height: 56)
                 Text("G\(mastery.grade)")
                     .font(KanjiJourneyTheme.labelLarge)
@@ -167,6 +174,8 @@ private struct GradeMasteryBadgeView: View {
                 .foregroundColor(ringColor)
         }
         .padding(4)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Grade \(mastery.grade), \(mastery.masteryLevel.label)")
     }
 }
 
@@ -193,6 +202,7 @@ private struct KanjiGridItemView: View {
                         HStack {
                             Spacer()
                             Text("Lv.\(item.itemLevel)")
+                                .accessibilityLabel("Level \(item.itemLevel)")
                                 .font(.system(size: 7, weight: .bold))
                                 .foregroundColor(Color(hex: UInt(item.rarity.colorValue)))
                                 .padding(2)
@@ -208,16 +218,16 @@ private struct KanjiGridItemView: View {
                 let camCount = modeStats["camera_challenge"] ?? 0
 
                 if recCount > 0 {
-                    VStack { HStack { Text("\(recCount)").font(.system(size: 7, weight: .bold)).foregroundColor(Color(hex: 0x2196F3)).padding(3); Spacer() }; Spacer() }
+                    VStack { HStack { Text("\(recCount)").accessibilityLabel("Recognition, \(recCount) practices").font(.system(size: 7, weight: .bold)).foregroundColor(Color(hex: 0x2196F3)).padding(3); Spacer() }; Spacer() }
                 }
                 if vocCount > 0 && (collectedItem?.itemLevel ?? 0) <= 1 {
-                    VStack { HStack { Spacer(); Text("\(vocCount)").font(.system(size: 7, weight: .bold)).foregroundColor(Color(hex: 0xFF9800)).padding(3) }; Spacer() }
+                    VStack { HStack { Spacer(); Text("\(vocCount)").accessibilityLabel("Vocabulary, \(vocCount) practices").font(.system(size: 7, weight: .bold)).foregroundColor(Color(hex: 0xFF9800)).padding(3) }; Spacer() }
                 }
                 if wrtCount > 0 {
-                    VStack { Spacer(); HStack { Text("\(wrtCount)").font(.system(size: 7, weight: .bold)).foregroundColor(Color(hex: 0x4CAF50)).padding(3); Spacer() } }
+                    VStack { Spacer(); HStack { Text("\(wrtCount)").accessibilityLabel("Writing, \(wrtCount) practices").font(.system(size: 7, weight: .bold)).foregroundColor(Color(hex: 0x4CAF50)).padding(3); Spacer() } }
                 }
                 if camCount > 0 {
-                    VStack { Spacer(); HStack { Spacer(); Text("\(camCount)").font(.system(size: 7, weight: .bold)).foregroundColor(Color(hex: 0x9C27B0)).padding(3) } }
+                    VStack { Spacer(); HStack { Spacer(); Text("\(camCount)").accessibilityLabel("Camera, \(camCount) practices").font(.system(size: 7, weight: .bold)).foregroundColor(Color(hex: 0x9C27B0)).padding(3) } }
                 }
             }
         }
@@ -230,6 +240,10 @@ private struct KanjiGridItemView: View {
                 .stroke(borderColor ?? GlassColors.border, lineWidth: borderColor != nil ? 2 : 1)
         )
         .onTapGesture { if isCollected { onClick() } }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction { if isCollected { onClick() } }
+        .accessibilityHidden(!isCollected)
     }
 }
 
@@ -263,6 +277,10 @@ private struct KanaGridItemView: View {
                 .stroke(borderColor ?? GlassColors.border, lineWidth: borderColor != nil ? 2 : 1)
         )
         .onTapGesture { if isCollected { onClick() } }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction { if isCollected { onClick() } }
+        .accessibilityHidden(!isCollected)
     }
 }
 
@@ -298,6 +316,10 @@ private struct RadicalGridItemView: View {
                 .stroke(borderColor ?? GlassColors.border, lineWidth: borderColor != nil ? 2 : 1)
         )
         .onTapGesture { if isCollected { onClick() } }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction { if isCollected { onClick() } }
+        .accessibilityHidden(!isCollected)
     }
 }
 
@@ -410,7 +432,7 @@ private struct HomeViewBody: View {
                             .cornerRadius(6)
                     }
                     Button(action: { navigateTo(.settings) }) {
-                        Image(systemName: "gearshape.fill")
+                        Image(systemName: "gearshape.fill").accessibilityHidden(true)
                             .foregroundColor(GlassColors.textPrimary)
                     }
                     .accessibilityLabel("Settings")
@@ -442,6 +464,7 @@ private struct HomeViewBody: View {
                             .font(GlassTypography.bodyMedium)
                             .foregroundColor(KanjiJourneyTheme.coinGold)
                     }
+                    .accessibilityElement(children: .combine)
                     Spacer()
                     VStack(alignment: .trailing, spacing: 2) {
                         Text("\((state.coinBalance?.displayBalance ?? 0)) J Coins")
@@ -449,6 +472,9 @@ private struct HomeViewBody: View {
                             .fontWeight(.bold)
                             .foregroundColor(KanjiJourneyTheme.coinGold)
                             .onTapGesture { navigateTo(.shop) }
+                            .accessibilityAddTraits(.isButton)
+                            .accessibilityHint("Open shop")
+                            .accessibilityAction { navigateTo(.shop) }
                         if (state.coinBalance?.needsSync ?? false) {
                             Text("Pending sync...")
                                 .font(GlassTypography.labelSmall)
@@ -460,6 +486,7 @@ private struct HomeViewBody: View {
                     }
                 }
                 ProgressView(value: Double((state.profile?.xpProgress ?? 0)))
+                    .accessibilityLabel("Level progress")
                     .tint(GlassBrand.current)
                 if let nextName = state.nextTierName, let nextLevel = state.nextTierLevel {
                     Text("Next: \(nextName) at Lv.\(nextLevel)")
@@ -486,6 +513,7 @@ private struct HomeViewBody: View {
             }
         }
         .padding(.top, 8)
+        .accessibilityElement(children: .combine)
     }
 
     private var actionButtonsRow: some View {
@@ -531,6 +559,7 @@ private struct HomeViewBody: View {
             }
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
     }
 
     private func learningPathSection(state: HomeUiState) -> some View {

@@ -114,6 +114,8 @@ History: BUG-001 (APK size)
 
 ## Resolved
 
+- [x] [unnumbered — Cat-E, iOS] WCAG L1 audit findings 3/4: compound cards/rows/stats had no accessibility grouping, and image semantics were largely implicit — source fix in v1.4.32 (2026-10-24, jworks-codex:0 for jworks:47). Added 71 grouping sites; all 56 `Image()` sites now carry a label, explicit decorative hiding, or both for conditional asset fallbacks. Kept independent child controls separate and quiz/flashcard answer visibility unchanged. Accessibility-only source equivalence and image/control-boundary regressions pass across 97 tracked Swift files. Runtime VoiceOver acceptance is not claimed. Evidence: `/media/takuma/Data_ubuntu/agent-text/jworks-codex--0/kanjijourney-voiceover-20261024/`.
+
 - [x] [BUG-008] iOS app crashed on launch past the mock home screen — EVERY real screen unreachable (Shop, Achievements, all game modes go through `AppContainer`) — RESOLVED 2026-10-09, jworks:47 + jworks-mac:90
   - **Severity**: was P0 — the entire real iOS app was non-functional, independent of CI/signing
   - **Cat**: F (Platform)

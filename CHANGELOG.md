@@ -5,6 +5,13 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.32 (2026-10-24) — iOS VoiceOver card grouping and image semantics
+
+### Fixed
+- WCAG L1 audit findings 3/4: grouped compound cards, collection tiles, list rows and stat tiles into meaningful accessibility elements. Nested actions remain separate (including the profile shop link and flashcard removal); unrevealed flashcard answers remain hidden.
+- Decorative images are explicitly hidden; meaningful logos, radical images and handwriting retain labels. Asset-image fallbacks now honor an absent description as decorative. Added names for create-deck, remove-card, close-feedback and send-message controls, and a spoken deck-membership state.
+- Accessibility-only Swift changes: no visual layout, existing action, signing, workflow or Info.plist changes. Source regression checks cover all 97 tracked Swift files and all 56 `Image()` sites. Counts are lexical, not proof of runtime VoiceOver behavior or WCAG certification. Device VoiceOver acceptance remains unverified.
+
 ## v1.4.31 (2026-10-24) — iOS answers TestFlight's export-compliance question (jworks:47)
 
 ### Fixed

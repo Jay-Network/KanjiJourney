@@ -31,7 +31,7 @@ struct PlacementTestView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
-                    Image(systemName: "chevron.left"); Text("Back")
+                    Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back")
                 }.foregroundColor(.white)
             }
             ToolbarItem(placement: .principal) {
@@ -149,6 +149,7 @@ struct PlacementTestView: View {
                 .background(KanjiJourneyTheme.surface)
                 .cornerRadius(12)
                 .shadow(radius: 4)
+                .accessibilityElement(children: .combine)
 
                 Spacer().frame(height: 24)
 
@@ -268,6 +269,7 @@ struct PlacementTestView: View {
                 .frame(maxWidth: .infinity)
                 .background(KanjiJourneyTheme.primary.opacity(0.12))
                 .cornerRadius(16)
+                .accessibilityElement(children: .combine)
 
                 // Stage breakdown
                 VStack(alignment: .leading, spacing: 12) {
@@ -291,6 +293,7 @@ struct PlacementTestView: View {
                                 .foregroundColor(passed ? Color(hex: 0x4CAF50) : Color(hex: 0xF44336))
                         }
                         .padding(.vertical, 4)
+                        .accessibilityElement(children: .combine)
                     }
                 }
                 .padding(16)

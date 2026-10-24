@@ -35,7 +35,7 @@ struct KQProgressView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
-                    Image(systemName: "chevron.left"); Text("Back")
+                    Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back")
                 }.foregroundColor(.white)
             }
             ToolbarItem(placement: .principal) {
@@ -43,7 +43,7 @@ struct KQProgressView: View {
             }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: { viewModel.refresh(container: container) }) {
-                    Image(systemName: "arrow.clockwise")
+                    Image(systemName: "arrow.clockwise").accessibilityHidden(true)
                 }.foregroundColor(.white)
                 .accessibilityLabel("Refresh")
             }
@@ -70,6 +70,8 @@ struct KQProgressView: View {
         }
         .padding(16).frame(maxWidth: .infinity, alignment: .leading)
         .glassCard(borderColor: GlassBrand.current.opacity(0.55), borderWidth: 1.5)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Level \(viewModel.level), \(viewModel.totalXp) total XP, \(viewModel.xpInCurrentLevel) of \(viewModel.xpForNextLevel) XP toward level \(viewModel.level + 1)")
     }
 
     // MARK: - Streak
@@ -101,6 +103,7 @@ struct KQProgressView: View {
                 let pct = Int(Float(viewModel.masteredCount) / Float(viewModel.totalKanjiInSrs) * 100)
                 ProgressView(value: Float(viewModel.masteredCount), total: Float(viewModel.totalKanjiInSrs))
                     .tint(KanjiJourneyTheme.tertiary)
+                    .accessibilityHidden(true)
                 Text("\(pct)% Mastery Rate").font(KanjiJourneyTheme.bodySmall)
             }
         }
@@ -144,6 +147,8 @@ struct KQProgressView: View {
                 }.font(KanjiJourneyTheme.bodySmall).foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Grade \(mastery.grade), \(mastery.masteryLevel.label), \(mastery.studiedCount) of \(mastery.totalKanjiInGrade) studied, \(mastery.masteredCount) mastered, accuracy \(Int(mastery.averageAccuracy * 100)) percent")
     }
 
     private func masteryColor(_ level: MasteryLevel) -> Color {
@@ -197,21 +202,24 @@ struct KQProgressView: View {
             }
             Spacer()
             Text("\(session.cardsStudied) cards").font(KanjiJourneyTheme.bodySmall)
-            Text("\(accuracy)%").font(KanjiJourneyTheme.bodyMedium).fontWeight(.bold)
+            Text("\(accuracy)%").accessibilityLabel("Accuracy, \(accuracy) percent").font(KanjiJourneyTheme.bodyMedium).fontWeight(.bold)
                 .foregroundColor(accuracy >= 80 ? KanjiJourneyTheme.primary : accuracy >= 60 ? KanjiJourneyTheme.secondary : KanjiJourneyTheme.error)
             Text("+\(session.xpEarned) XP").font(KanjiJourneyTheme.bodyMedium).fontWeight(.bold)
                 .foregroundColor(KanjiJourneyTheme.tertiary)
         }.padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: - Helpers
 
     private func statItem(icon: String, value: String, label: String) -> some View {
         VStack(spacing: 4) {
-            Image(systemName: icon).font(.title2).foregroundColor(KanjiJourneyTheme.primary)
+            Image(systemName: icon).accessibilityHidden(true).font(.title2).foregroundColor(KanjiJourneyTheme.primary)
             Text(value).font(KanjiJourneyTheme.titleLarge).fontWeight(.bold)
             Text(label).font(KanjiJourneyTheme.bodySmall).foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
         }
         .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(label), \(value)")
     }
 }

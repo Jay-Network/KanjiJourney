@@ -76,6 +76,7 @@ private struct GameCardView: View {
 
                     if let imageAsset {
                         AssetImage(filename: imageAsset, contentDescription: title)
+                            .accessibilityHidden(true)
                             .frame(width: 56, height: 56)
                         Spacer().frame(width: 12)
                     }
@@ -103,5 +104,6 @@ private struct GameCardView: View {
             }
         }
         .disabled(!isPlayable)
+        .accessibilityElement(children: .combine)
     }
 }

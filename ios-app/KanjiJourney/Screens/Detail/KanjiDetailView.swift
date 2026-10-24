@@ -90,7 +90,7 @@ struct KanjiDetailView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
-                    Image(systemName: "chevron.left"); Text("Back")
+                    Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back")
                 }.foregroundColor(.white)
             }
             ToolbarItem(placement: .principal) {
@@ -99,7 +99,7 @@ struct KanjiDetailView: View {
             }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: { viewModel.toggleFlashcard() }) {
-                    Image(systemName: viewModel.isInFlashcardDeck ? "star.fill" : "star")
+                    Image(systemName: viewModel.isInFlashcardDeck ? "star.fill" : "star").accessibilityHidden(true)
                         .foregroundColor(viewModel.isInFlashcardDeck ? KanjiJourneyTheme.xpGold : .white)
                 }
                 .accessibilityLabel(viewModel.isInFlashcardDeck ? "Remove from flashcards" : "Add to flashcards")
@@ -145,6 +145,7 @@ struct KanjiDetailView: View {
                     .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
             }
             .frame(maxWidth: .infinity)
+            .accessibilityElement(children: .combine)
 
             if let acc = viewModel.accuracy {
                 VStack {
@@ -156,6 +157,7 @@ struct KanjiDetailView: View {
                         .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
                 }
                 .frame(maxWidth: .infinity)
+                .accessibilityElement(children: .combine)
             }
         }
         .padding(12)
@@ -239,6 +241,7 @@ struct KanjiDetailView: View {
                     .foregroundColor(KanjiJourneyTheme.onSurfaceVariant.opacity(0.8))
             }
         }
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: - Section Card
@@ -277,7 +280,7 @@ struct KanjiDetailView: View {
                         }
                     } label: {
                         HStack {
-                            Image(systemName: isInDeck ? "checkmark.square.fill" : "square")
+                            Image(systemName: isInDeck ? "checkmark.square.fill" : "square").accessibilityHidden(true)
                                 .foregroundColor(isInDeck ? KanjiJourneyTheme.primary : KanjiJourneyTheme.onSurfaceVariant)
                             Text(deck.name)
                                 .font(KanjiJourneyTheme.bodyLarge)
@@ -286,6 +289,9 @@ struct KanjiDetailView: View {
                         }
                         .padding(.vertical, 8)
                     }
+                    .accessibilityElement(children: .combine)
+                    .accessibilityValue(isInDeck ? "In deck" : "Not in deck")
+                    .accessibilityAddTraits(isInDeck ? .isSelected : [])
                 }
 
                 Button("Done") { viewModel.dismissDeckChooser() }

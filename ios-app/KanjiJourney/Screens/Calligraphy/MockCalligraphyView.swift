@@ -250,6 +250,8 @@ struct MockCalligraphyView: View {
         .padding(.horizontal, 10)
         .background(scoreColor(score).opacity(0.08))
         .cornerRadius(8)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(label), \(score) out of 5")
     }
 
     private func scoreColor(_ score: Int) -> Color {

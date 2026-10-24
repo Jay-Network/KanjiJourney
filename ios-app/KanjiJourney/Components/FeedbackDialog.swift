@@ -27,9 +27,10 @@ struct FeedbackDialogView: View {
                         viewModel.closeDialog()
                         onDismiss()
                     } label: {
-                        Image(systemName: "xmark")
+                        Image(systemName: "xmark").accessibilityHidden(true)
                             .foregroundColor(KanjiJourneyTheme.onSurfaceVariant)
                     }
+                    .accessibilityLabel("Close feedback")
                 }
                 .padding(16)
 
@@ -102,7 +103,7 @@ struct FeedbackDialogView: View {
                                         .frame(width: 20, height: 20)
                                         .tint(.white)
                                 } else {
-                                    Image(systemName: "paperplane.fill")
+                                    Image(systemName: "paperplane.fill").accessibilityHidden(true)
                                     Text("Send Feedback")
                                 }
                             }
@@ -115,6 +116,7 @@ struct FeedbackDialogView: View {
                             .cornerRadius(12)
                         }
                         .disabled(viewModel.isSubmitting || viewModel.feedbackText.count < 10)
+                        .accessibilityLabel(viewModel.isSubmitting ? "Sending feedback" : "Send feedback")
 
                         // Feedback history
                         Text("Your Previous Feedback")
@@ -160,6 +162,7 @@ struct FeedbackDialogView: View {
                 Spacer()
                 HStack(spacing: 4) {
                     Text(item.feedback.status.emoji)
+                        .accessibilityHidden(true)
                         .font(KanjiJourneyTheme.labelMedium)
                     Text(item.feedback.status.label)
                         .font(KanjiJourneyTheme.labelSmall)
@@ -183,6 +186,7 @@ struct FeedbackDialogView: View {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(KanjiJourneyTheme.onSurfaceVariant.opacity(0.2), lineWidth: 1)
         )
+        .accessibilityElement(children: .combine)
     }
 
     private func statusColor(_ value: String) -> Color {

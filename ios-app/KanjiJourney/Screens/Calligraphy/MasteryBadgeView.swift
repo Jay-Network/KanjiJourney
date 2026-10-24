@@ -29,10 +29,13 @@ struct MasteryBadgeView: View {
                 .scaledToFit()
                 .frame(width: size, height: size)
                 .clipShape(RoundedRectangle(cornerRadius: size * 0.1))
+                .accessibilityHidden(true)
 
             Text(level.labelJp)
                 .font(.system(size: size * 0.18, weight: .medium))
                 .foregroundColor(.secondary)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Mastery, \(level.labelJp)")
     }
 }

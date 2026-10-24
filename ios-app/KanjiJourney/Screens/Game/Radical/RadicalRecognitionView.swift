@@ -28,7 +28,7 @@ struct RadicalRecognitionView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
-                    Image(systemName: "chevron.left"); Text("Back")
+                    Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back")
                 }.foregroundColor(.white)
             }
             ToolbarItem(placement: .principal) {
@@ -137,6 +137,7 @@ struct RadicalRecognitionView: View {
     private var progressRow: some View {
         HStack {
             Text("\(viewModel.questionNumber) / \(viewModel.totalQuestions)")
+                .accessibilityLabel("Question \(viewModel.questionNumber) of \(viewModel.totalQuestions)")
                 .font(KanjiJourneyTheme.bodyMedium)
             Spacer()
             if viewModel.currentCombo > 1 {
@@ -148,6 +149,7 @@ struct RadicalRecognitionView: View {
             Text("\(viewModel.sessionXp) XP")
                 .font(KanjiJourneyTheme.bodyMedium).foregroundColor(radicalColor)
         }
+        .accessibilityElement(children: .combine)
     }
 
     private func answerGrid(_ question: Question) -> some View {
@@ -245,5 +247,6 @@ struct RadicalRecognitionView: View {
             Spacer()
             Text(value).font(KanjiJourneyTheme.bodyLarge).fontWeight(.bold)
         }
+        .accessibilityElement(children: .combine)
     }
 }

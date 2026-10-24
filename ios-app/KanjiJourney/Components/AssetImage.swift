@@ -13,10 +13,12 @@ struct AssetImage: View {
                 .resizable()
                 .aspectRatio(contentMode: contentMode)
                 .accessibilityLabel(contentDescription ?? "")
+                .accessibilityHidden(contentDescription?.isEmpty ?? true)
         } else {
             Image(systemName: "photo")
                 .foregroundColor(.gray)
-                .accessibilityLabel(contentDescription ?? "Image not found")
+                .accessibilityLabel(contentDescription ?? "")
+                .accessibilityHidden(contentDescription?.isEmpty ?? true)
         }
     }
 
@@ -46,8 +48,10 @@ struct RadicalImage: View {
                 .resizable()
                 .aspectRatio(contentMode: contentMode)
                 .accessibilityLabel(contentDescription ?? "")
+                .accessibilityHidden(contentDescription?.isEmpty ?? true)
         } else {
             Text(contentDescription ?? "?")
+                .accessibilityHidden(contentDescription?.isEmpty ?? true)
                 .font(.system(size: 40))
         }
     }

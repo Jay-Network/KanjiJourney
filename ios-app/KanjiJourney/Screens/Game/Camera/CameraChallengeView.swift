@@ -38,7 +38,7 @@ struct CameraChallengeView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
-                    Image(systemName: "chevron.left"); Text("Back")
+                    Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back")
                 }.foregroundColor(.white)
             }
             ToolbarItem(placement: .principal) {
@@ -157,6 +157,7 @@ struct CameraChallengeView: View {
                 .background(KanjiJourneyTheme.surface)
                 .cornerRadius(16)
                 .shadow(radius: 8)
+                .accessibilityElement(children: .combine)
 
                 Spacer()
 
@@ -294,6 +295,7 @@ struct CameraChallengeView: View {
                 .font(KanjiJourneyTheme.bodyLarge)
                 .fontWeight(.bold)
         }
+        .accessibilityElement(children: .combine)
     }
 }
 

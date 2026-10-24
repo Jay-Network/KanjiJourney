@@ -36,7 +36,7 @@ struct VocabularyView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: onBack) {
-                    Image(systemName: "chevron.left"); Text("Back")
+                    Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back")
                 }.foregroundColor(.white)
             }
             ToolbarItem(placement: .principal) {
@@ -139,6 +139,7 @@ struct VocabularyView: View {
     private var progressRow: some View {
         HStack {
             Text("\(viewModel.questionNumber) / \(viewModel.totalQuestions)")
+                .accessibilityLabel("Question \(viewModel.questionNumber) of \(viewModel.totalQuestions)")
                 .font(KanjiJourneyTheme.bodyMedium)
             Spacer()
             if viewModel.currentCombo > 1 {
@@ -151,6 +152,7 @@ struct VocabularyView: View {
                 .font(KanjiJourneyTheme.bodyMedium)
                 .foregroundColor(KanjiJourneyTheme.primary)
         }
+        .accessibilityElement(children: .combine)
     }
 
     @ViewBuilder
@@ -176,6 +178,7 @@ struct VocabularyView: View {
         .background(KanjiJourneyTheme.surface)
         .cornerRadius(KanjiJourneyTheme.radiusM)
         .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
+        .accessibilityElement(children: .combine)
     }
 
     private func answerGrid(_ question: Question) -> some View {
@@ -252,6 +255,7 @@ struct VocabularyView: View {
                             .lineLimit(1)
                     }
                     .frame(width: 80, height: 90)
+                    .accessibilityElement(children: .combine)
                     .background(KanjiJourneyTheme.surface)
                     .cornerRadius(8)
                     .shadow(color: .black.opacity(0.05), radius: 2)
@@ -260,6 +264,7 @@ struct VocabularyView: View {
                             .fill(Color(hex: 0x4CAF50))
                             .frame(width: 20, height: 20)
                             .overlay(Text("\u{2713}").font(.system(size: 12, weight: .bold)).foregroundColor(.white))
+                            .accessibilityHidden(true)
                             .offset(x: 4, y: -4),
                         alignment: .topTrailing
                     )
@@ -292,6 +297,7 @@ struct VocabularyView: View {
         .padding(12)
         .background(KanjiJourneyTheme.surfaceVariant.opacity(0.5))
         .cornerRadius(KanjiJourneyTheme.radiusM)
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: - Session Complete
@@ -345,6 +351,7 @@ struct VocabularyView: View {
             Spacer()
             Text(value).font(KanjiJourneyTheme.bodyLarge).fontWeight(.bold)
         }
+        .accessibilityElement(children: .combine)
     }
 
     private func formatDuration(_ seconds: Int) -> String {

@@ -23,7 +23,7 @@ struct SettingsView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: onBack) { Image(systemName: "chevron.left"); Text("Back") }.foregroundColor(.white)
+                Button(action: onBack) { Image(systemName: "chevron.left").accessibilityHidden(true); Text("Back") }.foregroundColor(.white)
             }
             ToolbarItem(placement: .principal) { Text("Settings").font(.headline).foregroundColor(.white) }
         }
@@ -180,7 +180,7 @@ struct SettingsView: View {
     private func settingsSection(title: String, icon: String, @ViewBuilder content: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 12) {
-                Image(systemName: icon).foregroundColor(KanjiJourneyTheme.primary)
+                Image(systemName: icon).accessibilityHidden(true).foregroundColor(KanjiJourneyTheme.primary)
                 Text(title).font(KanjiJourneyTheme.titleMedium).fontWeight(.bold)
             }
             .padding(.bottom, 12)

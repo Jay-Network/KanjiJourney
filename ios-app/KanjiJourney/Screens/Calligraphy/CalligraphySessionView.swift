@@ -269,6 +269,7 @@ struct CalligraphySessionView: View {
                     .scaledToFit()
                     .frame(width: 32, height: 32)
                     .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .accessibilityHidden(true)
             }
             Text(kanji)
                 .font(.system(size: 18, weight: .bold))
@@ -289,6 +290,8 @@ struct CalligraphySessionView: View {
         .padding(.horizontal, 8)
         .background(scoreColor(score).opacity(0.08))
         .cornerRadius(8)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(label), \(score) out of 5")
     }
 
     private func scoreColor(_ score: Int) -> Color {
@@ -349,5 +352,6 @@ struct CalligraphySessionView: View {
                 .font(KanjiJourneyTheme.labelLarge)
                 .foregroundColor(.primary)
         }
+        .accessibilityElement(children: .combine)
     }
 }
