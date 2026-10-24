@@ -5,6 +5,11 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.23 (2026-10-24) — CI: read-only App Store Connect listing (jworks:47)
+
+### Added
+- `.github/workflows/kanjijourney-asc-read.yml`, run by hand only, read-only, on `ubuntu-latest`. Using the App Store Connect API key in the repo secrets (V9B8YKM5CZ, not the exposed key, per jayhub:67), it lists the App IDs, App Store Connect app records and App Store profiles for bundle ids starting `com.jworks.kanjiquest` or `com.jworks.kanjijourney`, plus the team's distribution certificates. It prints only names, ids, identifiers and dates. Approved by jworks:66 (Apple gatekeeper) as step 1 of replacing the two stale profiles. It decides between reusing the KanjiQuest App IDs and registering KanjiJourney ones.
+
 ## v1.4.22 (2026-10-24) — CI: TestFlight signing jobs move to macos-15 (jworks:47)
 
 ### Fixed

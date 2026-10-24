@@ -1,0 +1,99 @@
+name: KanjiJourney App Store Connect Read
+
+# Manual only, read-only. Lists, for bundle ids starting with com.jworks.kanjiquest or
+# com.jworks.kanjijourney: the App IDs, the App Store Connect app records, the App Store
+# profiles, plus the team's distribution certificates. Prints only names, ids, identifiers
+# and dates. Never creates, changes or deletes anything. The key and the signed token never
+# reach the log: the key stays in env and the token only in an Authorization header.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  asc-read:
+    name: List App IDs, apps, profiles and certificates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install PyJWT
+        run: python -m pip install --quiet 'pyjwt[crypto]==2.9.0'
+
+      - name: Read App Store Connect
+        env:
+          API_KEY_BASE64: ${{ secrets.APPLE_API_KEY_BASE64 }}
+          API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          API_ISSUER_ID: ${{ secrets.APPLE_API_ISSUER_ID }}
+        run: |
+          python - <<'EOF'
+          import base64, json, os, time, urllib.error, urllib.parse, urllib.request
+          import jwt
+
+          PREFIXES = ("com.jworks.kanjiquest", "com.jworks.kanjijourney")
+          now = int(time.time())
+          token = jwt.encode(
+              {"iss": os.environ["API_ISSUER_ID"], "iat": now, "exp": now + 600, "aud": "appstoreconnect-v1"},
+              base64.b64decode(os.environ["API_KEY_BASE64"]).decode(),
+              algorithm="ES256",
+              headers={"kid": os.environ["API_KEY_ID"], "typ": "JWT"},
+          )
+
+          def get(path, params):
+              url = "https://api.appstoreconnect.apple.com" + path + "?" + urllib.parse.urlencode(params)
+              req = urllib.request.Request(url, headers={"Authorization": "Bearer " + token})
+              try:
+                  with urllib.request.urlopen(req, timeout=30) as r:
+                      return json.load(r)
+              except urllib.error.HTTPError as e:
+                  # Status and Apple's error title only; never the request headers.
+                  try:
+                      titles = [x.get("title") for x in json.load(e).get("errors", [])]
+                  except Exception:
+                      titles = []
+                  raise SystemExit(f"HTTP {e.code} on {path}: {titles}")
+
+          def ours(identifier):
+              return (identifier or "").startswith(PREFIXES)
+
+          print("== App IDs (bundleIds) ==")
+          bundle_ids = {}
+          for b in get("/v1/bundleIds", {"limit": 200})["data"]:
+              a = b["attributes"]
+              if ours(a.get("identifier")):
+                  bundle_ids[b["id"]] = a["identifier"]
+                  print(f"  {a['identifier']}  id={b['id']}  name={a.get('name')!r}  platform={a.get('platform')}")
+          if not bundle_ids:
+              print("  none")
+
+          print("\n== App Store Connect app records ==")
+          found = False
+          for app in get("/v1/apps", {"limit": 200})["data"]:
+              a = app["attributes"]
+              if ours(a.get("bundleId")):
+                  found = True
+                  print(f"  {a['bundleId']}  app id={app['id']}  name={a.get('name')!r}  sku={a.get('sku')!r}")
+          if not found:
+              print("  none")
+
+          print("\n== App Store profiles on those App IDs ==")
+          found = False
+          prof = get("/v1/profiles", {"filter[profileType]": "IOS_APP_STORE", "include": "bundleId", "limit": 200})
+          for p in prof["data"]:
+              rel = (p.get("relationships", {}).get("bundleId", {}).get("data") or {}).get("id")
+              if rel in bundle_ids:
+                  found = True
+                  a = p["attributes"]
+                  print(f"  {bundle_ids[rel]}  profile id={p['id']}  name={a.get('name')!r}  "
+                        f"state={a.get('profileState')}  expires={a.get('expirationDate')}")
+          if not found:
+              print("  none")
+
+          print("\n== Distribution certificates ==")
+          for c in get("/v1/certificates", {"filter[certificateType]": "DISTRIBUTION,IOS_DISTRIBUTION", "limit": 200})["data"]:
+              a = c["attributes"]
+              print(f"  cert id={c['id']}  name={a.get('name')!r}  expires={a.get('expirationDate')}")
+          EOF
