@@ -83,10 +83,17 @@ jobs:
 
           print("\n== Latest builds (TestFlight processing state) ==")
           for app_id, bundle in app_ids:
-              for b in get("/v1/builds", {"filter[app]": app_id, "sort": "-uploadedDate", "limit": 3})["data"]:
+              res = get("/v1/builds", {"filter[app]": app_id, "sort": "-uploadedDate", "limit": 3,
+                                       "include": "buildBetaDetail"})
+              # internalBuildState reads MISSING_EXPORT_COMPLIANCE until the encryption question is answered.
+              beta = {x["id"]: x["attributes"] for x in res.get("included", []) if x["type"] == "buildBetaDetails"}
+              for b in res["data"]:
                   a = b["attributes"]
+                  d = beta.get((b.get("relationships", {}).get("buildBetaDetail", {}).get("data") or {}).get("id"), {})
                   print(f"  {bundle}  build {a.get('version')}  uploaded={a.get('uploadedDate')}  "
-                        f"state={a.get('processingState')}  expired={a.get('expired')}")
+                        f"state={a.get('processingState')}  expired={a.get('expired')}  "
+                        f"usesNonExemptEncryption={a.get('usesNonExemptEncryption')}  "
+                        f"internal={d.get('internalBuildState')}  external={d.get('externalBuildState')}")
 
           print("\n== Recent build uploads (Apple's upload state and messages) ==")
           for app_id, bundle in app_ids:

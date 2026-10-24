@@ -5,6 +5,13 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.30 (2026-10-24) — App Store Connect read shows export compliance (jworks:47)
+
+### Changed
+- `kanjijourney-asc-read.yml`: the latest-builds list now also prints `usesNonExemptEncryption`
+  and the TestFlight internal/external build states (`buildBetaDetail`), so a build held as
+  Missing Compliance shows up in the run log. Still read-only.
+
 ## v1.4.29 (2026-10-24) — Verified: KanjiJourney is back on TestFlight (jworks:47)
 
 ### Verified
