@@ -5,6 +5,11 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.39 (2026-10-24) — asc-read prints certificate serials and Apps Hub rows
+
+### Changed
+- `kanjijourney-asc-read.yml` now prints each distribution certificate's serial number and also lists App IDs, app records and App Store profiles whose bundle id starts with `com.jworks.appshub`. Still read-only with the same key. Requested and approved by jworks:66 for Apps Hub's signing check (dlg-68583f4e191e4ccd84824c45).
+
 ## v1.4.38 (2026-10-24) — iOS subscription link parity
 
 ### Fixed

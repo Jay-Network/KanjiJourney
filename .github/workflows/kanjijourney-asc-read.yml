@@ -1,9 +1,9 @@
 name: KanjiJourney App Store Connect Read
 
-# Manual only, read-only. Lists, for bundle ids starting with com.jworks.kanjiquest or
-# com.jworks.kanjijourney: the App IDs, the App Store Connect app records, the App Store
-# profiles, plus the team's distribution certificates. Prints only names, ids, identifiers
-# and dates. Never creates, changes or deletes anything. The key and the signed token never
+# Manual only, read-only. Lists, for bundle ids starting with com.jworks.kanjiquest,
+# com.jworks.kanjijourney or com.jworks.appshub: the App IDs, the App Store Connect app records,
+# the App Store profiles, plus the team's distribution certificates. Prints only names, ids,
+# identifiers, certificate serial numbers and dates. Never creates, changes or deletes anything. The key and the signed token never
 # reach the log: the key stays in env and the token only in an Authorization header.
 on:
   workflow_dispatch:
@@ -33,7 +33,7 @@ jobs:
           import base64, json, os, time, urllib.error, urllib.parse, urllib.request
           import jwt
 
-          PREFIXES = ("com.jworks.kanjiquest", "com.jworks.kanjijourney")
+          PREFIXES = ("com.jworks.kanjiquest", "com.jworks.kanjijourney", "com.jworks.appshub")
           now = int(time.time())
           token = jwt.encode(
               {"iss": os.environ["API_ISSUER_ID"], "iat": now, "exp": now + 600, "aud": "appstoreconnect-v1"},
@@ -122,5 +122,6 @@ jobs:
           print("\n== Distribution certificates ==")
           for c in get("/v1/certificates", {"filter[certificateType]": "DISTRIBUTION,IOS_DISTRIBUTION", "limit": 200})["data"]:
               a = c["attributes"]
-              print(f"  cert id={c['id']}  name={a.get('name')!r}  expires={a.get('expirationDate')}")
+              print(f"  cert id={c['id']}  name={a.get('name')!r}  serial={a.get('serialNumber')}  "
+                    f"expires={a.get('expirationDate')}")
           EOF
