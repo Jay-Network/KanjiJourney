@@ -5,6 +5,12 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.40 (2026-10-24) — iOS CI artifact retention
+
+### Changed
+- The iPad and iPhone TestFlight workflows keep their `xcframeworks` / `xcframeworks-iphone` hand-off artifact for 1 day instead of the 90-day default, and their `.ipa` artifact for 14 days. The account's Actions artifact storage was full and blocked other repos' uploads (reported by jworks:62, KanjiSage-iPad run 40158277184).
+- One-off cleanup: deleted the 38 existing `xcframeworks*` artifacts (1167 MB) from finished runs; no KanjiJourney run was in progress. KanjiJourney artifacts went from 87 / 2569 MB to 49 / 1401 MB. The `.ipa` and Android artifacts were left untouched.
+
 ## v1.4.39 (2026-10-24) — asc-read prints certificate serials and Apps Hub rows
 
 ### Changed

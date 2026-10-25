@@ -52,6 +52,8 @@ jobs:
           path: |
             shared-core/build/XCFrameworks/release/
             shared-japanese/build/XCFrameworks/release/
+          # Only the build job of this same run reads it.
+          retention-days: 1
 
   build-iphone:
     name: Build iPhone & Upload to TestFlight
@@ -238,6 +240,7 @@ jobs:
         with:
           name: KanjiJourney-iPhone.ipa
           path: ios-app/build/export/*.ipa
+          retention-days: 14
 
       - name: Cleanup keychain
         if: always()
