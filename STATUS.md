@@ -20,6 +20,7 @@ Two production breaks found + fixed this pass (Android `local.properties`, not y
 1. **J-Coin backend URL** — repointed to `j-coin.jworks-ai.com`, anon key refreshed to the 2026-07-27 rotated value. Both independently verified live (Kong 200 w/ new key, edge functions reachable, unexposed tables correctly 404).
 2. **Auth backend URL** — was pointing at a decommissioned cloud Supabase project (`sitmlszxevzczfydemok.supabase.co`, NXDOMAIN) for login + the premium subscription gate. Repointed to the self-hosted TutoringJay portal Kong (`https://jayboard.tutoringjay.com/supabase`), verified live (401 = Kong alive, auth required — correct unauthenticated response). Existing `AUTH_SUPABASE_ANON_KEY` still valid against the new URL (verified, no rotation needed).
 - Full detail: jworks:44 task #18. Next: rebuild, verify the compiled APK reaches the live surface, then redistribute to confirmed testers.
+- **2026-10-24 — APK cutover (B3) NOT landed.** Done: a locally built APK reaches the new J Coin backend (anonymous sign-in verified on the Z Flip 2026-10-16). Open: J Coin earning is switched off since v1.4.19, waiting on Jay's card `desk-jworks44-kanjijourney-jcoin-earning` (task #41); CI-built APKs carry no J Coin config (CI secrets, task #35); no tester redistribution yet. KanjiSage iPad's Phase-3 cross-app J Coin (jworks:62) waits on this.
 
 ---
 
