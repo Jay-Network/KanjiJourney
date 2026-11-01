@@ -5,6 +5,28 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.42 (2026-11-01) — Free players earn J Coins: anonymous J Coin sign-in ON (jworks:44)
+
+Option A on desk card `desk-jworks44-kanjijourney-jcoin-earning`, chosen by jworks:0 on 2026-11-01 after jayhub:131 returned the card to the fleet under Jay's 11-01 order (not a decision by Jay himself). J Coin side: jworks:35, J_Coin v0.9.61 (d7d4a74862), live 2026-11-01 20:52:10Z (jayhub:110): the earn premium gate now covers KanjiQuest only.
+
+### Changed
+- `SupabaseClientFactory.anonymousSignInEnabled` defaults to `true`: each Android install signs in to J Coin anonymously once and its earns are sent with that session. iOS is unaffected while it never calls `initialize` (jworks:47 task #14).
+- `CompleteSessionUseCase` awards J Coins to every player; it used to award them to premium players only (`isPremium()` gate since at least 2026-03-01).
+
+### Fixed (from the independent review of this change, before it shipped)
+- No second anonymous account per install: `ensureAnonymousSession()` waits for the saved session to finish loading (`auth.awaitInitialization()`), never signs up over a saved session whose refresh failed (`NetworkError`), and runs signups one at a time (Mutex). It now returns `JCoinSession` (NONE / RESTORED / CREATED).
+- Guest migration no longer double-credits (BUG-019): a credited earn now adds its coins to `coin_balance.synced_balance` in the same transaction that deletes the row, so `MigrateLocalDataUseCase` sends only what the server has not seen. `upsertBalance` no longer overwrites `synced_balance`.
+- `syncPendingEvents` runs one at a time, makes no signup when no earn is queued, and gives earns that ran out of retries their retries back when the install gets its first J Coin session (they failed only for sending no token, 401 since 2026-09-27).
+- `CoinSyncWorker` no longer retries forever: `getPendingCount` counts only earn rows under the retry cap, matching what the sync sends (spend rows stay queued, BUG-011).
+- A cancelled worker no longer counts as a failed attempt; the signup failure log prints only the exception type.
+
+### Verification
+- `JCoinSyncSwitchTest` (jvmTest, Ktor MockEngine, in-memory session): switch off = zero requests; concurrent sync + signup callers = one signup, the earn sent once with `Bearer <session token>`, the spend left queued, `synced_balance` counted; capped earns sent after the first session; spend-only queue = no request.
+- `CompleteSessionCoinTest.freeUser_earnsSameCoinsAsPremium`.
+- `:shared-core:jvmTest` 102 tests, 0 failures; `:shared-core:testDebugUnitTest` 118 tests, 0 failures (2026-11-01). Independent review of the diff (feature-dev:code-reviewer): 3 blockers found and fixed above before push.
+- On a real phone (Z Flip 7, slot from jayhub:44, debug APK sha256 40bd1996): fresh install, "Try as Guest", one 10-question Recognition session at level 1 -> "+5 J Coins", home shows 5 J Coins. The first sync (no earn queued) made no signup. At 2026-11-01 23:25:14Z the worker signed in anonymously and logged "Successfully synced 1 coin events"; the app DB then showed local_balance 5, synced_balance 5, empty queue, no token stored. App uninstalled afterwards.
+- Seen on the phone: Android gives the app no network for its background job while the app is in the background with the screen off, so an earn uploads the next time the app is open. Coins show locally at once.
+
 ## v1.4.41 (2026-11-01) — New players get grade 1 at levels 1 to 3 (jworks:44)
 
 Option a on desk card `desk-jworks44-kanjijourney-new-player-pool`, chosen by jworks:0 on 2026-11-01 after jayhub:131 returned the card to the fleet.

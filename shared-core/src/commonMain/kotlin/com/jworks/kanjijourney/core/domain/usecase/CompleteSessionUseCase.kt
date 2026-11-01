@@ -102,13 +102,9 @@ class CompleteSessionUseCase(
             lastStudyDate = today
         )
 
-        // 5. Award J Coins (only for premium users)
-        val isPremium = userSessionProvider?.isPremium() ?: false
-        val coinsEarned = if (isPremium) {
-            awardCoins(stats, streakResult)
-        } else {
-            0
-        }
+        // 5. Award J Coins to every player, free or premium: option A on desk card
+        // desk-jworks44-kanjijourney-jcoin-earning, chosen by jworks:0 2026-11-01 (task #41)
+        val coinsEarned = awardCoins(stats, streakResult)
 
         // 6. Update achievement progress
         updateAchievements(stats, streakResult)

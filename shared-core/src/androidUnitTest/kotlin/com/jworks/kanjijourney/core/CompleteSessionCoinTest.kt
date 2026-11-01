@@ -143,8 +143,7 @@ class CompleteSessionCoinTest {
     }
 
     @Test
-    fun freeUser_earns0Coins() = runTest {
-        val (useCase, jCoinRepo) = createUseCase(premium = false)
+    fun freeUser_earnsSameCoinsAsPremium() = runTest {
         val stats = SessionStats(
             gameMode = GameMode.RECOGNITION,
             cardsStudied = 20,
@@ -153,10 +152,15 @@ class CompleteSessionCoinTest {
             xpEarned = 200,
             durationSec = 300
         )
+        val (premiumUseCase, _) = createUseCase(premium = true)
+        val premiumCoins = premiumUseCase.execute(stats).coinsEarned
+        val (useCase, jCoinRepo) = createUseCase(premium = false)
 
         val result = useCase.execute(stats)
-        assertEquals(0, result.coinsEarned)
-        assertEquals(0L, jCoinRepo.getBalance(LOCAL_USER_ID).localBalance)
+
+        assertTrue(premiumCoins > 0)
+        assertEquals(premiumCoins, result.coinsEarned)
+        assertEquals(premiumCoins.toLong(), jCoinRepo.getBalance(LOCAL_USER_ID).localBalance)
     }
 
     @Test

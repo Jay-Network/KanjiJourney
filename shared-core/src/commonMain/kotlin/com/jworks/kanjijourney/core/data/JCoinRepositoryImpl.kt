@@ -3,6 +3,7 @@ package com.jworks.kanjijourney.core.data
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.coroutines.mapToOneOrNull
+import com.jworks.kanjijourney.core.data.remote.JCoinSession
 import com.jworks.kanjijourney.core.data.remote.SupabaseClientFactory
 import com.jworks.kanjijourney.core.domain.model.ActiveBooster
 import com.jworks.kanjijourney.core.domain.model.BoosterType
@@ -16,9 +17,12 @@ import com.jworks.kanjijourney.core.domain.model.SyncStatus
 import com.jworks.kanjijourney.core.domain.repository.JCoinRepository
 import com.jworks.kanjijourney.db.KanjiJourneyDatabase
 import io.github.jan.supabase.functions.functions
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.buildJsonObject
@@ -63,6 +67,8 @@ class JCoinRepositoryImpl(
     constructor(database: KanjiJourneyDatabase) : this(database, Clock.System)
 
     private val queries get() = database.jCoinQueries
+
+    private val syncMutex = Mutex()
 
     override suspend fun getBalance(userId: String): CoinBalance = withContext(Dispatchers.Default) {
         queries.initializeBalance(userId)
@@ -147,17 +153,26 @@ class JCoinRepositoryImpl(
         if (!SupabaseClientFactory.isInitialized()) {
             return@withContext 0 // Skip sync if backend not configured
         }
-        // The function answers 401 without a user token (task #41). No session: keep the queue.
-        if (!SupabaseClientFactory.ensureAnonymousSession()) return@withContext 0
+        // One sync at a time, so no queued earn is sent or counted twice
+        syncMutex.withLock { syncEarns() }
+    }
 
+    private suspend fun syncEarns(): Int {
+        // Nothing to send: do not create an anonymous J Coin account for this install yet
+        if (queries.countQueuedEarns().executeAsOne() == 0L) return 0
+
+        // The function answers 401 without a user token (task #41). No session: keep the queue.
+        val session = SupabaseClientFactory.ensureAnonymousSession()
+        if (session == JCoinSession.NONE) return 0
+        if (session == JCoinSession.CREATED) queries.resetFailedEarnRetries()
+
+        // Only earns go to jcoin-unified-earn: a spend row posted there would be credited as an
+        // earn. Spends stay queued, untouched, until a spend endpoint exists (jworks:72, 2026-10-15).
+        val pending = queries.getPendingEvents().executeAsList().filter { it.event_type == "earn" }
         val supabase = SupabaseClientFactory.getInstance()
-        val pending = queries.getPendingEvents().executeAsList()
         var syncedCount = 0
 
         for (event in pending) {
-            // Only earns go to jcoin-unified-earn: a spend row posted there would be credited as an
-            // earn. Spends stay queued, untouched, until a spend endpoint exists (jworks:72, 2026-10-15).
-            if (event.event_type != "earn") continue
             try {
                 // Call Supabase Edge Function: jcoin-unified-earn. Only rows carrying a
                 // client_event_id get the transport retry: the server dedups on that key, so a
@@ -186,11 +201,13 @@ class JCoinRepositoryImpl(
                 val response = if (event.client_event_id != null) withOneTransportRetry(invoke) else invoke()
 
                 if (response.status.value in 200..299) {
-                    // Success - delete from queue
-                    queries.deleteSyncEvent(event.id)
+                    // Credited: drop the row and count its coins as synced, together, so a later
+                    // guest migration (local_balance - synced_balance) does not send them again
+                    queries.transaction {
+                        queries.deleteSyncEvent(event.id)
+                        queries.addToSyncedBalance(event.base_amount, event.user_id)
+                    }
                     syncedCount++
-
-                    // TODO: Update synced_balance from response
                 } else {
                     // Mark as failed
                     queries.updateSyncStatus(
@@ -200,6 +217,8 @@ class JCoinRepositoryImpl(
                         id = event.id
                     )
                 }
+            } catch (e: CancellationException) {
+                throw e // the worker was stopped; this attempt does not count against the row
             } catch (e: Exception) {
                 // Network error or other exception
                 queries.updateSyncStatus(
@@ -211,7 +230,7 @@ class JCoinRepositoryImpl(
             }
         }
 
-        return@withContext syncedCount
+        return syncedCount
     }
 
     override suspend fun reconcileMigratedBalance(
@@ -220,7 +239,7 @@ class JCoinRepositoryImpl(
         eventId: String
     ): Boolean = withContext(Dispatchers.Default) {
         if (!SupabaseClientFactory.isInitialized()) return@withContext false
-        if (!SupabaseClientFactory.ensureAnonymousSession()) return@withContext false
+        if (SupabaseClientFactory.ensureAnonymousSession() == JCoinSession.NONE) return@withContext false
         try {
             val supabase = SupabaseClientFactory.getInstance()
             // Always keyed, so the transport retry is safe here (server dedup live 2026-10-09).
