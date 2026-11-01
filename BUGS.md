@@ -65,7 +65,8 @@ History: BUG-001 (APK size)
   - **Fix**: (1) moved the two JDBC-driver tests from `commonTest` to `androidUnitTest` (correct KMP scoping — they're JVM-only tests) + added the driver dependency to `androidUnitTest.dependencies`. (2) Implemented the missing interface methods on all 4 fakes, matching each file's existing style (derive from in-memory state where natural, trivial empty/null/0 default otherwise).
   - **Verified**: `:shared-core:testDebugUnitTest` now compiles and runs — 94 tests execute (previously 0 could even compile). `JCoinRepositoryTest` (the suite covering the code actually touched by BUG-006) passes 10/10. 27 of the 94 fail — see BUG-007, confirmed pre-existing/unrelated via `git diff --stat`, not caused by this fix.
 
-- [ ] [BUG-007] 27 pre-existing test failures newly exposed by the BUG-005 compile fix — TRIAGED 2026-09-04, jworks:44
+- [x] [BUG-007] 27 pre-existing test failures newly exposed by the BUG-005 compile fix — TRIAGED 2026-09-04, jworks:44 — RESOLVED 2026-11-01 (v1.4.41)
+  - **Resolved 2026-11-01 (jworks:44, v1.4.41)**: cluster 1 fixed by option a on desk card desk-jworks44-kanjijourney-new-player-pool (chosen by jworks:0 after jayhub:131 returned the card to the fleet): levels 1-3 now unlock grade 1. `:shared-core:testDebugUnitTest` 118 tests, 0 failures (GameEngineTest 13/13, WritingModeEngineTest 8/8, LevelProgressionTest 2/2). Clusters 2-4 were closed as stale tests on 2026-10-10.
   - **Severity**: Medium-High — one cluster is a real BUG-005 regression (not "pre-existing" as first thought), one cluster looks like real production bugs, not test bugs
   - **Cat**: F (Platform)
   - **Found**: 2026-07-30, jworks:44, immediately after fixing BUG-005. Re-ran `./gradlew :shared-core:testDebugUnitTest` 2026-09-04 to triage — same 94 tests, same 27 failures, reproducible.

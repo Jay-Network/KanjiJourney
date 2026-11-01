@@ -5,6 +5,17 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.41 (2026-11-01) — New players get grade 1 at levels 1 to 3 (jworks:44)
+
+Option a on desk card `desk-jworks44-kanjijourney-new-player-pool`, chosen by jworks:0 on 2026-11-01 after jayhub:131 returned the card to the fleet.
+
+### Fixed
+- `LevelProgression`: levels 1, 2 and 3 unlocked no kanji grade (`emptyList()`), so a new player who skipped the placement test saw "No kanji available for study" in Recognition and Writing (BUG-007 cluster 1). They now unlock grade 1, like level 4. Shared code, so iOS reads the same table (HomeViewModel.swift:141).
+- Side effect, intended: demotion (under 40% accuracy over 30+ reviews) can now happen at levels 2 and 3, and a player demoted from level 4 keeps grade 1 instead of losing every grade.
+
+### Verification
+- `LevelProgressionTest` (new). `:shared-core:testDebugUnitTest` 118 tests, 0 failures (2026-11-01), including GameEngineTest and WritingModeEngineTest, which had 18 failures from this gap on 2026-10-10.
+
 ## v1.4.40 (2026-10-24) — iOS CI artifact retention
 
 ### Changed

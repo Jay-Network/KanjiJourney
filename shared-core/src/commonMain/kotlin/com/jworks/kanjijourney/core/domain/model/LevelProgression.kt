@@ -14,17 +14,17 @@ object LevelProgression {
     val tiers: List<PlayerTier> = listOf(
         PlayerTier(
             ordinal = 1, nameEn = "Newcomer", nameJp = "新参者",
-            levelRange = 1..1, unlockedGrades = emptyList(),
+            levelRange = 1..1, unlockedGrades = listOf(1),
             featureUnlocks = listOf("Hiragana")
         ),
         PlayerTier(
             ordinal = 2, nameEn = "Script Learner", nameJp = "文字習い",
-            levelRange = 2..2, unlockedGrades = emptyList(),
+            levelRange = 2..2, unlockedGrades = listOf(1),
             featureUnlocks = listOf("Katakana")
         ),
         PlayerTier(
             ordinal = 3, nameEn = "Foundation", nameJp = "基礎",
-            levelRange = 3..3, unlockedGrades = emptyList(),
+            levelRange = 3..3, unlockedGrades = listOf(1),
             featureUnlocks = listOf("Radicals")
         ),
         PlayerTier(
