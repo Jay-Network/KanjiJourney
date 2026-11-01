@@ -282,7 +282,6 @@ fun LoginScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     MemberPerk("Premium app access included with tutoring")
-                    MemberPerk("Earn J Coins for real rewards")
                     MemberPerk("Personalized learning with a STEM tutor")
                     MemberPerk("Track progress across all subjects")
                     Spacer(modifier = Modifier.height(8.dp))

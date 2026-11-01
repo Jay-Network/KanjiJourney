@@ -5,6 +5,11 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.43 (2026-11-01) — App text no longer says J Coins are premium-only (jworks:44)
+
+### Fixed
+- BUG-020: since v1.4.42 every player earns J Coins, but three texts still tied them to premium. The login screen's "TutoringJay Members get more" list drops "Earn J Coins for real rewards"; the home banner reads "Upgrade to Premium: Unlock all modes & more"; the subscription comparison table marks "J Coin Earning" as free too. Asked for by jayhub:131 before the build goes to testers. Android only (iOS does not earn J Coins yet).
+
 ## v1.4.42 (2026-11-01) — Free players earn J Coins: anonymous J Coin sign-in ON (jworks:44)
 
 Option A on desk card `desk-jworks44-kanjijourney-jcoin-earning`, chosen by jworks:0 on 2026-11-01 after jayhub:131 returned the card to the fleet under Jay's 11-01 order (not a decision by Jay himself). J Coin side: jworks:35, J_Coin v0.9.61 (d7d4a74862), live 2026-11-01 20:52:10Z (jayhub:110): the earn premium gate now covers KanjiQuest only.

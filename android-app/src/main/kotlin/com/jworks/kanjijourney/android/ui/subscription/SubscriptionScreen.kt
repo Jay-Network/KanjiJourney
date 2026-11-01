@@ -124,7 +124,7 @@ fun SubscriptionScreen(
             FeatureRow("Camera Challenge", free = false, premium = true)
             FeatureRow("Daily Questions", freeText = "15/day", premiumText = "Unlimited")
             FeatureRow("Kanji Grades", freeText = "1-2", premiumText = "All")
-            FeatureRow("J Coin Earning", free = false, premium = true)
+            FeatureRow("J Coin Earning", free = true, premium = true)
             FeatureRow("AI Handwriting", free = false, premium = true)
             FeatureRow("Shop Purchases", freeText = "View only", premiumText = "Full")
 

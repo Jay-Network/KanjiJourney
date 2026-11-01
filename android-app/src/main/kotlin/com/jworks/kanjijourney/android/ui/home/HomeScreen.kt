@@ -256,7 +256,7 @@ fun HomeScreen(
                                 color = StateColors.Gold
                             )
                             Text(
-                                text = "Unlock all modes, J Coins & more",
+                                text = "Unlock all modes & more",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = StateColors.Gold.copy(alpha = 0.7f)
                             )
