@@ -136,8 +136,11 @@ jobs:
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
+          # In an xcconfig "//" starts a comment, so "https://host" would arrive as "https:".
+          # "/$()/" is Xcode's escape for it and expands back to "//".
+          SB_URL_XC=$(printf '%s' "$SUPABASE_URL" | sed 's#//#/$()/#g')
           cat > KanjiJourneyPhone.xcconfig << EOF
-          SUPABASE_URL = ${SUPABASE_URL}
+          SUPABASE_URL = ${SB_URL_XC}
           SUPABASE_ANON_KEY = ${SUPABASE_ANON_KEY}
           GEMINI_API_KEY = ${GEMINI_API_KEY}
           DEVELOPMENT_TEAM = 27943BGKL7
@@ -184,6 +187,7 @@ jobs:
             -destination 'generic/platform=iOS' \
             -archivePath build/KanjiJourneyPhone.xcarchive \
             DEVELOPMENT_TEAM=27943BGKL7 \
+            MARKETING_VERSION="$(cat ../VERSION)" \
             CURRENT_PROJECT_VERSION=$((GITHUB_RUN_NUMBER + 100)) \
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="Apple Distribution" \
@@ -202,6 +206,25 @@ jobs:
         working-directory: ios-app
         run: |
           ls -la build/KanjiJourneyPhone.xcarchive/Products/Applications/ || { echo "Archive failed - no .app found"; exit 1; }
+
+      - name: Check version and J Coin config in the built app
+        working-directory: ios-app
+        # Reports properties only, never the values: whether SUPABASE_URL is a full https URL on the
+        # J Coin host, and the key's length. Without both the app runs J Coin offline-only.
+        run: |
+          PLIST=$(ls build/*.xcarchive/Products/Applications/*.app/Info.plist | head -1)
+          pb() { /usr/libexec/PlistBuddy -c "Print :$1" "$PLIST" 2>/dev/null || true; }
+          echo "CFBundleShortVersionString=$(pb CFBundleShortVersionString) CFBundleVersion=$(pb CFBundleVersion)"
+          SB_URL=$(pb SUPABASE_URL)
+          case "$SB_URL" in
+            https://?*)
+              SB_HOST=${SB_URL#https://}; SB_HOST=${SB_HOST%%/*}
+              [ "$SB_HOST" = "j-coin.jworks-ai.com" ] && echo "SUPABASE_URL: full https URL on j-coin.jworks-ai.com" \
+                || echo "::warning::SUPABASE_URL is a full https URL but not on j-coin.jworks-ai.com" ;;
+            *) echo "::warning::SUPABASE_URL in the built app is not a full https URL (length ${#SB_URL}); J Coin runs offline-only" ;;
+          esac
+          SB_KEY=$(pb SUPABASE_ANON_KEY)
+          echo "SUPABASE_ANON_KEY length in the built app: ${#SB_KEY}"
 
       - name: Export IPA
         working-directory: ios-app

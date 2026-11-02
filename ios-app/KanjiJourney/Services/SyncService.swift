@@ -10,14 +10,34 @@ final class SyncService: ObservableObject {
     static let backgroundTaskIdentifier = "com.jworks.kanjijourney.sync"
 
     private let learningSyncRepository: LearningSyncRepositoryImpl
+    private let jCoinRepository: JCoinRepositoryImpl
     private let userSessionProvider: UserSessionProviderImpl
 
     init(
         learningSyncRepository: LearningSyncRepositoryImpl,
+        jCoinRepository: JCoinRepositoryImpl,
         userSessionProvider: UserSessionProviderImpl
     ) {
         self.learningSyncRepository = learningSyncRepository
+        self.jCoinRepository = jCoinRepository
         self.userSessionProvider = userSessionProvider
+    }
+
+    // MARK: - J Coin Sync
+
+    /// Sends queued J Coin earns; the iOS counterpart of Android's CoinSyncWorker. Called when the
+    /// full app is ready and each time it returns to the foreground. Does nothing while the J Coin
+    /// client is not configured; rows that fail stay queued for the next call.
+    func syncCoins() {
+        Task {
+            do {
+                let synced = try await jCoinRepository.syncPendingEvents()
+                NSLog("KanjiJourney [Sync]: J Coin sync sent %@ queued earns", "\(synced)")
+            } catch {
+                // Type only: error text can carry request headers (BUG-015)
+                NSLog("KanjiJourney [Sync]: J Coin sync failed (%@)", String(describing: type(of: error)))
+            }
+        }
     }
 
     // MARK: - App Foreground Sync

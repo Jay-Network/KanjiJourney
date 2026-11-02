@@ -51,6 +51,9 @@ class AppState: ObservableObject {
 
     @Published var phase: Phase = .splash
     @Published var diagnosticLog: [String] = []
+    /// Start-up version check (ForceUpgradeChecker). The app stays usable while it runs and
+    /// whenever it fails; only `.updateRequired` replaces the app with ForceUpgradeView.
+    @Published var upgradeState: UpgradeCheckState = .checking
 
     func onSplashComplete() {
         // Go straight to mock home — KMP init happens in background
@@ -98,6 +101,16 @@ class AppState: ObservableObject {
                 // Non-fatal — app can still work without background sync
             }
             phase = .ready(container)
+            container.syncService.syncCoins()
+            startUpgradeCheck(configuration: container.configuration)
+        }
+    }
+
+    private func startUpgradeCheck(configuration: Configuration) {
+        let version = ForceUpgradeChecker.currentAppVersion
+        Task { @MainActor [weak self] in
+            let state = await ForceUpgradeChecker.check(currentVersion: version, configuration: configuration)
+            self?.upgradeState = state
         }
     }
 
@@ -116,8 +129,20 @@ class AppState: ObservableObject {
 
 struct AppRootView: View {
     @EnvironmentObject var appState: AppState
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
+        content
+            .onChange(of: scenePhase) { newPhase in
+                // Back in the foreground: send J Coin earns queued since the last sync
+                if newPhase == .active, case .ready(let container) = appState.phase {
+                    container.syncService.syncCoins()
+                }
+            }
+    }
+
+    @ViewBuilder
+    private var content: some View {
         switch appState.phase {
         case .splash:
             SplashView(onSplashComplete: {
@@ -129,8 +154,13 @@ struct AppRootView: View {
                 .environmentObject(appState)
 
         case .ready(let container):
-            AppNavigation()
-                .environmentObject(container)
+            // Like Android's MainActivity: the upgrade screen replaces the app, it is not dismissible
+            if case .updateRequired(let message, let storeUrl) = appState.upgradeState {
+                ForceUpgradeView(message: message, storeUrl: storeUrl)
+            } else {
+                AppNavigation()
+                    .environmentObject(container)
+            }
 
         case .failed(let error):
             errorView(error)

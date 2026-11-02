@@ -69,6 +69,9 @@ final class AppContainer: ObservableObject {
         configuration = Configuration()
         CrashDiagnostic.step("Configuration OK")
 
+        // J Coin client: anonymous J Coin session, earn sync, force-upgrade data, deviceCountry
+        Self.initializeJCoinClient(configuration)
+
         // Stage the pre-built DB from the app bundle to Documents/ BEFORE
         // Kotlin/Native's DatabaseDriverFactory touches it.
         Self.stageBundleDatabase()
@@ -176,6 +179,7 @@ final class AppContainer: ObservableObject {
         CrashDiagnostic.step("Creating SyncService...")
         syncService = SyncService(
             learningSyncRepository: learningSyncRepository,
+            jCoinRepository: jCoinRepository,
             userSessionProvider: userSessionProvider
         )
         // NOTE: BGTaskScheduler.register must be called during app launch (didFinishLaunching).
@@ -259,6 +263,31 @@ final class AppContainer: ObservableObject {
         CalligraphyFeedbackService(apiKey: configuration.geminiApiKey)
     }
     #endif
+
+    // MARK: - J Coin Client
+
+    /// Mirrors Android `KanjiJourneyApplication.initializeSupabase()`. Without a full https URL and a
+    /// key the app runs J Coin offline-only: earns stay queued in the local database.
+    private static func initializeJCoinClient(_ configuration: Configuration) {
+        let factory = SupabaseClientFactory.shared
+        guard !factory.isInitialized() else { return }
+        // createSupabaseClient throws on a bad URL, and a Kotlin exception would end the app here
+        guard let components = URLComponents(string: configuration.supabaseUrl),
+              components.scheme == "https", components.host?.isEmpty == false,
+              !configuration.supabaseAnonKey.isEmpty else {
+            NSLog("KanjiJourney: J Coin config missing - J Coin running in offline-only mode")
+            CrashDiagnostic.step("J Coin client skipped (no config)")
+            return
+        }
+        factory.initialize(
+            supabaseUrl: configuration.supabaseUrl,
+            supabaseKey: configuration.supabaseAnonKey,
+            httpEngine: nil,
+            sessionManager: nil
+        )
+        factory.deviceCountry = Locale.current.region?.identifier
+        CrashDiagnostic.step("J Coin client OK")
+    }
 
     // MARK: - Bundle Database Staging
 

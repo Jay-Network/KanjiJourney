@@ -5,6 +5,20 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.45 (2026-11-01) — iOS: J Coin client, earn sync and force-upgrade check (jworks:47)
+
+### Added
+- iOS initializes SharedCore's `SupabaseClientFactory` at start (`DI/AppContainer.swift` `initializeJCoinClient`), mirroring Android `KanjiJourneyApplication.initializeSupabase()`. It also sets `deviceCountry` from `Locale.current.region`. Since v1.4.42 the J Coin client signs each install in anonymously, so iOS players now earn under their own anonymous J Coin account, as on Android. Without a full https URL and a key, the app stays J Coin offline-only, and earns stay queued.
+- iOS sends queued J Coin earns (`SyncService.syncCoins()`, the counterpart of Android `CoinSyncWorker`) once the full app is ready and each time it returns to the foreground.
+- iOS force-upgrade check (`Services/ForceUpgradeChecker.swift`, `Screens/ForceUpgrade/ForceUpgradeView.swift`), ported from Android `ForceUpgradeChecker` / `ForceUpgradeScreen`. It reads `app_config` for `app_id = 'kanjijourney-ios'`, its own row, so an Android minimum never locks out iOS testers. With no such row it always passes. It selects only `min_version, force_upgrade_message, store_url`, so it is not hit by Android's BUG-013. Every failure lets the app continue. Unlike Android, the app is not held on a blank screen while the check runs; an update-required result replaces the app.
+
+### Fixed
+- BUG-022: iOS builds now carry the repo VERSION as `CFBundleShortVersionString` (the archive step passes `MARKETING_VERSION`); they were all "1.0.0". TestFlight lists these builds under a new version train.
+- BUG-021: both iOS workflows escape `//` in the xcconfig `SUPABASE_URL`. A new CI step logs whether the built app holds a full https J Coin URL and the key's length (never the values) plus the app version.
+
+### Unverified
+- iOS compile of this revision (CI Release archive), and on-device behavior: anonymous signup, an earn reaching the server, and the upgrade screen. That the J Coin key in the GitHub secret is current is also unverified (BUG-021).
+
 ## v1.4.44 (2026-11-01) — iOS framework job off the retiring macOS 14 runner (jworks:47)
 
 ### Fixed
