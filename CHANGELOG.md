@@ -5,6 +5,11 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.46 (2026-11-02) — docs: iOS J Coin build verified (jworks:47)
+
+### Changed
+- BUGS.md: BUG-021 and BUG-022 verified fixed. iOS build 126 (v1.4.45) carries version 1.4.45 and the J Coin URL on j-coin.jworks-ai.com, and it is IN_BETA_TESTING on both apps (asc-read 41392622139). BUG-021 also records that a run keeps the secret values it started with: build 125 still had the old URL.
+
 ## v1.4.45 (2026-11-01) — iOS: J Coin client, earn sync and force-upgrade check (jworks:47)
 
 ### Added
