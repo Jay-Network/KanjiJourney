@@ -5,6 +5,11 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.44 (2026-11-01) — iOS framework job off the retiring macOS 14 runner (jworks:47)
+
+### Fixed
+- The `Build KMP XCFrameworks` job in the iPad and iPhone TestFlight workflows now runs on `macos-15` instead of `macos-14`. GitHub retires macOS 14 images on 2026-11-02, and a scheduled brownout cancelled both iOS runs on 0c0d5e4 (41362223457, 41362223437) before any step ran. The build-and-upload job was already on `macos-15`.
+
 ## v1.4.43 (2026-11-01) — App text no longer says J Coins are premium-only (jworks:44)
 
 ### Fixed
