@@ -74,11 +74,17 @@ jobs:
       - name: Run unit tests
         run: ./gradlew :android-app:testDebugUnitTest
 
+      # J Coin money-path and level tests live in shared-core (KMP jvm target).
+      - name: Run shared-core JVM tests
+        run: ./gradlew :shared-core:jvmTest
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-results
-          path: android-app/build/reports/tests/
+          path: |
+            android-app/build/reports/tests/
+            shared-core/build/reports/tests/
           retention-days: 14
 
   build-release:

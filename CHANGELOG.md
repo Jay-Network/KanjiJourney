@@ -5,6 +5,11 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.47 (2026-11-08) — CI: shared-core JVM tests run on every Android build (jworks-vm:44 for jworks:44)
+
+### Changed
+- `.github/workflows/android-build.yml` Unit Tests job now also runs `./gradlew :shared-core:jvmTest`, so JCoinSyncSwitchTest and LevelProgressionTest run in CI, and shared-core test reports are uploaded with the test results. No app or shared-core code change.
+
 ## v1.4.46 (2026-11-02) — docs: iOS J Coin build verified (jworks:47)
 
 ### Changed
