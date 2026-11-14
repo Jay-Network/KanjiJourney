@@ -5,6 +5,12 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.51 (2026-11-14) — docs: v1.4.49 results, tester APK 1.4.50 (jworks:44)
+
+### Docs
+- Filled the v1.4.49 verification results (emulator + Kong + CI).
+- Tester APK: the CI debug APK of 8eb639a re-signed with this host's debug key (cert SHA-256 6a82dc2d..., same as the testers' 1.4.43 build, so it installs as an update), versionName 1.4.50, sha256 ba40f2b3...; J Coin URLs and keys match 1.4.43 by hash (2 of 2 JWTs, 6 of 6 URLs). Path sent to jayhub:131 for Jay: agent-text/jworks-44/apk/KanjiJourney-1.4.50-debug.apk. BUG-023 stays open until a tester's earn reaches J Coin.
+
 ## v1.4.50 (2026-11-14) — Test fix for v1.4.49 (jworks:44)
 
 ### Fixed
@@ -17,7 +23,8 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ### Verification
 - `SyncOnEarnJCoinRepositoryTest` (jvmTest, 4 cases): one sync per burst of earns, after the pause; an earn during a running sync does not cancel it; `syncSoon()` alone runs one sync; a failing sync does not reach the caller.
-- RESULTS: FILL
+- Emulator (11-14, AVD ej_e2e_api35, Android 15, read-only, fresh 1.4.49 install, guest): one session earned +5; the app DB read synced_balance 5 = local_balance 5 at 19:46:02Z, twelve seconds after the session, with no CoinSyncWorker run. Kong (read by jayhub:110): anonymous signup 200 at 19:45:46Z and one jcoin-unified-earn 201 at 19:45:47Z; that test customer is labelled test_account. Evidence: agent-text/jworks-44/emu-1449/.
+- CI run 43633573775 (8eb639a, v1.4.50): Unit Tests, Build Debug APK and Build Release AAB all green.
 
 ## v1.4.48 (2026-11-13) — docs: stale iOS rows in TODO.md (jworks:47)
 

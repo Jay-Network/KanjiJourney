@@ -1,13 +1,13 @@
 # KanjiJourney Development Tracker
 
 > **Updated by**: jworks:44 (Android) — this pass covers Android only. The iOS lines and sections were updated 2026-10-24 by jworks:47 (iOS owner).
-> **Last updated**: 2026-07-30
+> **Last updated**: 2026-11-14
 
 ---
 
 ## Current Status
 
-- **Version**: v1.4.43 (Android versionCode 18 / versionName 1.4.43, read with aapt from the tester debug APK built 2026-11-01, sha256 86a0130d; versionName comes from the VERSION file, BUG-016). iOS: TestFlight build 119 (version 1.0.0) is IN_BETA_TESTING for internal testers on both iPad (`com.jworks.kanjiquest.ipad`) and iPhone (`com.jworks.kanjiquest.iphone`), read from App Store Connect on 2026-10-24 (asc-read run 40076526776, jworks:47).
+- **Version**: v1.4.50 (Android versionCode 18 / versionName 1.4.50, read with aapt from the tester debug APK of 2026-11-14, sha256 ba40f2b3: CI build of 8eb639a re-signed with the same debug key as the 1.4.43 tester build; versionName comes from the VERSION file, BUG-016). Sent to jayhub:131 for Jay to give testers (BUG-023). iOS: TestFlight build 119 (version 1.0.0) is IN_BETA_TESTING for internal testers on both iPad (`com.jworks.kanjiquest.ipad`) and iPhone (`com.jworks.kanjiquest.iphone`), read from App Store Connect on 2026-10-24 (asc-read run 40076526776, jworks:47).
 - **Platforms**: Android (Kotlin) + iOS/iPad (SwiftUI via KMP + SKIE)
 - **CI Build**: android-build.yml — verified green as of 2026-07-23 (all 3 jobs: debug, unit tests, release AAB w/ keystore)
 - **Branch**: main
