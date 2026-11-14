@@ -5,6 +5,13 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.48 (2026-11-13) — docs: stale iOS rows in TODO.md (jworks:47)
+
+### Changed
+- TODO.md Backlog: removed "IDEA-001 iOS port: cross guide lines". Both iOS canvases already draw them: `Screens/Game/Writing/DrawingCanvas.swift:30` and `Calligraphy/Canvas/CalligraphyCanvasUIView.swift:162`.
+- Removed "KanjiSage deep link integration (iPad)": the KanjiJourney receiving side shipped in v1.4.36, and the sending side is KanjiSage's (jworks:62).
+- The Glass UI row now notes that CI has compiled every iOS screen since build 122; the visual check is still open.
+
 ## v1.4.47 (2026-11-08) — CI: shared-core JVM tests run on every Android build (jworks-vm:44 for jworks:44)
 
 ### Changed
