@@ -5,6 +5,15 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.49 (2026-11-14) — J Coin earns upload while the app is open (jworks:44)
+
+### Fixed
+- BUG-023: since 11-01, J Coin saw four anonymous Android KanjiJourney sign-ups (country US, "Ktor client") and no earn from any of them (Kong log read by jayhub:110, 11-14). The app signs up only when an earn is queued and sends it in the same run, so those earns never left the devices. Earns uploaded only from the 30-minute background CoinSyncWorker, and Android gives that job no network while the app is in the background (seen on the Z Flip 11-01: the job waited on CONNECTIVITY for an hour). New `SyncOnEarnJCoinRepository` (shared-core) sends queued earns 2 s after an earn, while the app is open, and `MainActivity.onStart` does the same each time the app comes to the front, which also sends earns already stuck in a queue. Earns close together go out in one sync; a sync that has started is never cancelled, so a signup is always followed by its earn. Android only; iOS already syncs at start and on foreground.
+
+### Verification
+- `SyncOnEarnJCoinRepositoryTest` (jvmTest, 4 cases): one sync per burst of earns, after the pause; an earn during a running sync does not cancel it; `syncSoon()` alone runs one sync; a failing sync does not reach the caller.
+- RESULTS: FILL
+
 ## v1.4.48 (2026-11-13) — docs: stale iOS rows in TODO.md (jworks:47)
 
 ### Changed

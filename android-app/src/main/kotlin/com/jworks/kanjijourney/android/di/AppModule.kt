@@ -36,6 +36,7 @@ import com.jworks.kanjijourney.core.domain.repository.DevChatRepository
 import com.jworks.kanjijourney.core.domain.repository.FeedbackRepository
 import com.jworks.kanjijourney.core.domain.repository.FieldJournalRepository
 import com.jworks.kanjijourney.core.domain.repository.FlashcardRepository
+import com.jworks.kanjijourney.core.data.SyncOnEarnJCoinRepository
 import com.jworks.kanjijourney.core.domain.repository.JCoinRepository
 import com.jworks.kanjijourney.core.domain.repository.KanaRepository
 import com.jworks.kanjijourney.core.domain.repository.KanaSrsRepository
@@ -67,6 +68,9 @@ import com.jworks.kanjijourney.core.scoring.ScoringEngine
 import com.jworks.kanjijourney.core.srs.Sm2Algorithm
 import com.jworks.kanjijourney.core.srs.SrsAlgorithm
 import com.jworks.kanjijourney.db.KanjiJourneyDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -109,11 +113,20 @@ object AppModule {
         return SessionRepositoryImpl(db)
     }
 
+    // Earns are sent a moment after they are made, while the app is open (BUG-023); the background
+    // CoinSyncWorker gets no network while the app is in the background.
     @Provides
     @Singleton
-    fun provideJCoinRepository(db: KanjiJourneyDatabase): JCoinRepository {
-        return JCoinRepositoryImpl(db)
+    fun provideSyncOnEarnJCoinRepository(db: KanjiJourneyDatabase): SyncOnEarnJCoinRepository {
+        return SyncOnEarnJCoinRepository(
+            JCoinRepositoryImpl(db),
+            CoroutineScope(SupervisorJob() + Dispatchers.Default)
+        )
     }
+
+    @Provides
+    @Singleton
+    fun provideJCoinRepository(repository: SyncOnEarnJCoinRepository): JCoinRepository = repository
 
     @Provides
     @Singleton

@@ -21,13 +21,23 @@ import com.jworks.kanjijourney.android.service.UpgradeCheckState
 import com.jworks.kanjijourney.android.ui.forceupgrade.ForceUpgradeScreen
 import com.jworks.kanjijourney.android.ui.navigation.KanjiJourneyNavHost
 import com.jworks.kanjijourney.android.ui.theme.KanjiJourneyTheme
+import com.jworks.kanjijourney.core.data.SyncOnEarnJCoinRepository
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    // Sends queued J Coin earns each time the app comes to the front (BUG-023)
+    @Inject lateinit var jCoinSync: SyncOnEarnJCoinRepository
+
     private val deepLinkUri = mutableStateOf<Uri?>(null)
     private var upgradeState by mutableStateOf<UpgradeCheckState>(UpgradeCheckState.Checking)
+
+    override fun onStart() {
+        super.onStart()
+        jCoinSync.syncSoon()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
