@@ -5,6 +5,11 @@ Follows versioning standard: vMAJOR.MINOR.PATCH (v0=Alpha, v1=Beta, v2=Store)
 
 ---
 
+## v1.4.50 (2026-11-14) — Test fix for v1.4.49 (jworks:44)
+
+### Fixed
+- `SyncOnEarnJCoinRepositoryTest.earnsCloseTogether_oneSyncAfterThePause` failed in CI (run 43633162574: 106 tests, 1 failed, "expected 0 but was 1"). Test bug, not app: the fake passed `earnCoins` to the real repository, which switches to `Dispatchers.Default`; while the test waited on that real thread, `runTest` moved its virtual clock ahead and fired the first pending sync. The fake now records earns itself, so the test runs entirely on the test clock. App code unchanged from v1.4.49.
+
 ## v1.4.49 (2026-11-14) — J Coin earns upload while the app is open (jworks:44)
 
 ### Fixed

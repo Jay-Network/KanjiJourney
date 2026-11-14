@@ -3,6 +3,7 @@ package com.jworks.kanjijourney.core
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import com.jworks.kanjijourney.core.data.JCoinRepositoryImpl
 import com.jworks.kanjijourney.core.data.SyncOnEarnJCoinRepository
+import com.jworks.kanjijourney.core.domain.model.CoinEarnResult
 import com.jworks.kanjijourney.core.domain.model.LOCAL_USER_ID
 import com.jworks.kanjijourney.core.domain.repository.JCoinRepository
 import com.jworks.kanjijourney.db.KanjiJourneyDatabase
@@ -19,13 +20,34 @@ import kotlin.test.assertEquals
  */
 class SyncOnEarnJCoinRepositoryTest {
 
-    /** Real repository on an in-memory database; counts syncs, each taking 500 ms. */
+    /**
+     * Records earns and counts syncs (each taking 500 ms) on the test clock. Other calls go to a real
+     * repository. earnCoins must not reach the real one: it switches to Dispatchers.Default, and while
+     * the test waits on that real thread runTest moves its clock ahead and fires pending delays.
+     */
     private class CountingRepo(
         real: JCoinRepository,
         private val fail: Boolean = false
     ) : JCoinRepository by real {
+        var earned = 0
         var started = 0
         var finished = 0
+        override suspend fun earnCoins(
+            userId: String,
+            sourceType: String,
+            baseAmount: Int,
+            description: String,
+            metadata: String
+        ): CoinEarnResult {
+            earned += baseAmount
+            return CoinEarnResult(
+                earned = baseAmount,
+                newBalance = earned.toLong(),
+                sourceType = sourceType,
+                queued = true
+            )
+        }
+
         override suspend fun syncPendingEvents(): Int {
             started++
             delay(500)
@@ -58,8 +80,8 @@ class SyncOnEarnJCoinRepositoryTest {
         assertEquals(1, counting.started)
         advanceTimeBy(600)
         assertEquals(1, counting.finished)
-        // Both earns were recorded by the real repository
-        assertEquals(30L, repo.getBalance(LOCAL_USER_ID).localBalance)
+        // Both earns reached the wrapped repository
+        assertEquals(30, counting.earned)
     }
 
     @Test
